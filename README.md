@@ -31,7 +31,7 @@ PM> Install-Package Xunet.MiniApi
 
 ## สนำร
 
-Program.cs
+**Program.cs**
 
 ```c#
 var builder = WebApplication.CreateBuilder(args);
@@ -66,7 +66,7 @@ app.UseXunetAuthentication();
 app.Run();
 ```
 
-PermissionHandler.cs
+**PermissionHandler.cs**
 
 ```c#
 public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
@@ -80,7 +80,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 }
 ```
 
-appsettings.json
+**appsettings.json**
 
 ```json
 {
@@ -104,7 +104,7 @@ appsettings.json
     "ValidateIssuer": true,
     "ValidIssuer": "cloudstorage",
     "ValidateIssuerSigningKey": true,
-    "SymmetricSecurityKey": "3a2348f5fdcc9177e9a49d5d5e43800a",
+    "SymmetricSecurityKey": "2aaa5f2eabcb4a519751bc4f009eaabe",
     "ValidateAudience": true,
     "ValidAudience": "manager",
     "ValidateLifetime": true,
