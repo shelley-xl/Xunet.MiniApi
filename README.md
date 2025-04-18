@@ -1,5 +1,10 @@
 # Xunet.MiniApi
 
+[![Nuget](https://img.shields.io/nuget/v/Xunet.MiniApi.svg?style=flat-square)](https://www.nuget.org/packages/Xunet.MiniApi)
+[![Downloads](https://img.shields.io/nuget/dt/Xunet.MiniApi.svg?style=flat-square)](https://www.nuget.org/stats/packages/Xunet.MiniApi?groupby=Version)
+[![License](https://img.shields.io/github/license/shelley-xl/Xunet.MiniApi.svg)](https://github.com/shelley-xl/Xunet.MiniApi/blob/master/LICENSE)
+![Vistors](https://visitor-badge.laobi.icu/badge?page_id=https://github.com/shelley-xl/Xunet.MiniApi)
+
 面向微服务的.NET 最小API支持，功能特性包括：
 
 - 统一的接口响应格式返回
@@ -15,11 +20,6 @@
 - 策略包含跨域、限流、授权
 
 Support .NET 8.0+
-
-[![Nuget](https://img.shields.io/nuget/v/Xunet.MiniApi.svg?style=flat-square)](https://www.nuget.org/packages/Xunet.MiniApi)
-[![Downloads](https://img.shields.io/nuget/dt/Xunet.MiniApi.svg?style=flat-square)](https://www.nuget.org/stats/packages/Xunet.MiniApi?groupby=Version)
-[![License](https://img.shields.io/github/license/shelley-xl/Xunet.MiniApi.svg)](https://github.com/shelley-xl/Xunet.MiniApi/blob/master/LICENSE)
-![Vistors](https://visitor-badge.laobi.icu/badge?page_id=https://github.com/shelley-xl/Xunet.MiniApi)
 
 ## 安装
 
@@ -52,6 +52,7 @@ builder.Services.AddXunetAuthentication<PermissionHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 app.UseAntiforgery();
 app.UseRateLimiter();
 app.UseXunetCustomException();
@@ -63,4 +64,55 @@ app.UseXunetStorage();
 app.UseXunetAuthentication();
 
 app.Run();
+```
+
+PermissionHandler.cs
+
+```c#
+public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
+{
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
+    {
+        await Task.CompletedTask;
+
+        context.Succeed(requirement);
+    }
+}
+```
+
+appsettings.json
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "Kestrel": {
+    "EndPoints": {
+      "Http": {
+        "Url": "http://0.0.0.0:8000"
+      }
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "server=127.0.0.1;uid=root;pwd=root;database=miniapi;max pool size=8000; charset=utf8;"
+  },
+  "JwtConfig": {
+    "ValidateIssuer": true,
+    "ValidIssuer": "cloudstorage",
+    "ValidateIssuerSigningKey": true,
+    "SymmetricSecurityKey": "3a2348f5fdcc9177e9a49d5d5e43800a",
+    "ValidateAudience": true,
+    "ValidAudience": "manager",
+    "ValidateLifetime": true,
+    "RequireExpirationTime": true,
+    "ClockSkew": 1,
+    "RefreshTokenAudience": "manager",
+    "Expire": 2592000,
+    "RefreshTokenExpire": 10080
+  }
+}
 ```
