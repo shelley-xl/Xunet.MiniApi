@@ -5,31 +5,31 @@
 [![License](https://img.shields.io/github/license/shelley-xl/Xunet.MiniApi.svg)](https://github.com/shelley-xl/Xunet.MiniApi/blob/master/LICENSE)
 ![Vistors](https://visitor-badge.laobi.icu/badge?page_id=https://github.com/shelley-xl/Xunet.MiniApi)
 
-ÃæÏòÎ¢·şÎñµÄ.NET ×îĞ¡APIÖ§³Ö£¬¹¦ÄÜÌØĞÔ°üÀ¨£º
+é¢å‘å¾®æœåŠ¡çš„.NET æœ€å°APIæ”¯æŒï¼ŒåŠŸèƒ½ç‰¹æ€§åŒ…æ‹¬ï¼š
 
-- Í³Ò»µÄ½Ó¿ÚÏìÓ¦¸ñÊ½·µ»Ø
-- ×Ô¶¨ÒåÒì³£´¦ÀíºÍÊı¾İ³Ö¾Ã»¯
-- ×Ô¶¨ÒåÇëÇó´¦ÀíÖĞ¼ä¼ş
-- ²ÎÊıÇ©ÃûÖĞ¼ä¼ş
-- ÄÚÖÃ½¡¿µ¼ì²é
-- »ùÓÚSystem.Text.JsonµÄĞòÁĞ»¯ºÍ·´ĞòÁĞ»¯
-- Ö§³ÖSqlite¡¢MySql¡¢SqlServerÊı¾İ¿â
-- Swagger½Ó¿ÚÎÄµµ
-- ²ÎÊı×Ô¶¯ÑéÖ¤
-- ÈÏÖ¤ºÍÊÚÈ¨
-- ²ßÂÔ°üº¬¿çÓò¡¢ÏŞÁ÷¡¢ÊÚÈ¨
+- ç»Ÿä¸€çš„æ¥å£å“åº”æ ¼å¼è¿”å›
+- è‡ªå®šä¹‰å¼‚å¸¸å¤„ç†å’Œæ•°æ®æŒä¹…åŒ–
+- è‡ªå®šä¹‰è¯·æ±‚å¤„ç†ä¸­é—´ä»¶
+- å‚æ•°ç­¾åä¸­é—´ä»¶
+- å†…ç½®å¥åº·æ£€æŸ¥
+- åŸºäºSystem.Text.Jsonçš„åºåˆ—åŒ–å’Œååºåˆ—åŒ–
+- æ”¯æŒSqliteã€MySqlã€SqlServeræ•°æ®åº“
+- Swaggeræ¥å£æ–‡æ¡£
+- å‚æ•°è‡ªåŠ¨éªŒè¯
+- è®¤è¯å’Œæˆæƒ
+- ç­–ç•¥åŒ…å«è·¨åŸŸã€é™æµã€æˆæƒ
 
 Support .NET 8.0+
 
-## °²×°
+## å®‰è£…
 
-Xunet.MiniApi ÒÔ NuGet °üµÄĞÎÊ½Ìá¹©¡£Äú¿ÉÒÔÊ¹ÓÃ NuGet °ü¿ØÖÆÌ¨´°¿Ú°²×°Ëü£º
+Xunet.MiniApi ä»¥ NuGet åŒ…çš„å½¢å¼æä¾›ã€‚æ‚¨å¯ä»¥ä½¿ç”¨ NuGet åŒ…æ§åˆ¶å°çª—å£å®‰è£…å®ƒï¼š
 
 ```
 PM> Install-Package Xunet.MiniApi
 ```
 
-## Ê¹ÓÃ
+## ä½¿ç”¨
 
 **Program.cs**
 
@@ -78,7 +78,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {
         if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
         {
-            // ÒÑÈÏÖ¤£¬¼øÈ¨
+            // å·²è®¤è¯ï¼Œé‰´æƒ
             await Task.CompletedTask;
             context.Succeed(requirement);
         }
