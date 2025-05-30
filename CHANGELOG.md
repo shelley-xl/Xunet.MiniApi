@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/shelley-xl/Xunet.MiniApi/commit/fe80335269bf78fa1da822d57452367ae60eea39) (2025-05-30)
+
+### Features
+- 项目重构、优化、完善
+- 新增请求、异常日志事件处理器
+
 ## [1.0.1](https://github.com/shelley-xl/Xunet.MiniApi/commit/14d573522d0bc8e1bf6785be94454a18a3d18d40) (2025-04-18)
 
 ### Features
