@@ -1,23 +1,28 @@
+// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THE Xunet.WinFormium PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
+// COPYRIGHTS (C) –Ï¿¥ ALL RIGHTS RESERVED.
+// GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAntiforgery();
-builder.Services.AddXunetHttpContextAccessor();
+builder.Services.AddXunetCache();
 builder.Services.AddXunetJsonOptions();
+builder.Services.AddXunetFluentValidation();
+builder.Services.AddXunetHttpContextAccessor();
 builder.Services.AddXunetHealthChecks();
 builder.Services.AddXunetSwagger();
 builder.Services.AddXunetSqliteStorage();
-builder.Services.AddXunetFluentValidation();
+builder.Services.AddXunetJwtAuth();
+builder.Services.AddXunetCors();
 builder.Services.AddXunetRateLimiter();
-builder.Services.AddXunetAuthentication<PermissionHandler>();
+builder.Services.AddXunetEventHandler();
+builder.Services.AddXunetAuthorizationHandler();
+builder.Services.AddXunetMapper();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseAntiforgery();
-app.UseRateLimiter();
 app.UseXunetCustomException();
 app.UseXunetRequestHandler();
 app.UseXunetHttpContextAccessor();
@@ -25,23 +30,11 @@ app.UseXunetHealthChecks();
 app.UseXunetSwagger();
 app.UseXunetStorage();
 app.UseXunetAuthentication();
+app.UseXunetCors();
+app.UseRateLimiter();
 
-static async Task<IResult> Test()
-{
-    await Task.CompletedTask;
-    throw new Exception("“Ï≥£≤‚ ‘");
-}
-
-var group = app.MapGroup("/api");
-
-group.MapGet("/test", Test).WithTags("≤‚ ‘").WithOpenApi(x => new(x)
-{
-    Summary = "≤‚ ‘“ªœ¬",
-    Description = "≤‚ ‘“ªœ¬∞°",
-});
-
-group.AddEndpointFilter<AutoValidationFilter>();
-group.RequireRateLimiting(RateLimiterPolicy.Fixed);
-group.RequireAuthorization(AuthorizePolicy.Default);
+// Configure the MiniApi request pipeline.
+app.UseAuthMiniApi();
+app.UseUserMiniApi();
 
 app.Run();
