@@ -1,4 +1,9 @@
-﻿namespace Xunet.MiniApi.Middlewares;
+﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THE Xunet.WinFormium PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
+// COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
+// GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
+
+namespace Xunet.MiniApi.Middlewares;
 
 /// <summary>
 /// 自定义异常中间件
@@ -13,39 +18,25 @@ public class CustomExceptionMiddleware(RequestDelegate next)
     /// <returns></returns>
     public async Task InvokeAsync(HttpContext context)
     {
-        string? requestBody = null;
+        // 记录请求开始时间
+        context.Items["StartTime"] = Stopwatch.StartNew();
+        // 启用请求体缓冲以便多次读取
+        context.Request.EnableBuffering();
+        // 读取请求Body
+        using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, false, leaveOpen: true);
+        var requestBody = await reader.ReadToEndAsync();
+        context.Request.Body.Position = 0;
+
         try
         {
-            context.Request.EnableBuffering();
-            using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, false, leaveOpen: true);
-            requestBody = await reader.ReadToEndAsync();
-            context.Request.Body.Position = 0;
-
             await next(context);
         }
         catch (Exception ex)
         {
-            var db = context.RequestServices.GetService<ISqlSugarClient>();
+            var eventHandler = context.RequestServices.GetService<IExceptionLogEventHandler>();
+            eventHandler?.InvokeAsync(context, ex, string.IsNullOrEmpty(requestBody) ? null : requestBody);
 
-            if (db != null)
-            {
-                var model = new ExceptionEntity
-                {
-                    Message = ex.Message,
-                    StackTrace = ex.StackTrace,
-                    InnerException = ex.InnerException?.ToString(),
-                    ExceptionType = ex.GetType().FullName,
-                    RequestIP = XunetHttpContextAccessor.RequestIP,
-                    RequestPath = context.Request.Path,
-                    RequestMethod = context.Request.Method,
-                    RequestQuery = context.Request.QueryString.Value,
-                    RequestBody = requestBody,
-                    UserAgent = context.Request.Headers.UserAgent,
-                };
-
-                db.Insertable(model).ExecuteCommand();
-            }
-
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new OperateResultDto
             {
                 Code = XunetCode.SystemException,

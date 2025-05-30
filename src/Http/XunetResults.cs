@@ -1,4 +1,9 @@
-﻿namespace Xunet.MiniApi.Http;
+﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THE Xunet.WinFormium PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
+// COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
+// GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
+
+namespace Xunet.MiniApi.Http;
 
 /// <summary>
 /// 通用返回IResult
@@ -55,12 +60,12 @@ public static partial class XunetResults
     /// </summary>
     /// <param name="message">错误消息</param>
     /// <returns></returns>
-    public static IResult Error(string message)
+    public static IResult Error(string? message)
     {
         return Results.Ok(new OperateResultDto
         {
             Code = XunetCode.Error,
-            Message = message,
+            Message = message ?? "fail",
         });
     }
 

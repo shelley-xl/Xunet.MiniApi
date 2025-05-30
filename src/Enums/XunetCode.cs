@@ -1,4 +1,9 @@
-﻿namespace Xunet.MiniApi.Enums;
+﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THE Xunet.WinFormium PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
+// COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
+// GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
+
+namespace Xunet.MiniApi.Enums;
 
 /// <summary>
 /// 状态码枚举
@@ -48,26 +53,38 @@ public enum XunetCode
     TooManyRequests = 6,
 
     /// <summary>
+    /// 无效的请求
+    /// </summary>
+    [Description("无效的请求")]
+    BadRequest = 7,
+
+    /// <summary>
     /// 未授权
     /// </summary>
     [Description("未授权")]
-    Unauthorized = 7,
+    Unauthorized = 8,
 
     /// <summary>
     /// 禁止访问
     /// </summary>
     [Description("禁止访问")]
-    Forbidden = 8,
+    Forbidden = 9,
 
     /// <summary>
     /// 资源未找到
     /// </summary>
     [Description("资源未找到")]
-    NotFound = 9,
+    NotFound = 10,
 
     /// <summary>
-    /// 无效的请求
+    /// 方法不允许
     /// </summary>
-    [Description("无效的请求")]
-    InvalidRequest = 10,
+    [Description("方法不允许")]
+    MethodNotAllowed = 11,
+
+    /// <summary>
+    /// 请求错误
+    /// </summary>
+    [Description("请求错误")]
+    RequestError = 12,
 }

@@ -1,4 +1,9 @@
-﻿namespace Xunet.MiniApi;
+﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THE Xunet.WinFormium PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
+// COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
+// GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
+
+namespace Xunet.MiniApi;
 
 /// <summary>
 /// IApplicationBuilder扩展
@@ -16,7 +21,7 @@ public static class IApplicationBuilderExtension
     {
         var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
 
-        XunetHttpContextAccessor.Configure(httpContextAccessor);
+        XunetHttpContext.Configure(httpContextAccessor);
 
         return app;
     }
@@ -73,8 +78,9 @@ public static class IApplicationBuilderExtension
     /// 使用Swagger
     /// </summary>
     /// <param name="app"></param>
+    /// <param name="options"></param>
     /// <returns></returns>
-    public static WebApplication UseXunetSwagger(this WebApplication app)
+    public static WebApplication UseXunetSwagger(this WebApplication app, SwaggerOptions? options = null)
     {
         if (!app.Environment.IsProduction())
         {
@@ -82,12 +88,22 @@ public static class IApplicationBuilderExtension
             app.UseSwaggerUI(x =>
             {
                 x.RoutePrefix = string.Empty;
-                x.DocumentTitle = "Minimal API 接口服务";
+                x.DocumentTitle = options == null ? "Minimal API 接口服务" : options.DocumentTitle;
                 x.ConfigObject.AdditionalItems["queryConfigEnabled"] = true;
                 x.DefaultModelsExpandDepth(-1);
                 x.ShowExtensions();
                 x.EnableValidator();
-                x.SwaggerEndpoint($"/swagger/v1/swagger.json", "Minimal API 接口服务");
+                if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
+                {
+                    x.SwaggerEndpoint("/swagger/v1/swagger.json", "接口文档");
+                }
+                else
+                {
+                    foreach (var endpoint in options.Endpoints)
+                    {
+                        x.SwaggerEndpoint($"/swagger/{endpoint.Name}/swagger.json", endpoint.EndpointName);
+                    }
+                }
             });
         }
 
@@ -109,16 +125,21 @@ public static class IApplicationBuilderExtension
 
         db.DbMaintenance.CreateDatabase();
 
-        var entityTypes = Array.Empty<Type>();
-
         // 从程序集获取所有继承SugarEntity的实体类型
-        foreach (var assembly in Assembly.GetEntryAssembly()?.GetReferencedAssemblies() ?? [])
+        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+        var entityTypes = entryAssembly.GetTypes().Where(where).ToArray();
+        foreach (var assembly in entryAssembly.GetReferencedAssemblies())
         {
-            var types = Assembly.Load(assembly).GetTypes().Where(x => x.BaseType == typeof(SugarEntity)).ToArray();
+            var types = Assembly.Load(assembly).GetTypes().Where(where).ToArray();
             entityTypes = [.. entityTypes, .. types];
         }
 
         db.CodeFirst.InitTables(entityTypes);
+
+        static bool where(Type x)
+        {
+            return x.BaseType == typeof(SugarEntity);
+        }
 
         return app;
     }
@@ -145,43 +166,11 @@ public static class IApplicationBuilderExtension
     /// <summary>
     /// 使用自定义异常处理中间件
     /// </summary>
-    /// <param name="app"></param>
+    /// <param name="builder"></param>
     /// <returns></returns>
-    public static WebApplication UseXunetCustomException(this WebApplication app)
+    public static IApplicationBuilder UseXunetCustomException(this IApplicationBuilder builder)
     {
-        app.UseMiddleware<CustomExceptionMiddleware>();
-
-        var builder = app.MapGet("/api/logs/exception/page", GetExceptionLogAsync);
-
-        builder.AddEndpointFilter<AutoValidationFilter>();
-        builder.RequireAuthorization(AuthorizePolicy.Default);
-
-        builder.WithTags("系统日志").WithOpenApi(x => new(x)
-        {
-            Summary = "获取异常日志分页列表",
-            Description = "获取异常日志分页列表",
-        });
-
-        static async Task<IResult> GetExceptionLogAsync([AsParameters] PageRequest request, HttpContext context)
-        {
-            var db = context.RequestServices.GetService<ISqlSugarClient>();
-
-            if (db == null) return XunetResults.Error("请先添加数据存储中间件");
-
-            RefAsync<int> totalNumber = 0;
-
-            var page = request.Page.GetValueOrDefault();
-            var size = request.Size.GetValueOrDefault();
-
-            var list = await db
-                .Queryable<ExceptionEntity>()
-                .OrderByDescending(x => x.CreateTime)
-                .ToPageListAsync(page, size, totalNumber);
-
-            return XunetResults.Ok(list, request, totalNumber);
-        }
-
-        return app;
+        return builder.UseMiddleware<CustomExceptionMiddleware>(); ;
     }
 
     #endregion
@@ -196,20 +185,6 @@ public static class IApplicationBuilderExtension
     public static IApplicationBuilder UseXunetRequestHandler(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<RequestHandlerMiddleware>();
-    }
-
-    #endregion
-
-    #region 使用参数签名验证中间件
-
-    /// <summary>
-    /// 使用参数签名验证
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    public static IApplicationBuilder UseXunetSignValidator(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<SignValidatorMiddleware>();
     }
 
     #endregion

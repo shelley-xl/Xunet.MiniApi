@@ -3,12 +3,15 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Authorization;
+namespace Xunet.MiniApi.Constants;
 
 /// <summary>
-/// 自定义策略授权时的参数类型，这时没参数，所以是个空类型
+/// 授权策略
 /// </summary>
-public class PermissionRequirement : IAuthorizationRequirement
+public static class AuthorizePolicy
 {
-
+    /// <summary>
+    /// 默认
+    /// </summary>
+    public const string Default = "default";
 }

@@ -3,16 +3,20 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Dtos;
+namespace Xunet.MiniApi.Swagger;
 
 /// <summary>
-/// 数据查询响应
+/// SwaggerOptions
 /// </summary>
-/// <typeparam name="T">泛型对象</typeparam>
-public class QueryResultDto<T> : OperateResultDto
+public class SwaggerOptions
 {
     /// <summary>
-    /// 数据
+    /// 文档标题
     /// </summary>
-    public T? Data { get; set; }
+    public string? DocumentTitle { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public SwaggerEndpoints[]? Endpoints { get; set; }
 }

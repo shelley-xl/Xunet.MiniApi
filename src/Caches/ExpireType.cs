@@ -3,22 +3,22 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Dtos.Requests;
+namespace Xunet.MiniApi.Caches;
 
 /// <summary>
-/// 分页查询请求基类
+/// 过期类型
 /// </summary>
-public class PageRequest
+public enum ExpireType
 {
     /// <summary>
-    /// 页码
+    /// 绝对过期
+    /// 注：即自创建一段时间后就过期
     /// </summary>
-    [FromParameter("page", "页码")]
-    public int? Page { get; set; }
+    Absolute,
 
     /// <summary>
-    /// 页大小
+    /// 相对过期
+    /// 注：即该键未被访问后一段时间后过期，若此键一直被访问则过期时间自动延长
     /// </summary>
-    [FromParameter("size", "页大小")]
-    public int? Size { get; set; }
+    Relative,
 }

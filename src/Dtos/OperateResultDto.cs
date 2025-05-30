@@ -1,4 +1,9 @@
-﻿namespace Xunet.MiniApi.Dtos;
+﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THE Xunet.WinFormium PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
+// COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
+// GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
+
+namespace Xunet.MiniApi.Dtos;
 
 /// <summary>
 /// 数据操作响应
@@ -10,16 +15,18 @@ public class OperateResultDto
     /// </summary>
     public OperateResultDto()
     {
+        var context = XunetHttpContext.Current;
         Code = XunetCode.Success;
         Message = "ok";
         Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        RequestId = XunetHttpContextAccessor.Current?.TraceIdentifier;
-        TraceId = XunetHttpContextAccessor.Current?.Features.Get<IHttpActivityFeature>()?.Activity.TraceId.ToHexString();
-        Instance = XunetHttpContextAccessor.Current?.Request.Path;
-        if (XunetHttpContextAccessor.Current?.Items["StartTime"] is Stopwatch stopwatch)
+        RequestId = context?.TraceIdentifier;
+        TraceId = context?.Features.Get<IHttpActivityFeature>()?.Activity.TraceId.ToHexString();
+        Instance = context?.Request.Path;
+        if (context?.Items["StartTime"] is Stopwatch stopwatch)
         {
             stopwatch.Stop();
             Duration = $"{stopwatch.ElapsedMilliseconds}ms";
+            context.Items["Duration"] = stopwatch.ElapsedMilliseconds;
         }
         else
         {

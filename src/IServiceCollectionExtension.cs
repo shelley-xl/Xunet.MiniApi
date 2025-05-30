@@ -1,4 +1,9 @@
-﻿namespace Xunet.MiniApi;
+﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THE Xunet.WinFormium PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
+// COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
+// GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
+
+namespace Xunet.MiniApi;
 
 /// <summary>
 /// IServiceCollection扩展
@@ -88,36 +93,16 @@ public static class IServiceCollectionExtension
     #region 添加Sqlite数据存储
 
     /// <summary>
-    /// 添加Sqlite数据存储中间件
+    /// 添加Sqlite数据存储
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetSqliteStorage(this IServiceCollection services)
+    public static IServiceCollection AddXunetSqliteStorage(this IServiceCollection services, StorageOptions[]? options = null)
     {
         if (services.HasRegistered(nameof(AddXunetSqliteStorage))) return services;
 
-        services.AddSingleton<ISqlSugarClient>(x =>
-        {
-            var dbVersion = "1.0.1.1";
-            var dbName = Assembly.GetEntryAssembly()?.GetName().Name ?? "Default.db";
-            var dirName = Assembly.GetExecutingAssembly().GetName().Name ?? "Xunet.MiniApi";
-            var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var baseDir = Path.Combine(appDataDir, dirName, dbVersion, "data");
-            var connectionString = $@"Data Source={baseDir}\{dbName};";
-
-            using var db = new SqlSugarScope(new ConnectionConfig
-            {
-                ConfigId = 1,
-                DbType = DbType.Sqlite,
-                InitKeyType = InitKeyType.Attribute,
-                IsAutoCloseConnection = true,
-                ConnectionString = connectionString,
-            });
-
-            db.Ado.CommandTimeOut = 60;
-
-            return db;
-        });
+        services.AddSqlSugarClient(options, DbType.Sqlite);
 
         return services;
     }
@@ -130,29 +115,13 @@ public static class IServiceCollectionExtension
     /// 添加MySql数据存储
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetMySqlStorage(this IServiceCollection services)
+    public static IServiceCollection AddXunetMySqlStorage(this IServiceCollection services, StorageOptions[]? options = null)
     {
         if (services.HasRegistered(nameof(AddXunetMySqlStorage))) return services;
 
-        services.AddSingleton<ISqlSugarClient>(provider =>
-        {
-            var config = provider.GetRequiredService<IConfiguration>();
-            var connectionString = config.GetConnectionString("DefaultConnection");
-            if (string.IsNullOrEmpty(connectionString)) throw new InvalidOperationException("请先配置数据库连接字符串");
-            using var db = new SqlSugarScope(new ConnectionConfig
-            {
-                ConfigId = 2,
-                DbType = DbType.MySql,
-                InitKeyType = InitKeyType.Attribute,
-                IsAutoCloseConnection = true,
-                ConnectionString = connectionString,
-            });
-
-            db.Ado.CommandTimeOut = 60;
-
-            return db;
-        });
+        services.AddSqlSugarClient(options, DbType.MySql);
 
         return services;
     }
@@ -165,29 +134,13 @@ public static class IServiceCollectionExtension
     /// 添加SqlServer数据存储
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetSqlServerStorage(this IServiceCollection services)
+    public static IServiceCollection AddXunetSqlServerStorage(this IServiceCollection services, StorageOptions[]? options = null)
     {
         if (services.HasRegistered(nameof(AddXunetSqlServerStorage))) return services;
 
-        services.AddSingleton<ISqlSugarClient>(provider =>
-        {
-            var config = provider.GetRequiredService<IConfiguration>();
-            var connectionString = config.GetConnectionString("DefaultConnection");
-            if (string.IsNullOrEmpty(connectionString)) throw new InvalidOperationException("请先配置数据库连接字符串");
-            using var db = new SqlSugarScope(new ConnectionConfig
-            {
-                ConfigId = 3,
-                DbType = DbType.SqlServer,
-                InitKeyType = InitKeyType.Attribute,
-                IsAutoCloseConnection = true,
-                ConnectionString = connectionString,
-            });
-
-            db.Ado.CommandTimeOut = 60;
-
-            return db;
-        });
+        services.AddSqlSugarClient(options, DbType.SqlServer);
 
         return services;
     }
@@ -226,6 +179,7 @@ public static class IServiceCollectionExtension
     #endregion
 
     #region 添加限流中间件
+
     /// <summary>
     /// 添加限流中间件
     /// </summary>
@@ -237,105 +191,12 @@ public static class IServiceCollectionExtension
 
         services.AddRateLimiter(limiterOptions =>
         {
-            #region 配置限流策略 => 固定窗口限流器
-            // 配置限流策略 => 固定窗口限流器
-            // 窗口时间长度为60s，在每个窗口时间范围内，最多允许100个请求被处理。
-            limiterOptions.AddFixedWindowLimiter(policyName: RateLimiterPolicy.Fixed, fixedOptions =>
+            #region 自定义限流策略 => 图形验证码限流器
+            // 自定义限流策略 => 图形验证码限流器
+            // 同一个IP限制10个请求每分钟
+            limiterOptions.AddPolicy(policyName: RateLimiterPolicy.VeryCode, context =>
             {
-                // 窗口阈值，即每个窗口时间范围内，最多允许的请求个数。这里指定为最多允许100个请求。该值必须 > 0
-                fixedOptions.PermitLimit = 100;
-                // 窗口大小，即时间长度。这里设置为 60 s。该值必须 > TimeSpan.Zero
-                fixedOptions.Window = TimeSpan.FromSeconds(60);
-                // 队列中最多允许请求排队数，设置为 0 时取消排队
-                fixedOptions.QueueLimit = 0;
-                // 排队请求的处理顺序。这里设置为优先处理先来的请求
-                fixedOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                // 指示开启新窗口时是否自动重置请求限制，该值默认为true。如果设置为false，则需要手动调用 SlidingWindowRateLimiter.TryReplenish来重置
-                fixedOptions.AutoReplenishment = true;
-            });
-            #endregion
-
-            #region 配置限流策略 => 滑动窗口限流器
-            // 配置限流策略 => 滑动窗口限流器
-            // 窗口时间长度为30s，在每个窗口时间范围内，最多允许100个请求，窗口段数为 3，每个段的时间间隔为 30s / 3 = 10s，即窗口每 10s 滑动一段。
-            limiterOptions.AddSlidingWindowLimiter(policyName: RateLimiterPolicy.Sliding, slidingOptions =>
-            {
-                // 窗口阈值，即每个窗口时间范围内，最多允许的请求个数。这里指定为最多允许100个请求。该值必须 > 0
-                slidingOptions.PermitLimit = 100;
-                // 窗口大小，即时间长度。这里设置为 60 s。该值必须 > TimeSpan.Zero
-                slidingOptions.Window = TimeSpan.FromSeconds(60);
-                // 队列中最多允许请求排队数，设置为 0 时取消排队
-                slidingOptions.QueueLimit = 0;
-                // 排队请求的处理顺序。这里设置为优先处理先来的请求
-                slidingOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                // 指示开启新窗口时是否自动重置请求限制，该值默认为true。如果设置为false，则需要手动调用 SlidingWindowRateLimiter.TryReplenish来重置
-                slidingOptions.AutoReplenishment = true;
-                // 每个窗口的段的个数，通过它可以计算出每个段滑动的时间间隔。这里设置段数为 3，时间间隔为 10s。该值必须 > 0
-                slidingOptions.SegmentsPerWindow = 3;
-            });
-            #endregion
-
-            #region 配置限流策略 => 令牌桶限流器
-            // 配置限流策略 => 令牌桶限流器
-            // 桶最多可以装 4 个令牌，每 10s 发放一次令牌，每次发放 2 个令牌，所以在一个发放周期内，最多可以处理 4 个请求，至少可以处理 2 个请求
-            limiterOptions.AddTokenBucketLimiter(policyName: RateLimiterPolicy.TokenBucket, tokenBucketOptions =>
-            {
-                // 桶最多可以装的令牌数，发放的多余令牌会被丢弃。这里设置为最多装 4 个令牌。该值必须 > 0
-                tokenBucketOptions.TokenLimit = 4;
-                // 令牌发放周期，即多长时间发放一次令牌。这里设置为 10 s。该值必须 > TimeSpan.Zero
-                tokenBucketOptions.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
-                // 每个周期发放的令牌数，即每个周期向桶内放入的令牌数（若超过桶可装令牌数的最大值，则会被丢弃）。这里设置为 2 个。该值必须 > 0
-                tokenBucketOptions.TokensPerPeriod = 2;
-                // 队列中最多允许请求排队数，设置为 0 时取消排队
-                tokenBucketOptions.QueueLimit = 0;
-                // 排队请求的处理顺序。这里设置为优先处理先来的请求
-                tokenBucketOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                // 指示当进入新的令牌发放周期时，是否自动发放令牌，该值默认为true。如果设置为false，则需要手动调用 TokenBucketRateLimiter.TryReplenish来发放
-                tokenBucketOptions.AutoReplenishment = true;
-            });
-            #endregion
-
-            #region 配置限流策略 => 并发限流器
-            // 配置限流策略 => 并发限流器
-            // 最多可以并发4个请求被处理。
-            limiterOptions.AddConcurrencyLimiter(policyName: RateLimiterPolicy.Concurrency, concurrencyOptions =>
-            {
-                // 最多并发的请求数。该值必须 > 0
-                concurrencyOptions.PermitLimit = 4;
-                // 队列中最多允许请求排队数，设置为 0 时取消排队
-                concurrencyOptions.QueueLimit = 0;
-                // 排队请求的处理顺序。这里设置为优先处理先来的请求
-                concurrencyOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-            });
-            #endregion
-
-            #region 自定义限流策略 = > 根据登录账号限流
-            // 自定义限流策略 = > 根据登录账号限流
-            limiterOptions.AddPolicy(policyName: RateLimiterPolicy.CustomByUserId, httpContext =>
-            {
-                // 匿名用户
-                var userId = "anonymous user";
-
-                // 判断是否已认证
-                if (XunetHttpContextAccessor.Current?.User.Identity?.IsAuthenticated is true)
-                {
-                    userId = httpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
-                }
-
-                return RateLimitPartition.GetFixedWindowLimiter(partitionKey: userId, _ => new FixedWindowRateLimiterOptions
-                {
-                    PermitLimit = 100,
-                    Window = TimeSpan.FromSeconds(60),
-                    QueueLimit = 0
-                });
-            });
-            #endregion
-
-            #region 自定义限流策略 = > 根据IP限流
-            // 自定义限流策略 = > 根据IP限流
-            limiterOptions.AddPolicy(policyName: RateLimiterPolicy.CustomByIP, context =>
-            {
-                var requestIP = XunetHttpContextAccessor.RequestIP;
+                var requestIP = XunetHttpContext.ClientIPAddress;
 
                 var requestPath = context.Request.Path;
 
@@ -345,7 +206,26 @@ public static class IServiceCollectionExtension
 
                 return RateLimitPartition.GetFixedWindowLimiter(partitionKey: clientKey, _ => new FixedWindowRateLimiterOptions
                 {
-                    PermitLimit = 100,
+                    PermitLimit = 10,
+                    Window = TimeSpan.FromSeconds(60),
+                    QueueLimit = 0
+                });
+            });
+            #endregion
+
+            #region 自定义限流策略 => 短信验证码限流器
+            // 自定义限流策略 => 短信验证码限流器
+            // 同一个手机号限制1个请求每分钟
+            limiterOptions.AddPolicy(policyName: RateLimiterPolicy.SmsCode, httpContext =>
+            {
+                var request = XunetHttpContext.Current?.Request!;
+                request.EnableBuffering();
+                var node = JsonNode.Parse(request.Body);
+                var phoneNumber = node?["phoneNumber"]?.ToString();
+                request.Body.Position = 0;
+                return RateLimitPartition.GetFixedWindowLimiter(partitionKey: phoneNumber, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 1,
                     Window = TimeSpan.FromSeconds(60),
                     QueueLimit = 0
                 });
@@ -376,25 +256,25 @@ public static class IServiceCollectionExtension
 
         return services;
     }
+
     #endregion
 
-    #region 添加认证授权
+    #region 添加Jwt认证
 
     /// <summary>
-    /// 添加认证授权
+    /// 添加Jwt认证
     /// </summary>
-    /// <typeparam name="THandler">AuthorizationHandler</typeparam>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetAuthentication<THandler>(this IServiceCollection services) where THandler : AuthorizationHandler<PermissionRequirement>
+    public static IServiceCollection AddXunetJwtAuth(this IServiceCollection services)
     {
-        if (services.HasRegistered(nameof(AddXunetAuthentication))) return services;
+        if (services.HasRegistered(nameof(AddXunetJwtAuth))) return services;
 
         var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
         services.Configure<JwtConfig>(config.GetSection("JwtConfig"));
 
-        var jwtConfig = config.GetSection("JwtConfig").Get<JwtConfig>() ?? throw new ConfigurationErrorsException("缺少配置节点：JwtConfig");
+        var jwtConfig = config.GetSection("JwtConfig").Get<JwtConfig>() ?? throw new ConfigurationException("未配置JwtConfig节点");
 
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -408,12 +288,102 @@ public static class IServiceCollectionExtension
             opt.RequireHttpsMetadata = false;
             opt.TokenValidationParameters = JwtToken.CreateTokenValidationParameters(jwtConfig);
         });
+        
+        return services;
+    }
 
-        services.AddScoped<IAuthorizationHandler, THandler>();
+    #endregion
+
+    #region 添加授权处理器
+
+    /// <summary>
+    /// 添加授权处理器
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetAuthorizationHandler(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetAuthorizationHandler))) return services;
+
+        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+        var handler = entryAssembly.GetTypes().Where(x => x.BaseType == typeof(AuthorizationHandler<PermissionRequirement>)).FirstOrDefault() ?? throw new InvalidOperationException("未找到AuthorizationHandler");
+
+        services.AddScoped(typeof(IAuthorizationHandler), handler);
 
         services.AddAuthorizationBuilder().AddPolicy(AuthorizePolicy.Default, policy =>
         {
             policy.Requirements.Add(new PermissionRequirement());
+        });
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加OpenIddict认证
+
+    /// <summary>
+    /// 添加OpenIddict认证
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="grantTypes"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetOpenIddict(this IServiceCollection services, string[] grantTypes)
+    {
+        if (services.HasRegistered(nameof(AddXunetOpenIddict))) return services;
+
+        var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+
+        services.AddOpenIddict()
+
+        // 注册OpenIddict客户端
+        .AddClient(options =>
+        {
+            // 仅允许的授权类型
+            foreach (var grantType in grantTypes)
+            {
+                options.AllowCustomFlow(grantType);
+            }
+
+            // Disable token storage, which is not necessary for non-interactive flows like
+            // grant_type=password, grant_type=client_credentials or grant_type=refresh_token.
+            options.DisableTokenStorage();
+
+            // Register the System.Net.Http integration and use the identity of the current
+            // assembly as a more specific user agent, which can be useful when dealing with
+            // providers that use the user agent as a way to throttle requests (e.g Reddit).
+            options
+            .UseSystemNetHttp()
+            .SetProductInformation(Assembly.GetEntryAssembly()!);
+
+            // Add a client registration matching the client application definition in the server project.
+            options.AddRegistration(new OpenIddictClientRegistration
+            {
+                Issuer = new Uri(config["OpenIddictClientRegistration:Issuer"]!, UriKind.Absolute),
+                ClientId = config["OpenIddictClientRegistration:ClientId"],
+                ClientSecret = config["OpenIddictClientRegistration:ClientSecret"],
+            });
+        })
+
+        .AddValidation(options =>
+        {
+            options.SetIssuer(new Uri(config["OpenIddictClientRegistration:Issuer"]!, UriKind.Absolute));
+
+            options.AddEncryptionKey(new SymmetricSecurityKey(Convert.FromBase64String(config["OpenIddictClientRegistration:EncryptionKey"]!)));
+
+            options.UseSystemNetHttp();
+
+            options.UseAspNetCore();
+        });
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+        });
+
+        services.AddHttpClient("identity-server", client =>
+        {
+            client.BaseAddress = new Uri(config["OpenIddictClientRegistration:Issuer"]!);
         });
 
         return services;
@@ -427,21 +397,41 @@ public static class IServiceCollectionExtension
     /// 添加Swagger
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetSwagger(this IServiceCollection services)
+    public static IServiceCollection AddXunetSwagger(this IServiceCollection services, SwaggerOptions? options = null)
     {
         if (services.HasRegistered(nameof(AddXunetSwagger))) return services;
 
+        var env = services.BuildServiceProvider().GetRequiredService<IWebHostEnvironment>();
+        if (env.IsProduction()) return services;
+
+        services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(x =>
         {
             x.OrderActionsBy(x => x.GroupName);
             x.OperationFilter<OperationFilter>();
-            x.SwaggerDoc("v1", new OpenApiInfo
+            if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
             {
-                Title = $"Minimal API 接口服务",
-                Description = "Minimal API 接口服务",
-                Version = $"v{Assembly.GetEntryAssembly()?.GetName().Version?.ToString()}",
-            });
+                x.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Minimal API 接口服务",
+                    Description = "Minimal API 接口服务",
+                    Version = $"v{Assembly.GetEntryAssembly()?.GetName().Version?.ToString()}",
+                });
+            }
+            else
+            {
+                foreach (var endpoint in options.Endpoints)
+                {
+                    x.SwaggerDoc(endpoint.Name, new OpenApiInfo
+                    {
+                        Title = endpoint.Title,
+                        Description = endpoint.Description,
+                        Version = $"v{Assembly.GetEntryAssembly()?.GetName().Version?.ToString()}",
+                    });
+                }
+            }
             var scheme = new OpenApiSecurityScheme()
             {
                 Description = "Authorization header. Example: 'Bearer token'",
@@ -485,10 +475,101 @@ public static class IServiceCollectionExtension
         });
 
         // 注册到所有引用的程序集
-        foreach (var assembly in Assembly.GetEntryAssembly()?.GetReferencedAssemblies() ?? [])
+        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+        services.AddValidatorsFromAssembly(entryAssembly);
+        foreach (var assembly in entryAssembly.GetReferencedAssemblies())
         {
             services.AddValidatorsFromAssembly(Assembly.Load(assembly));
         }
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加自定义事件处理器
+
+    /// <summary>
+    /// 添加自定义事件处理器
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetEventHandler(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetEventHandler))) return services;
+
+        // 从程序集获取所有继承IEventHandler的实体类型
+        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+        var implementationTypes = entryAssembly.GetTypes().Where(where).ToArray();
+        foreach (var assembly in entryAssembly.GetReferencedAssemblies())
+        {
+            var types = Assembly.Load(assembly).GetTypes().Where(where).ToArray();
+            implementationTypes = [.. implementationTypes, .. types];
+        }
+
+        foreach (var implementationType in implementationTypes)
+        {
+            var serviceTypes = implementationType.GetInterfaces().Except([typeof(IEventHandler)]).ToArray();
+            foreach (var serviceType in serviceTypes)
+            {
+                services.AddSingleton(serviceType, implementationType);
+            }
+        }
+
+        static bool where(Type x)
+        {
+            return x.GetInterfaces().Contains(typeof(IEventHandler)) && x.IsClass;
+        }
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加缓存
+
+    /// <summary>
+    /// 添加缓存
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetCache(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetCache))) return services;
+
+        services.AddMemoryCache();
+
+        var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+        var redisConnectionString = config.GetConnectionString("RedisConnection");
+        if (string.IsNullOrEmpty(redisConnectionString)) throw new ConfigurationException("未配置Redis连接字符串");
+
+        services.AddSingleton<IDistributedCache>(new CSRedisCache(new CSRedisClient(redisConnectionString)));
+        services.AddSingleton<IXunetCache, XunetCache>();
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加对象映射
+
+    /// <summary>
+    /// 添加对象映射
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetMapper(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetMapper))) return services;
+
+        // 注册到所有引用的程序集
+        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+        services.AddAutoMapper(entryAssembly);
+        foreach (var assembly in entryAssembly.GetReferencedAssemblies())
+        {
+            services.AddAutoMapper(Assembly.Load(assembly));
+        }
+        services.AddScoped<IObjectMapper, ObjectMapper>();
 
         return services;
     }

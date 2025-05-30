@@ -3,12 +3,12 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Authorization;
+namespace Xunet.MiniApi.Middlewares.IEventHandlers;
 
 /// <summary>
-/// 自定义策略授权时的参数类型，这时没参数，所以是个空类型
+/// 事件处理器
 /// </summary>
-public class PermissionRequirement : IAuthorizationRequirement
+public interface IEventHandler
 {
 
 }
