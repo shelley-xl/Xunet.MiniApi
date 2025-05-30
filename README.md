@@ -37,24 +37,23 @@ PM> Install-Package Xunet.MiniApi
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAntiforgery();
-builder.Services.AddXunetHttpContextAccessor();
+builder.Services.AddXunetCache();
 builder.Services.AddXunetJsonOptions();
+builder.Services.AddXunetFluentValidation();
+builder.Services.AddXunetHttpContextAccessor();
 builder.Services.AddXunetHealthChecks();
 builder.Services.AddXunetSwagger();
 builder.Services.AddXunetSqliteStorage();
-builder.Services.AddXunetFluentValidation();
+builder.Services.AddXunetJwtAuth();
+builder.Services.AddXunetCors();
 builder.Services.AddXunetRateLimiter();
-builder.Services.AddXunetAuthentication<PermissionHandler>();
+builder.Services.AddXunetEventHandler();
+builder.Services.AddXunetAuthorizationHandler();
+builder.Services.AddXunetMapper();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
-app.UseAntiforgery();
-app.UseRateLimiter();
 app.UseXunetCustomException();
 app.UseXunetRequestHandler();
 app.UseXunetHttpContextAccessor();
@@ -62,6 +61,10 @@ app.UseXunetHealthChecks();
 app.UseXunetSwagger();
 app.UseXunetStorage();
 app.UseXunetAuthentication();
+app.UseXunetCors();
+app.UseRateLimiter();
+
+// Configure the MiniApi request pipeline.
 
 app.Run();
 ```
@@ -73,14 +76,21 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
     {
-        await Task.CompletedTask;
-
-        context.Succeed(requirement);
+        if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
+        {
+            // 已认证，鉴权
+            await Task.CompletedTask;
+            context.Succeed(requirement);
+        }
+        else
+        {
+            context.Fail();
+        }
     }
 }
 ```
 
-**appsettings.json**
+**appsettings.Development.json**
 
 ```json
 {
@@ -94,17 +104,23 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     "EndPoints": {
       "Http": {
         "Url": "http://0.0.0.0:8000"
+      },
+      "Http2": {
+        "Url": "http://0.0.0.0:8080",
+        "Protocols": "Http2"
       }
     }
   },
+  "CorsHosts": [],
   "ConnectionStrings": {
-    "DefaultConnection": "server=127.0.0.1;uid=root;pwd=root;database=miniapi;max pool size=8000; charset=utf8;"
+    "DefaultConnection": "server=127.0.0.1;uid=root;pwd=root;database=miniapi;max pool size=8000;Charset=utf8;SslMode=none;Allow User Variables=True;",
+    "RedisConnection": "127.0.0.1:6379"
   },
   "JwtConfig": {
     "ValidateIssuer": true,
-    "ValidIssuer": "cloudstorage",
+    "ValidIssuer": "miniapi",
     "ValidateIssuerSigningKey": true,
-    "SymmetricSecurityKey": "2aaa5f2eabcb4a519751bc4f009eaabe",
+    "SymmetricSecurityKey": "294c66d31f8c4ec0b243bb7479cc38e0",
     "ValidateAudience": true,
     "ValidAudience": "manager",
     "ValidateLifetime": true,
