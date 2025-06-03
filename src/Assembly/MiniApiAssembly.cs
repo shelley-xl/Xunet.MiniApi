@@ -34,6 +34,7 @@ global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.Json.Nodes;
+global using System.Net.Http.Json;
 global using AutoMapper;
 global using CSRedis;
 global using FluentValidation;
@@ -60,6 +61,9 @@ global using Xunet.MiniApi.Middlewares;
 global using Xunet.MiniApi.Middlewares.IEventHandlers;
 global using Xunet.MiniApi.SqlSugar;
 global using Xunet.MiniApi.Swagger;
+global using Xunet.MiniApi.Weixin;
+global using Xunet.MiniApi.Weixin.Dtos;
+global using Xunet.MiniApi.Weixin.Dtos.Requests;
 
 #pragma warning disable IDE0130
 

@@ -581,4 +581,22 @@ public static class IServiceCollectionExtension
     }
 
     #endregion
+
+    #region 添加微信客户端
+
+    /// <summary>
+    /// 添加微信客户端
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetWeixinClient(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetWeixinClient))) return services;
+
+        services.AddHttpClient<IWeixinService, WeixinService>();
+
+        return services;
+    }
+
+    #endregion
 }
