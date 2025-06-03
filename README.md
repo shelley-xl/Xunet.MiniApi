@@ -129,6 +129,27 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     "RefreshTokenAudience": "manager",
     "Expire": 2592000,
     "RefreshTokenExpire": 10080
+  },
+  "StorageOptions": [
+    {
+      "ConfigId": 0,
+      "ConnectionString": "DefaultConnection"
+    }
+  ],
+  "SwaggerOptions": {
+    "DocumentTitle": "测试接口服务",
+    "Endpoints": [
+      {
+        "EndpointName": "测试接口",
+        "Title": "测试标题",
+        "Description": "测试描述",
+        "Name": "test"
+      }
+    ]
   }
 }
 ```
+
+## 更新日志
+
+[CHANGELOG](CHANGELOG.md)
