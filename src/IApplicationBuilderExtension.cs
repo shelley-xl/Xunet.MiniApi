@@ -87,12 +87,6 @@ public static class IApplicationBuilderExtension
             app.UseSwagger();
             app.UseSwaggerUI(x =>
             {
-                x.RoutePrefix = string.Empty;
-                x.DocumentTitle = options == null ? "Minimal API 接口服务" : options.DocumentTitle;
-                x.ConfigObject.AdditionalItems["queryConfigEnabled"] = true;
-                x.DefaultModelsExpandDepth(-1);
-                x.ShowExtensions();
-                x.EnableValidator();
                 if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
                 {
                     options = app.Configuration.GetSection("SwaggerOptions").Get<SwaggerOptions?>();
@@ -105,6 +99,12 @@ public static class IApplicationBuilderExtension
                 {
                     x.SwaggerEndpoint($"/swagger/{endpoint.Name}/swagger.json", endpoint.EndpointName);
                 }
+                x.RoutePrefix = string.Empty;
+                x.DocumentTitle = options == null ? "Minimal API 接口服务" : options.DocumentTitle;
+                x.ConfigObject.AdditionalItems["queryConfigEnabled"] = true;
+                x.DefaultModelsExpandDepth(-1);
+                x.ShowExtensions();
+                x.EnableValidator();
             });
         }
 

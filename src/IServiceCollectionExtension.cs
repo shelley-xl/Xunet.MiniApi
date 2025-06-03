@@ -413,8 +413,6 @@ public static class IServiceCollectionExtension
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(x =>
         {
-            x.OrderActionsBy(x => x.GroupName);
-            x.OperationFilter<OperationFilter>();
             if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
             {
                 var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
@@ -451,6 +449,8 @@ public static class IServiceCollectionExtension
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.ApiKey,
             };
+            x.OrderActionsBy(x => x.GroupName);
+            x.OperationFilter<OperationFilter>();
             x.AddSecurityDefinition("Authorization", scheme);
             x.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
