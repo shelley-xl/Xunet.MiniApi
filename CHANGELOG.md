@@ -1,3 +1,9 @@
+## [1.0.4](https://github.com/shelley-xl/Xunet.MiniApi/commit/640500840758efc4fd182d73db69ba48ff0e195b) (2025-06-03)
+
+### Bug Fixes
+
+- 修复Swagger文档无法正常显示问题
+
 ## [1.0.3](https://github.com/shelley-xl/Xunet.MiniApi/commit/cf9b4d30151f9adbcf0c700035b0a1280ac3bd5c) (2025-06-03)
 
 ### Features
