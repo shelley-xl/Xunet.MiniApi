@@ -14,11 +14,11 @@ public class WeixinErrorDto
     /// 错误码
     /// </summary>
     [JsonPropertyName("errcode")]
-    public string? ErrCode { get; set; }
+    public int? ErrCode { get; set; } = 0;
 
     /// <summary>
     /// 错误消息
     /// </summary>
     [JsonPropertyName("errmsg")]
-    public string? ErrMsg { get; set; }
+    public string? ErrMsg { get; set; } = "ok";
 }

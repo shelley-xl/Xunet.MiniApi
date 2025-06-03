@@ -26,7 +26,7 @@ public class GetWeixinSnsUserInfoDto : WeixinErrorDto
     /// 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
     /// </summary>
     [JsonPropertyName("sex")]
-    public string? Sex { get; set; }
+    public int? Sex { get; set; }
 
     /// <summary>
     /// 用户个人资料填写的省份
@@ -56,7 +56,7 @@ public class GetWeixinSnsUserInfoDto : WeixinErrorDto
     /// 用户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
     /// </summary>
     [JsonPropertyName("privilege")]
-    public string? Privilege { get; set; }
+    public string[]? Privilege { get; set; }
 
     /// <summary>
     /// 只有在用户将公众号绑定到微信开放平台账号后，才会出现该字段。

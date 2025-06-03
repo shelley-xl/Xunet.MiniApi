@@ -14,5 +14,5 @@ public class SendTemplateMessageDto : WeixinErrorDto
     /// 消息ID
     /// </summary>
     [JsonPropertyName("msgid")]
-    public string? MsgId { get; set; }
+    public long? MsgId { get; set; }
 }

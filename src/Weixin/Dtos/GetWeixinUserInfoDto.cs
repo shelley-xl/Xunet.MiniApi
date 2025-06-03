@@ -14,7 +14,7 @@ public class GetWeixinUserInfoDto : WeixinErrorDto
     /// 用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息。
     /// </summary>
     [JsonPropertyName("subscribe")]
-    public string? Subscribe { get; set; }
+    public int? Subscribe { get; set; }
 
     /// <summary>
     /// 用户的标识，对当前公众号唯一
@@ -50,7 +50,7 @@ public class GetWeixinUserInfoDto : WeixinErrorDto
     /// 用户所在的分组ID（兼容旧的用户分组接口）
     /// </summary>
     [JsonPropertyName("groupid")]
-    public string? GroupId { get; set; }
+    public int? GroupId { get; set; }
 
     /// <summary>
     /// 用户被打上的标签ID列表
@@ -68,7 +68,7 @@ public class GetWeixinUserInfoDto : WeixinErrorDto
     /// 二维码扫码场景（开发者自定义）
     /// </summary>
     [JsonPropertyName("qr_scene")]
-    public string? QrScene { get; set; }
+    public int? QrScene { get; set; }
 
     /// <summary>
     /// 二维码扫码场景描述（开发者自定义）

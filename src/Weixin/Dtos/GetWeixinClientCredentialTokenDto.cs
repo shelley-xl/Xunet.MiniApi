@@ -20,5 +20,5 @@ public class GetWeixinClientCredentialTokenDto : WeixinErrorDto
     /// 凭证有效时间，单位：秒
     /// </summary>
     [JsonPropertyName("expires_in")]
-    public string? ExpiresIn { get; set; }
+    public int? ExpiresIn { get; set; }
 }

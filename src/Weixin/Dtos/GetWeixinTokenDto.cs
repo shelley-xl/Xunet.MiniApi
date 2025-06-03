@@ -20,7 +20,7 @@ public class GetWeixinTokenDto : WeixinErrorDto
     /// access_token接口调用凭证超时时间，单位（秒）
     /// </summary>
     [JsonPropertyName("expires_in")]
-    public string? ExpiresIn { get; set; }
+    public int? ExpiresIn { get; set; }
 
     /// <summary>
     /// 用户刷新access_token
@@ -44,7 +44,7 @@ public class GetWeixinTokenDto : WeixinErrorDto
     /// 是否为快照页模式虚拟账号，只有当用户是快照页模式虚拟账号时返回，值为1
     /// </summary>
     [JsonPropertyName("is_snapshotuser")]
-    public string? IsSnapshotUser { get; set; }
+    public int? IsSnapshotUser { get; set; }
 
     /// <summary>
     /// 用户统一标识（针对一个微信开放平台账号下的应用，同一用户的 unionid 是唯一的），只有当scope为"snsapi_userinfo"时返回
