@@ -95,14 +95,15 @@ public static class IApplicationBuilderExtension
                 x.EnableValidator();
                 if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
                 {
-                    x.SwaggerEndpoint("/swagger/v1/swagger.json", "接口文档");
-                }
-                else
-                {
-                    foreach (var endpoint in options.Endpoints)
+                    options = app.Configuration.GetSection("SwaggerOptions").Get<SwaggerOptions?>();
+                    if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
                     {
-                        x.SwaggerEndpoint($"/swagger/{endpoint.Name}/swagger.json", endpoint.EndpointName);
+                        x.SwaggerEndpoint("/swagger/v1/swagger.json", "接口文档");
                     }
+                }
+                foreach (var endpoint in options?.Endpoints ?? [])
+                {
+                    x.SwaggerEndpoint($"/swagger/{endpoint.Name}/swagger.json", endpoint.EndpointName);
                 }
             });
         }

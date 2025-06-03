@@ -288,7 +288,7 @@ public static class IServiceCollectionExtension
             opt.RequireHttpsMetadata = false;
             opt.TokenValidationParameters = JwtToken.CreateTokenValidationParameters(jwtConfig);
         });
-        
+
         return services;
     }
 
@@ -328,7 +328,7 @@ public static class IServiceCollectionExtension
     /// <param name="services"></param>
     /// <param name="grantTypes"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetOpenIddict(this IServiceCollection services, string[] grantTypes)
+    public static IServiceCollection AddXunetOpenIddict(this IServiceCollection services, string[]? grantTypes)
     {
         if (services.HasRegistered(nameof(AddXunetOpenIddict))) return services;
 
@@ -340,6 +340,10 @@ public static class IServiceCollectionExtension
         .AddClient(options =>
         {
             // 仅允许的授权类型
+            if (grantTypes == null || grantTypes.Length == 0)
+            {
+                grantTypes = config.GetSection("OpenIddictClientRegistration:GrantTypes").Get<string[]?>() ?? [];
+            }
             foreach (var grantType in grantTypes)
             {
                 options.AllowCustomFlow(grantType);
@@ -413,24 +417,26 @@ public static class IServiceCollectionExtension
             x.OperationFilter<OperationFilter>();
             if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
             {
-                x.SwaggerDoc("v1", new OpenApiInfo
+                var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+                options = config.GetSection("SwaggerOptions").Get<SwaggerOptions?>();
+                if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
                 {
-                    Title = "Minimal API 接口服务",
-                    Description = "Minimal API 接口服务",
-                    Version = $"v{Assembly.GetEntryAssembly()?.GetName().Version?.ToString()}",
-                });
-            }
-            else
-            {
-                foreach (var endpoint in options.Endpoints)
-                {
-                    x.SwaggerDoc(endpoint.Name, new OpenApiInfo
+                    x.SwaggerDoc("v1", new OpenApiInfo
                     {
-                        Title = endpoint.Title,
-                        Description = endpoint.Description,
+                        Title = "Minimal API 接口服务",
+                        Description = "Minimal API 接口服务",
                         Version = $"v{Assembly.GetEntryAssembly()?.GetName().Version?.ToString()}",
                     });
                 }
+            }
+            foreach (var endpoint in options?.Endpoints ?? [])
+            {
+                x.SwaggerDoc(endpoint.Name, new OpenApiInfo
+                {
+                    Title = endpoint.Title,
+                    Description = endpoint.Description,
+                    Version = $"v{Assembly.GetEntryAssembly()?.GetName().Version?.ToString()}",
+                });
             }
             var scheme = new OpenApiSecurityScheme()
             {

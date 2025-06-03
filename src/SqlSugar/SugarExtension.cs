@@ -14,28 +14,44 @@ internal static class SugarExtension
             var configs = new List<ConnectionConfig>();
             if (options == null || options.Length == 0)
             {
-                var connectionString = string.Empty;
                 if (dbType == DbType.Sqlite)
                 {
                     var dbVersion = "1.0.1.2";
                     var baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MiniApiAssembly.AssemblyName, dbVersion);
                     var dataDir = Path.Combine(baseDir, "data");
-                    connectionString = $"Data Source={dataDir}\\{MiniApiAssembly.EntryAssemblyName}.db;";
+                    options =
+                    [
+                        new()
+                        {
+                            ConfigId = DbType.Sqlite,
+                            ConnectionString = $"Data Source={dataDir}\\{MiniApiAssembly.EntryAssemblyName}.db;",
+                        }
+                    ];
                 }
                 else
                 {
                     var config = provider.GetRequiredService<IConfiguration>();
-                    connectionString = config.GetConnectionString("DefaultConnection");
-                    if (string.IsNullOrEmpty(connectionString)) throw new ConfigurationException("未配置默认连接字符串");
-                }
-                options =
-                [
-                    new()
+                    var ops = config.GetSection("StorageOptions").Get<StorageOptions[]?>()?.Select(x => new StorageOptions
                     {
-                        ConfigId = (int)dbType,
-                        ConnectionString = connectionString,
+                        ConfigId = x.ConfigId,
+                        ConnectionString = config.GetConnectionString(x.ConnectionString!)
+                    });
+                    options = ops?.ToArray();
+                    if (options == null || options.Length == 0)
+                    {
+                        var connectionString = config.GetConnectionString("DefaultConnection");
+                        if (string.IsNullOrEmpty(connectionString)) throw new ConfigurationException("未配置默认连接字符串");
+                        options =
+                        [
+                            new()
+                            {
+                                ConfigId = (int)dbType,
+                                ConnectionString = connectionString,
+                            }
+                        ];
                     }
-                ];
+                }
+
             }
 
             foreach (var item in options)
