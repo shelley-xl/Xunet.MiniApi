@@ -1,3 +1,9 @@
+## [1.0.6](https://github.com/shelley-xl/Xunet.MiniApi/commit/8cafbccea244201244cc3b29d55eb264582195e4) (2025-06-03)
+
+### Features
+
+- 新增微信公众号API客户端
+
 ## [1.0.5](https://github.com/shelley-xl/Xunet.MiniApi/commit/e2b6df5ed9a3e4bccda539b560c754995435678a) (2025-06-03)
 
 ### Bug Fixes
