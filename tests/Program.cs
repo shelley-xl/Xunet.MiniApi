@@ -1,6 +1,6 @@
 // THIS FILE IS PART OF Xunet.MiniApi PROJECT
-// THE Xunet.WinFormium PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
-// COPYRIGHTS (C) ÐìÀ´ ALL RIGHTS RESERVED.
+// THE Xunet.MiniApi PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
+// COPYRIGHTS (C) ï¿½ï¿½ï¿½ï¿½ ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
 var builder = WebApplication.CreateBuilder(args);
