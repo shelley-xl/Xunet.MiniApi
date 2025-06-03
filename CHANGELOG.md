@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/shelley-xl/Xunet.MiniApi/commit/cf9b4d30151f9adbcf0c700035b0a1280ac3bd5c) (2025-06-03)
+
+### Features
+
+- 数据存储、Swagger支持配置文件读取
+- 测试项目优化
+
 ## [1.0.2](https://github.com/shelley-xl/Xunet.MiniApi/commit/fe80335269bf78fa1da822d57452367ae60eea39) (2025-05-30)
 
 ### Features
