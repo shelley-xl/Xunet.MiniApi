@@ -9,7 +9,7 @@ internal static partial class WebApplicationExtension
 {
     internal static WebApplication UseUserMiniApi(this WebApplication app)
     {
-        var group = app.MapGroup("/api/user").WithTags("个人中心");
+        var group = app.MapGroup("/api/user").WithGroupName("test").WithTags("个人中心");
 
         group.MapGet("/info", GetUserInfoAsync);
 
