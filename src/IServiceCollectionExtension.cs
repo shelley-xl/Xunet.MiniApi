@@ -328,7 +328,7 @@ public static class IServiceCollectionExtension
     /// <param name="services"></param>
     /// <param name="grantTypes"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetOpenIddict(this IServiceCollection services, string[]? grantTypes)
+    public static IServiceCollection AddXunetOpenIddict(this IServiceCollection services, string[]? grantTypes = null)
     {
         if (services.HasRegistered(nameof(AddXunetOpenIddict))) return services;
 
