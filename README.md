@@ -130,12 +130,6 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     "Expire": 2592000,
     "RefreshTokenExpire": 10080
   },
-  "StorageOptions": [
-    {
-      "ConfigId": 0,
-      "ConnectionString": "DefaultConnection"
-    }
-  ],
   "SwaggerOptions": {
     "DocumentTitle": "测试接口服务",
     "Endpoints": [
