@@ -1,3 +1,14 @@
+## [1.0.9](https://github.com/shelley-xl/Xunet.MiniApi/commit/4d8ec4715e24870cda0019d259033ecd7c65f4d2) (2025-06-04)
+
+### Features
+
+- 查询参数特性优化
+- 参数签名验证中间件
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.8](https://github.com/shelley-xl/Xunet.MiniApi/commit/e3a95a977da7dbe489de4eacd0b923d7b91b61ef) (2025-06-04)
 
 ### Features
