@@ -19,4 +19,9 @@ public class StorageOptions
     /// 连接字符串
     /// </summary>
     public string? ConnectionString { get; set; }
+
+    /// <summary>
+    /// 连接字符串（只读实例）
+    /// </summary>
+    public List<SlaveConnectionConfig>? SlaveConnectionString { get; set; }
 }

@@ -102,7 +102,9 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetSqliteStorage))) return services;
 
-        services.AddSqlSugarClient(options, DbType.Sqlite);
+        var useCacheService = services.HasRegistered(nameof(AddXunetCache));
+
+        services.AddSqlSugarClient(options, DbType.Sqlite, useCacheService);
 
         return services;
     }
@@ -121,7 +123,9 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetMySqlStorage))) return services;
 
-        services.AddSqlSugarClient(options, DbType.MySql);
+        var useCacheService = services.HasRegistered(nameof(AddXunetCache));
+
+        services.AddSqlSugarClient(options, DbType.MySql, useCacheService);
 
         return services;
     }
@@ -140,7 +144,9 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetSqlServerStorage))) return services;
 
-        services.AddSqlSugarClient(options, DbType.SqlServer);
+        var useCacheService = services.HasRegistered(nameof(AddXunetCache));
+
+        services.AddSqlSugarClient(options, DbType.SqlServer, useCacheService);
 
         return services;
     }
