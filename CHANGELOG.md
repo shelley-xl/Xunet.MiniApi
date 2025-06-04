@@ -1,3 +1,15 @@
+## [1.0.8](https://github.com/shelley-xl/Xunet.MiniApi/commit/e3a95a977da7dbe489de4eacd0b923d7b91b61ef) (2025-06-04)
+
+### Features
+
+- 数据查询新增分布式缓存支持
+- 数据存储新增读写分离
+- 数据存储优化
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.7](https://github.com/shelley-xl/Xunet.MiniApi/commit/c1b051bc75ffa1cbbb08bf2956322fc3db8c1715) (2025-06-03)
 
 ### Bug Fixes
