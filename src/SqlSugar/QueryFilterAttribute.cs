@@ -42,11 +42,11 @@ public class QueryFilterAttribute : Attribute
     /// <summary>
     /// 构造函数
     /// </summary>
-    /// <param name="fieldName"></param>
-    /// <param name="fieldValue"></param>
+    /// <param name="fieldName">字段名</param>
+    /// <param name="fieldValue">字段值</param>
     /// <param name="conditionType"></param>
     /// <param name="whereType"></param>
-    public QueryFilterAttribute(string? fieldName, string? fieldValue, ConditionalType conditionType, WhereType whereType)
+    public QueryFilterAttribute(string? fieldName = null, string? fieldValue = null, ConditionalType conditionType = ConditionalType.Like, WhereType whereType = WhereType.And)
     {
         FieldName = fieldName;
         ConditionType = conditionType;

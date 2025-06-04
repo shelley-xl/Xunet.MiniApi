@@ -189,4 +189,18 @@ public static class IApplicationBuilderExtension
     }
 
     #endregion
+
+    #region 使用参数签名中间件
+
+    /// <summary>
+    /// 使用参数签名中间件
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IApplicationBuilder UseSignValidatorMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<SignValidatorMiddleware>();
+    }
+
+    #endregion
 }
