@@ -17,10 +17,11 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// 生成缓存Key
     /// </summary>
     /// <param name="idKey">idKey</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    protected string BuildKey(string idKey)
+    string BuildKey(string idKey, string? prefix = null)
     {
-        return $"{GetType().FullName}_{idKey}";
+        return prefix == null ? $"{GetType().FullName}_{idKey}" : prefix.Trim() == "" ? idKey : $"{prefix}_{idKey}";
     }
 
     /// <summary>
@@ -28,9 +29,10 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// </summary>
     /// <param name="key">缓存Key</param>
     /// <param name="value">值</param>
-    public void SetCache(string key, object value)
+    /// <param name="prefix">指定前缀</param>
+    public void SetCache(string key, object value, string? prefix = null)
     {
-        string cacheKey = BuildKey(key);
+        string cacheKey = BuildKey(key, prefix);
         _cache.SetString(cacheKey, JsonSerializer.Serialize(value));
     }
 
@@ -39,10 +41,11 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// </summary>
     /// <param name="key">缓存Key</param>
     /// <param name="value">值</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public async Task SetCacheAsync(string key, object value)
+    public async Task SetCacheAsync(string key, object value, string? prefix = null)
     {
-        string cacheKey = BuildKey(key);
+        string cacheKey = BuildKey(key, prefix);
         await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(value));
     }
 
@@ -53,9 +56,10 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// <param name="key">缓存Key</param>
     /// <param name="value">值</param>
     /// <param name="timeout">过期时间间隔</param>
-    public void SetCache(string key, object value, TimeSpan timeout)
+    /// <param name="prefix">指定前缀</param>
+    public void SetCache(string key, object value, TimeSpan timeout, string? prefix = null)
     {
-        string cacheKey = BuildKey(key);
+        string cacheKey = BuildKey(key, prefix);
         _cache.SetString(cacheKey, JsonSerializer.Serialize(value), new DistributedCacheEntryOptions
         {
             AbsoluteExpiration = new DateTimeOffset(DateTime.Now + timeout)
@@ -69,10 +73,11 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// <param name="key">缓存Key</param>
     /// <param name="value">值</param>
     /// <param name="timeout">过期时间间隔</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public async Task SetCacheAsync(string key, object value, TimeSpan timeout)
+    public async Task SetCacheAsync(string key, object value, TimeSpan timeout, string? prefix = null)
     {
-        string cacheKey = BuildKey(key);
+        string cacheKey = BuildKey(key, prefix);
         await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(value), new DistributedCacheEntryOptions
         {
             AbsoluteExpiration = new DateTimeOffset(DateTime.Now + timeout)
@@ -86,10 +91,11 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// <param name="key">缓存Key</param>
     /// <param name="value">值</param>
     /// <param name="timeout">过期时间间隔</param>
-    /// <param name="expireType">过期类型</param> 
-    public void SetCache(string key, object value, TimeSpan timeout, ExpireType expireType)
+    /// <param name="expireType">过期类型</param>
+    /// <param name="prefix">指定前缀</param>
+    public void SetCache(string key, object value, TimeSpan timeout, ExpireType expireType, string? prefix = null)
     {
-        string cacheKey = BuildKey(key);
+        string cacheKey = BuildKey(key, prefix);
         if (expireType == ExpireType.Absolute)
         {
             _cache.SetString(cacheKey, JsonSerializer.Serialize(value), new DistributedCacheEntryOptions
@@ -113,11 +119,12 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// <param name="key">缓存Key</param>
     /// <param name="value">值</param>
     /// <param name="timeout">过期时间间隔</param>
-    /// <param name="expireType">过期类型</param>  
+    /// <param name="expireType">过期类型</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public async Task SetCacheAsync(string key, object value, TimeSpan timeout, ExpireType expireType)
+    public async Task SetCacheAsync(string key, object value, TimeSpan timeout, ExpireType expireType, string? prefix = null)
     {
-        string cacheKey = BuildKey(key);
+        string cacheKey = BuildKey(key, prefix);
         if (expireType == ExpireType.Absolute)
         {
             await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(value), new DistributedCacheEntryOptions
@@ -138,11 +145,12 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// 获取缓存
     /// </summary>
     /// <param name="key">缓存Key</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public string GetCache(string key)
+    public string GetCache(string key, string? prefix = null)
     {
         if (string.IsNullOrEmpty(key)) return "";
-        string cacheKey = BuildKey(key);
+        string cacheKey = BuildKey(key, prefix);
         var cache = _cache.GetString(cacheKey)!;
         return cache;
     }
@@ -151,11 +159,12 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// 获取缓存（异步）
     /// </summary>
     /// <param name="key">缓存Key</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public async Task<string> GetCacheAsync(string key)
+    public async Task<string> GetCacheAsync(string key, string? prefix = null)
     {
         if (string.IsNullOrEmpty(key)) return "";
-        string cacheKey = BuildKey(key);
+        string cacheKey = BuildKey(key, prefix);
         var cache = await _cache.GetStringAsync(cacheKey);
         return cache!;
     }
@@ -165,10 +174,11 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// </summary>
     /// <typeparam name="T">泛型</typeparam>
     /// <param name="key">缓存Key</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public T GetCache<T>(string key)
+    public T GetCache<T>(string key, string? prefix = null)
     {
-        var cache = GetCache(key);
+        var cache = GetCache(key, prefix);
         if (!string.IsNullOrEmpty(cache))
         {
             return JsonSerializer.Deserialize<T>(cache)!;
@@ -181,10 +191,11 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// </summary>
     /// <typeparam name="T">泛型</typeparam>
     /// <param name="key">缓存Key</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public async Task<T> GetCacheAsync<T>(string key)
+    public async Task<T> GetCacheAsync<T>(string key, string? prefix = null)
     {
-        var cache = await GetCacheAsync(key);
+        var cache = await GetCacheAsync(key, prefix);
         if (!string.IsNullOrEmpty(cache))
         {
             return JsonSerializer.Deserialize<T>(cache)!;
@@ -196,37 +207,41 @@ public class XunetCache(IDistributedCache cache) : IXunetCache
     /// 清除缓存
     /// </summary>
     /// <param name="key">缓存Key</param>
-    public void RemoveCache(string key)
+    /// <param name="prefix">指定前缀</param>
+    public void RemoveCache(string key, string? prefix = null)
     {
-        _cache.Remove(BuildKey(key));
+        _cache.Remove(BuildKey(key, prefix));
     }
 
     /// <summary>
     /// 清除缓存（异步）
     /// </summary>
     /// <param name="key">缓存Key</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public async Task RemoveCacheAsync(string key)
+    public async Task RemoveCacheAsync(string key, string? prefix = null)
     {
-        await _cache.RemoveAsync(BuildKey(key));
+        await _cache.RemoveAsync(BuildKey(key, prefix));
     }
 
     /// <summary>
     /// 刷新缓存
     /// </summary>
     /// <param name="key">缓存Key</param>
-    public void RefreshCache(string key)
+    /// <param name="prefix">指定前缀</param>
+    public void RefreshCache(string key, string? prefix = null)
     {
-        _cache.Refresh(BuildKey(key));
+        _cache.Refresh(BuildKey(key, prefix));
     }
 
     /// <summary>
     /// 刷新缓存（异步）
     /// </summary>
     /// <param name="key">缓存Key</param>
+    /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    public async Task RefreshCacheAsync(string key)
+    public async Task RefreshCacheAsync(string key, string? prefix = null)
     {
-        await _cache.RefreshAsync(BuildKey(key));
+        await _cache.RefreshAsync(BuildKey(key, prefix));
     }
 }
