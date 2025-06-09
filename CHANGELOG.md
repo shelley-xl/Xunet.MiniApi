@@ -1,3 +1,9 @@
+## [1.0.10](https://github.com/shelley-xl/Xunet.MiniApi/commit/9c577c340d396c4b0bc302afcfcfb191bca7d620) (2025-06-09)
+
+### Features
+
+- 分布式缓存优化：key支持自定义前缀
+
 ## [1.0.9](https://github.com/shelley-xl/Xunet.MiniApi/commit/4d8ec4715e24870cda0019d259033ecd7c65f4d2) (2025-06-04)
 
 ### Features
