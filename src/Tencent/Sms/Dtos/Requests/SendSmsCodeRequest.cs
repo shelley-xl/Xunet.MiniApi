@@ -3,20 +3,15 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Weixin.Dtos.Requests;
+namespace Xunet.MiniApi.Tencent.Sms.Dtos.Requests;
 
 /// <summary>
-/// 获取微信客户端凭证
+/// 发送短信验证码请求
 /// </summary>
-public class GetWeixinClientCredentialTokenRequest
+public class SendSmsCodeRequest
 {
     /// <summary>
-    /// AppId
+    /// 手机号
     /// </summary>
-    public string? AppId { get; set; }
-
-    /// <summary>
-    /// AppSecret
-    /// </summary>
-    public string? AppSecret { get; set; }
+    public string[] PhoneNumber { get; set; } = [];
 }

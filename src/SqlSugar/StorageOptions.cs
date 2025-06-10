@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Data;
+namespace Xunet.MiniApi.SqlSugar;
 
 /// <summary>
 /// 存储选项

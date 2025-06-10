@@ -6,8 +6,8 @@
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Http.Json;
 global using Microsoft.AspNetCore.Http.Features;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
@@ -43,13 +43,19 @@ global using SqlSugar;
 global using Microsoft.IdentityModel.Tokens;
 global using OpenIddict.Client;
 global using OpenIddict.Validation.AspNetCore;
+global using TencentCloud.Common;
+global using TencentCloud.Common.Profile;
+global using TencentCloud.Sms.V20210111;
+global using TencentCloud.Sms.V20210111.Models;
+global using Xunet.MiniApi.Aliyun;
+global using Xunet.MiniApi.Aliyun.Oss;
+global using Xunet.MiniApi.Aliyun.Sms;
 global using Xunet.MiniApi.Attributes;
 global using Xunet.MiniApi.AutoMapper;
 global using Xunet.MiniApi.Authentication;
 global using Xunet.MiniApi.Authorization;
 global using Xunet.MiniApi.Caches;
 global using Xunet.MiniApi.Constants;
-global using Xunet.MiniApi.Data;
 global using Xunet.MiniApi.Dtos;
 global using Xunet.MiniApi.Dtos.Requests;
 global using Xunet.MiniApi.Enums;
@@ -61,9 +67,14 @@ global using Xunet.MiniApi.Middlewares;
 global using Xunet.MiniApi.Middlewares.IEventHandlers;
 global using Xunet.MiniApi.SqlSugar;
 global using Xunet.MiniApi.Swagger;
-global using Xunet.MiniApi.Weixin;
-global using Xunet.MiniApi.Weixin.Dtos;
-global using Xunet.MiniApi.Weixin.Dtos.Requests;
+global using Xunet.MiniApi.Tencent;
+global using Xunet.MiniApi.Tencent.Sms;
+global using Xunet.MiniApi.Tencent.Sms.Dtos;
+global using Xunet.MiniApi.Tencent.Sms.Dtos.Requests;
+global using Xunet.MiniApi.Tencent.Cos;
+global using Xunet.MiniApi.Tencent.WeixinMp;
+global using Xunet.MiniApi.Tencent.WeixinMp.Dtos;
+global using Xunet.MiniApi.Tencent.WeixinMp.Dtos.Requests;
 
 #pragma warning disable IDE0130
 

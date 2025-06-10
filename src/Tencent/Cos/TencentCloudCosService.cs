@@ -3,16 +3,12 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Weixin.Dtos;
+namespace Xunet.MiniApi.Tencent.Cos;
 
 /// <summary>
-/// 发送模板消息返回
+/// 腾讯云对象存储服务
 /// </summary>
-public class SendTemplateMessageDto : WeixinErrorDto
+internal class TencentCloudCosService : ITencentCloudCosService
 {
-    /// <summary>
-    /// 消息ID
-    /// </summary>
-    [JsonPropertyName("msgid")]
-    public long? MsgId { get; set; }
+
 }

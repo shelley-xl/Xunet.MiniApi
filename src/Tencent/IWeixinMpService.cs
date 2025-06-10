@@ -3,12 +3,12 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Weixin;
+namespace Xunet.MiniApi.Tencent;
 
 /// <summary>
-/// 微信服务接口
+/// 微信公众号服务
 /// </summary>
-public interface IWeixinService
+public interface IWeixinMpService
 {
     /// <summary>
     /// 网页授权
@@ -27,9 +27,8 @@ public interface IWeixinService
     /// <summary>
     /// 获取微信客户端凭证
     /// </summary>
-    /// <param name="request">获取微信客户端凭证请求</param>
     /// <returns></returns>
-    Task<GetWeixinClientCredentialTokenDto> GetWeixinClientCredentialTokenAsync(GetWeixinClientCredentialTokenRequest request);
+    Task<GetWeixinClientCredentialTokenDto> GetWeixinClientCredentialTokenAsync();
 
     /// <summary>
     /// 获取用户信息

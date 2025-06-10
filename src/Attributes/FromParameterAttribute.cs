@@ -9,7 +9,7 @@ namespace Xunet.MiniApi.Attributes;
 /// 查询参数特性
 /// </summary>
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
-public class FromParameterAttribute : FromQueryAttribute
+public class FromParameterAttribute : Microsoft.AspNetCore.Mvc.FromQueryAttribute
 {
     /// <summary>
     /// 构造函数

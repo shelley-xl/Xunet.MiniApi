@@ -139,7 +139,7 @@ public static class IApplicationBuilderExtension
 
         static bool where(Type x)
         {
-            return x.BaseType == typeof(SugarEntity);
+            return x.BaseType == typeof(SugarEntity) && x.GetCustomAttribute<IgnoreSugarEntity>() == null;
         }
 
         return app;

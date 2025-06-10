@@ -3,23 +3,13 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Weixin.Dtos.Requests;
+namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos.Requests;
 
 /// <summary>
 /// 网页授权请求
 /// </summary>
 public class GetWeixinTokenRequest
 {
-    /// <summary>
-    /// AppId
-    /// </summary>
-    public string? AppId { get; set; }
-
-    /// <summary>
-    /// AppSecret
-    /// </summary>
-    public string? AppSecret { get; set; }
-
     /// <summary>
     /// 授权码
     /// </summary>

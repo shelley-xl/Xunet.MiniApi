@@ -3,23 +3,26 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Weixin;
+namespace Xunet.MiniApi.Tencent.WeixinMp;
 
 /// <summary>
 /// 微信服务实现
 /// </summary>
-public class WeixinService : IWeixinService
+internal class WeixinMpService : IWeixinMpService
 {
     readonly HttpClient _client;
+    readonly IConfiguration _config;
 
     /// <summary>
     /// 构造函数
     /// </summary>
     /// <param name="client"></param>
-    public WeixinService(HttpClient client)
+    /// <param name="config"></param>
+    public WeixinMpService(HttpClient client, IConfiguration config)
     {
         _client = client;
         _client.BaseAddress = new Uri("https://api.weixin.qq.com");
+        _config = config;
     }
 
     /// <summary>
@@ -29,7 +32,10 @@ public class WeixinService : IWeixinService
     /// <returns></returns>
     public async Task<GetWeixinTokenDto> GetWeixinTokenAsync(GetWeixinTokenRequest request)
     {
-        var response = await _client.GetAsync($"/sns/oauth2/access_token?appid={request.AppId}&secret={request.AppSecret}&code={request.Code}&grant_type=authorization_code");
+        var appId = _config["WeixinMpSettings:AppId"];
+        var appSecret = _config["WeixinMpSettings:AppSecret"];
+
+        var response = await _client.GetAsync($"/sns/oauth2/access_token?appid={appId}&secret={appSecret}&code={request.Code}&grant_type=authorization_code");
 
         response.EnsureSuccessStatusCode();
 
@@ -57,11 +63,13 @@ public class WeixinService : IWeixinService
     /// <summary>
     /// 获取微信客户端凭证
     /// </summary>
-    /// <param name="request">获取微信客户端凭证请求</param>
     /// <returns></returns>
-    public async Task<GetWeixinClientCredentialTokenDto> GetWeixinClientCredentialTokenAsync(GetWeixinClientCredentialTokenRequest request)
+    public async Task<GetWeixinClientCredentialTokenDto> GetWeixinClientCredentialTokenAsync()
     {
-        var response = await _client.GetAsync($"/cgi-bin/token?grant_type=client_credential&appid={request.AppId}&secret={request.AppSecret}");
+        var appId = _config["WeixinMpSettings:AppId"];
+        var appSecret = _config["WeixinMpSettings:AppSecret"];
+
+        var response = await _client.GetAsync($"/cgi-bin/token?grant_type=client_credential&appid={appId}&secret={appSecret}");
 
         response.EnsureSuccessStatusCode();
 

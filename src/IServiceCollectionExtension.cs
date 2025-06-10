@@ -46,26 +46,29 @@ public static class IServiceCollectionExtension
     /// 添加Json配置
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetJsonOptions(this IServiceCollection services)
+    public static IServiceCollection AddXunetJsonOptions(this IServiceCollection services, Action<JsonOptions>? options = null)
     {
         if (services.HasRegistered(nameof(AddXunetJsonOptions))) return services;
 
-        services.ConfigureHttpJsonOptions(options =>
+        options ??= x =>
         {
             // 不区分大小写
-            options.SerializerOptions.PropertyNameCaseInsensitive = true;
+            x.SerializerOptions.PropertyNameCaseInsensitive = true;
             // 忽略循环引用
-            options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            x.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             // 使用小驼峰命名
-            options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            x.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             // 不使用 Unicode 编码
-            options.SerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+            x.SerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
             // 使用缩进格式
-            options.SerializerOptions.WriteIndented = true;
+            x.SerializerOptions.WriteIndented = true;
             // 自定义时间格式
-            options.SerializerOptions.Converters.Add(new DateTimeJsonConverter());
-        });
+            x.SerializerOptions.Converters.Add(new DateTimeJsonConverter());
+        };
+
+        services.ConfigureHttpJsonOptions(options);
 
         return services;
     }
@@ -588,18 +591,90 @@ public static class IServiceCollectionExtension
 
     #endregion
 
-    #region 添加微信客户端
+    #region 添加阿里云短信服务
 
     /// <summary>
-    /// 添加微信客户端
+    /// 添加阿里云短信服务
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetWeixinClient(this IServiceCollection services)
+    public static IServiceCollection AddXunetAliyunSmsService(this IServiceCollection services)
     {
-        if (services.HasRegistered(nameof(AddXunetWeixinClient))) return services;
+        if (services.HasRegistered(nameof(AddXunetAliyunSmsService))) return services;
 
-        services.AddHttpClient<IWeixinService, WeixinService>();
+        services.AddSingleton<IAliyunSmsService, AliyunSmsService>();
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加阿里云对象存储服务
+
+    /// <summary>
+    /// 添加阿里云对象存储服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetAliyunOssService(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetAliyunOssService))) return services;
+
+        services.AddSingleton<IAliyunOssService, AliyunOssService>();
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加腾讯云短信服务
+
+    /// <summary>
+    /// 添加腾讯云短信服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetTencentCloudSmsService(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetTencentCloudSmsService))) return services;
+
+        services.AddSingleton<ITencentCloudSmsService, TencentCloudSmsService>();
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加腾讯云对象存储服务
+
+    /// <summary>
+    /// 添加腾讯云对象存储服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetTencentCloudCosService(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetTencentCloudCosService))) return services;
+
+        services.AddSingleton<ITencentCloudCosService, TencentCloudCosService>();
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加微信公众号服务
+
+    /// <summary>
+    /// 添加微信公众号服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetWeixinMpService(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetWeixinMpService))) return services;
+
+        services.AddHttpClient<IWeixinMpService, WeixinMpService>();
 
         return services;
     }

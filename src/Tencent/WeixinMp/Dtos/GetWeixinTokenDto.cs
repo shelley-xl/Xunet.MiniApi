@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Weixin.Dtos;
+namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos;
 
 /// <summary>
 /// 网页授权返回

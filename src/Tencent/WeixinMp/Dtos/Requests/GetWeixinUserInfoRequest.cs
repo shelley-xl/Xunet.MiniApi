@@ -3,12 +3,12 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Weixin.Dtos.Requests;
+namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos.Requests;
 
 /// <summary>
-/// 获取用户信息请求（scope为snsapi_userinfo）
+/// 获取用户信息请求
 /// </summary>
-public class GetWeixinSnsUserInfoRequest
+public class GetWeixinUserInfoRequest
 {
     /// <summary>
     /// access_token
