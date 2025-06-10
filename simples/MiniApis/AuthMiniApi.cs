@@ -49,7 +49,7 @@ internal static partial class WebApplicationExtension
     {
         var entity = mapper.Map<Accounts>(request);
 
-        entity.Password = entity.Password!.ToMD5Encrypt();
+        entity.Password = entity.Password?.ToMD5Encrypt();
 
         await db.Insertable(entity).ExecuteCommandAsync();
 
