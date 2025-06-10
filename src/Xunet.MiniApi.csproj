@@ -8,7 +8,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>latest</LangVersion>
 		<!-- version numbers will be updated by build -->
-		<Version>1.0.10</Version>
+		<Version>1.0.11</Version>
 		<TotalDays>$([System.DateTime]::Now.Date.Subtract($([System.DateTime]::Parse($([System.String]::Format("{0}-4-13",2025))))).TotalDays)</TotalDays>
 		<AssemblyVersion>$(Version).$(TotalDays)</AssemblyVersion>
 		<FileVersion>$(Version).$(TotalDays)</FileVersion>
@@ -39,6 +39,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
 		<PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.14.1" />
+		<PackageReference Include="TencentCloudSDK" Version="3.0.1238" />
+		<PackageReference Include="Tencent.QCloud.Cos.Sdk" Version="5.4.43" />
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Caching.CSRedis" Version="3.8.800" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
