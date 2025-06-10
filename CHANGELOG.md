@@ -1,3 +1,17 @@
+## [1.0.11](https://github.com/shelley-xl/Xunet.MiniApi/commit/19ac86cbe34554d7e7bd1ad4e72f91d1b687de5e) (2025-06-10)
+
+### Features
+
+- HttpJson配置支持定制化
+- 新增IgnoreSugarEntity特性，增加CodeFirst灵活性
+- 新增阿里云短信服务、对象存储服务接口
+- 新增腾讯云短信服务、对象存储服务接口
+
+### Bug Fixes
+
+- 修复已知问题
+- 微信公众号服务优化
+
 ## [1.0.10](https://github.com/shelley-xl/Xunet.MiniApi/commit/9c577c340d396c4b0bc302afcfcfb191bca7d620) (2025-06-09)
 
 ### Features
