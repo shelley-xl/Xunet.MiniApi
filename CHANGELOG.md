@@ -1,3 +1,9 @@
+## [1.0.12](https://github.com/shelley-xl/Xunet.MiniApi/commit/0d63f2c24e755388c4e4b733fb6f6d2f69ebb0df) (2025-06-12)
+
+### Features
+
+- 阿里云对象存储服务完善
+
 ## [1.0.11](https://github.com/shelley-xl/Xunet.MiniApi/commit/19ac86cbe34554d7e7bd1ad4e72f91d1b687de5e) (2025-06-10)
 
 ### Features
