@@ -8,7 +8,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>latest</LangVersion>
 		<!-- version numbers will be updated by build -->
-		<Version>1.0.11</Version>
+		<Version>1.0.12</Version>
 		<TotalDays>$([System.DateTime]::Now.Date.Subtract($([System.DateTime]::Parse($([System.String]::Format("{0}-4-13",2025))))).TotalDays)</TotalDays>
 		<AssemblyVersion>$(Version).$(TotalDays)</AssemblyVersion>
 		<FileVersion>$(Version).$(TotalDays)</FileVersion>
@@ -46,6 +46,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
 		<PackageReference Include="SqlSugarCore" Version="5.1.4.169" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+		<PackageReference Include="FluentScheduler" Version="5.5.1" />
 		<PackageReference Include="OpenIddict.AspNetCore" Version="6.3.0" />
 	</ItemGroup>
 
