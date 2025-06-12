@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Tests.Entities.Dtos;
+namespace Xunet.MiniApi.Simples.Entities.Dtos;
 
 /// <summary>
 /// 用户信息

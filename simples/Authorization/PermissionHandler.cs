@@ -1,4 +1,4 @@
-﻿namespace Xunet.MiniApi.Tests.Authorization;
+﻿namespace Xunet.MiniApi.Simples.Authorization;
 
 /// <summary>
 /// 权限处理

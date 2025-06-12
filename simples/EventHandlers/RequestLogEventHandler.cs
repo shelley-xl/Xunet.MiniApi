@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Tests.EventHandlers;
+namespace Xunet.MiniApi.Simples.EventHandlers;
 
 /// <summary>
 /// 自定义请求日志事件处理器

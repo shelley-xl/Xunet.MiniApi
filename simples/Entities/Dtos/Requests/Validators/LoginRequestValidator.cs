@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Tests.Entities.Dtos.Requests.Validators;
+namespace Xunet.MiniApi.Simples.Entities.Dtos.Requests.Validators;
 
 /// <summary>
 /// 登录请求验证器

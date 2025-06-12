@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Tests.MiniApis;
+namespace Xunet.MiniApi.Simples.MiniApis;
 
 internal static partial class WebApplicationExtension
 {
@@ -22,12 +22,14 @@ internal static partial class WebApplicationExtension
     [EndpointSummary("获取用户信息")]
     static async Task<IResult> GetUserInfoAsync()
     {
+        await Task.CompletedTask;
+
         var dto = new UserDto
         {
             Id = XunetHttpContext.Current?.User.FindFirst("id")?.Value,
             UserName = XunetHttpContext.Current?.User.FindFirst("username")?.Value,
         };
 
-        return Results.Ok(await Task.FromResult(dto));
+        return XunetResults.Ok(dto);
     }
 }

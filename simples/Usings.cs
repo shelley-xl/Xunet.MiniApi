@@ -18,13 +18,13 @@ global using Xunet.MiniApi.Constants;
 global using Xunet.MiniApi.Extensions;
 global using Xunet.MiniApi.Middlewares.IEventHandlers;
 global using Xunet.MiniApi.SqlSugar;
-global using Xunet.MiniApi.Tests.Entities;
 global using Xunet.MiniApi.Http;
-global using Xunet.MiniApi.Tests.Entities.Dtos;
-global using Xunet.MiniApi.Tests.Entities.Dtos.Requests;
-global using Xunet.MiniApi.Tests.MiniApis;
+global using Xunet.MiniApi.Simples.Entities;
+global using Xunet.MiniApi.Simples.Entities.Dtos;
+global using Xunet.MiniApi.Simples.Entities.Dtos.Requests;
+global using Xunet.MiniApi.Simples.MiniApis;
 
-namespace Xunet.MiniApi.Tests;
+namespace Xunet.MiniApi.Simples;
 
 /// <summary>
 /// 全局引用
