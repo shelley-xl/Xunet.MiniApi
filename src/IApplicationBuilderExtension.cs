@@ -82,31 +82,30 @@ public static class IApplicationBuilderExtension
     /// <returns></returns>
     public static WebApplication UseXunetSwagger(this WebApplication app, SwaggerOptions? options = null)
     {
-        if (!app.Environment.IsProduction())
+        if (app.Environment.IsProduction()) return app;
+
+        app.UseSwagger();
+        app.UseSwaggerUI(x =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(x =>
+            if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
             {
+                options = app.Configuration.GetSection("SwaggerOptions").Get<SwaggerOptions?>();
                 if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
                 {
-                    options = app.Configuration.GetSection("SwaggerOptions").Get<SwaggerOptions?>();
-                    if (options == null || options.Endpoints == null || options.Endpoints.Length == 0)
-                    {
-                        x.SwaggerEndpoint("/swagger/v1/swagger.json", "接口文档");
-                    }
+                    x.SwaggerEndpoint("/swagger/v1/swagger.json", "接口文档");
                 }
-                foreach (var endpoint in options?.Endpoints ?? [])
-                {
-                    x.SwaggerEndpoint($"/swagger/{endpoint.Name}/swagger.json", endpoint.EndpointName);
-                }
-                x.RoutePrefix = string.Empty;
-                x.DocumentTitle = options == null ? "Minimal API 接口服务" : options.DocumentTitle;
-                x.ConfigObject.AdditionalItems["queryConfigEnabled"] = true;
-                x.DefaultModelsExpandDepth(-1);
-                x.ShowExtensions();
-                x.EnableValidator();
-            });
-        }
+            }
+            foreach (var endpoint in options?.Endpoints ?? [])
+            {
+                x.SwaggerEndpoint($"/swagger/{endpoint.Name}/swagger.json", endpoint.EndpointName);
+            }
+            x.RoutePrefix = string.Empty;
+            x.DocumentTitle = options == null ? "Minimal API 接口服务" : options.DocumentTitle;
+            x.ConfigObject.AdditionalItems["queryConfigEnabled"] = true;
+            x.DefaultModelsExpandDepth(-1);
+            x.ShowExtensions();
+            x.EnableValidator();
+        });
 
         return app;
     }
@@ -122,9 +121,7 @@ public static class IApplicationBuilderExtension
     /// <returns></returns>
     public static WebApplication UseXunetStorage(this WebApplication app)
     {
-        var db = app.Services.GetService<ISqlSugarClient>() ?? throw new InvalidOperationException("请先添加数据存储中间件");
-
-        db.DbMaintenance.CreateDatabase();
+        var db = app.Services.GetService<ISqlSugarClient>() ?? throw new InvalidOperationException("Unable to find the required services. Please add all the required services by calling 'IServiceCollection.AddXunet(xxx)Storage' in the application startup code.");
 
         // 从程序集获取所有继承SugarEntity的实体类型
         var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
@@ -135,7 +132,11 @@ public static class IApplicationBuilderExtension
             entityTypes = [.. entityTypes, .. types];
         }
 
-        db.CodeFirst.InitTables(entityTypes);
+        if (entityTypes.Length != 0)
+        {
+            db.DbMaintenance.CreateDatabase();
+            db.CodeFirst.InitTables(entityTypes);
+        }
 
         static bool where(Type x)
         {
@@ -197,7 +198,7 @@ public static class IApplicationBuilderExtension
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IApplicationBuilder UseSignValidatorMiddleware(this IApplicationBuilder builder)
+    public static IApplicationBuilder UseXunetSignValidator(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<SignValidatorMiddleware>();
     }

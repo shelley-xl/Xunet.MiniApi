@@ -3,10 +3,10 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Aliyun.Oss.Dtos;
+namespace Xunet.MiniApi.Dtos;
 
 /// <summary>
-/// 上传进度
+/// 文件上传进度
 /// </summary>
 public class UploadProgressDto
 {

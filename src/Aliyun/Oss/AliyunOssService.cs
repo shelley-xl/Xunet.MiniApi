@@ -3,6 +3,9 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
+using Aliyun.OSS;
+using Aliyun.OSS.Common;
+
 namespace Xunet.MiniApi.Aliyun.Oss;
 
 /// <summary>
@@ -15,9 +18,9 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
     /// </summary>
     static readonly ConcurrentDictionary<string, List<UploadProgressDto>> _progresses = new();
 
-    string? AccessKeyId => config["AliyunOssSettings:AccessKeyId"];
+    string? AccessKeyId => config["AliyunSettings:AccessKeyId"];
 
-    string? AccessKeySecret => config["AliyunOssSettings:AccessKeySecret"];
+    string? AccessKeySecret => config["AliyunSettings:AccessKeySecret"];
 
     /// <summary>
     /// 创建任务
@@ -60,9 +63,9 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
     /// <param name="content">文件流</param>
     /// <param name="key">文件key</param>
     /// <param name="bucket">bucket</param>
-    /// <param name="area">地区</param>
+    /// <param name="region">地区</param>
     /// <returns>文件地址</returns>
-    public string PutObject(string taskId, Stream? content, string key, string bucket, string area)
+    public string PutObject(string taskId, Stream? content, string key, string bucket, string region)
     {
         if (!_progresses.TryGetValue(taskId, out var progress))
         {
@@ -81,7 +84,7 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
             progress[index].TotalBytes = args.TotalBytes;
         };
 
-        var endpoint = $"oss-cn-{area}.aliyuncs.com";
+        var endpoint = $"oss-cn-{region}.aliyuncs.com";
         var client = new OssClient(endpoint, AccessKeyId, AccessKeySecret);
 
         var result = client.PutObject(request);
@@ -91,7 +94,9 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
             throw new OssException("上传文件失败");
         }
 
-        return $"https://{bucket}.{endpoint}/{key}";
+        if (!key.StartsWith('/')) key = $"/{key}";
+
+        return $"https://{bucket}.{endpoint}{key}";
     }
 
     /// <summary>
@@ -100,13 +105,13 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
     /// <param name="content">文件流</param>
     /// <param name="key">文件key</param>
     /// <param name="bucket">bucket</param>
-    /// <param name="area">地区</param>
+    /// <param name="region">地区</param>
     /// <returns>文件地址</returns>
-    public string PutObject(Stream? content, string key, string bucket, string area)
+    public string PutObject(Stream? content, string key, string bucket, string region)
     {
         var request = new PutObjectRequest(bucket, key, content);
         
-        var endpoint = $"oss-cn-{area}.aliyuncs.com";
+        var endpoint = $"oss-cn-{region}.aliyuncs.com";
         var client = new OssClient(endpoint, AccessKeyId, AccessKeySecret);
 
         var result = client.PutObject(request);
@@ -116,7 +121,9 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
             throw new OssException("上传文件失败");
         }
 
-        return $"https://{bucket}.{endpoint}/{key}";
+        if (!key.StartsWith('/')) key = $"/{key}";
+
+        return $"https://{bucket}.{endpoint}{key}";
     }
 
     /// <summary>
@@ -124,12 +131,12 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
     /// </summary>
     /// <param name="keys">文件key列表</param>
     /// <param name="bucket">bucket</param>
-    /// <param name="area">地区</param>
-    public void DeleteObject(IList<string> keys, string bucket, string area)
+    /// <param name="region">地区</param>
+    public void DeleteObject(IList<string> keys, string bucket, string region)
     {
         var request = new DeleteObjectsRequest(bucket, keys);
 
-        var endpoint = $"oss-cn-{area}.aliyuncs.com";
+        var endpoint = $"oss-cn-{region}.aliyuncs.com";
         var client = new OssClient(endpoint, AccessKeyId, AccessKeySecret);
         
         var result = client.DeleteObjects(request);
@@ -145,11 +152,11 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
     /// </summary>
     /// <param name="prefix">前缀</param>
     /// <param name="bucket">bucket</param>
-    /// <param name="area">地区</param>
+    /// <param name="region">地区</param>
     /// <returns></returns>
-    public IList<string> GetKeys(string prefix, string bucket, string area)
+    public IList<string> GetKeys(string prefix, string bucket, string region)
     {
-        var endpoint = $"oss-cn-{area}.aliyuncs.com";
+        var endpoint = $"oss-cn-{region}.aliyuncs.com";
         var client = new OssClient(endpoint, AccessKeyId, AccessKeySecret);
 
         var result = client.ListObjects(bucket, prefix);

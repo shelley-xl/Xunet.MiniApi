@@ -64,8 +64,8 @@ public static class SugarExtension
 
     internal static IServiceCollection AddSqlSugarClient(this IServiceCollection services, StorageOptions[]? options = null, DbType dbType = DbType.MySql, bool useCacheService = false)
     {
-        if (useCacheService) services.AddSingleton<ICacheService, SugarXunetCache>();
-        
+        if (useCacheService) services.AddSingleton<ICacheService, SugarCacheService>();
+
         services.AddSingleton<ISqlSugarClient>(provider =>
         {
             if (options == null || options.Length == 0)
@@ -125,6 +125,10 @@ public static class SugarExtension
                 });
             }
 
+            var eventHandler = provider.GetRequiredService<ISqlLogEventHandler>();
+            var watch = new Stopwatch();
+            var paras = new List<KeyValuePair<string, object>>();
+
             return new SqlSugarScope(configs, db =>
             {
                 // 添加表过滤器 => 假删除
@@ -133,14 +137,42 @@ public static class SugarExtension
                 db.Aop.OnLogExecuting = (sql, pars) =>
                 {
                     // SQL执行之前事件
+                    foreach (var item in pars)
+                    {
+                        paras.Add(new KeyValuePair<string, object>(item.ParameterName, item.Value));
+                    }
+
+                    watch.Start();
                 };
                 db.Aop.OnLogExecuted = (sql, pars) =>
                 {
                     // SQL执行完成事件
+                    watch.Stop();
+
+                    try
+                    {
+                        eventHandler?.InvokeAsync(sql, paras, watch.ElapsedMilliseconds);
+                    }
+                    finally
+                    {
+                        watch.Reset();
+                        paras.Clear();
+                    }
                 };
                 db.Aop.OnError = (exp) =>
                 {
                     // 执行SQL错误事件
+                    watch.Stop();
+
+                    try
+                    {
+                        eventHandler?.InvokeAsync(exp.Sql, paras, watch.ElapsedMilliseconds, true, exp.Message);
+                    }
+                    finally
+                    {
+                        watch.Reset();
+                        paras.Clear();
+                    }
                 };
                 db.Aop.DataExecuting = (oldValue, entityInfo) =>
                 {

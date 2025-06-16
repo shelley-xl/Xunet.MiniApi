@@ -100,7 +100,7 @@ public class SignValidatorMiddleware(RequestDelegate next)
     {
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey));
         byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(signString));
-        return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+        return Convert.ToHexString(hashBytes).ToLower();
     }
     // 安全比较：使用恒定时间比较方法，防止时间攻击。
     static bool SecureCompare(string a, string b)

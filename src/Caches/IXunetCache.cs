@@ -19,6 +19,14 @@ public interface IXunetCache
     void SetCache(string key, object value, string? prefix = null);
 
     /// <summary>
+    /// 设置缓存
+    /// </summary>
+    /// <param name="key">缓存Key</param>
+    /// <param name="value">值</param>
+    /// <param name="prefix">指定前缀</param>
+    void SetCache(string key, byte[] value, string? prefix = null);
+
+    /// <summary>
     /// 设置缓存（异步）
     /// </summary>
     /// <param name="key">缓存Key</param>
@@ -26,6 +34,15 @@ public interface IXunetCache
     /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
     Task SetCacheAsync(string key, object value, string? prefix = null);
+
+    /// <summary>
+    /// 设置缓存（异步）
+    /// </summary>
+    /// <param name="key">缓存Key</param>
+    /// <param name="value">值</param>
+    /// <param name="prefix">指定前缀</param>
+    /// <returns></returns>
+    Task SetCacheAsync(string key, byte[] value, string? prefix = null);
 
     /// <summary>
     /// 设置缓存
@@ -36,6 +53,16 @@ public interface IXunetCache
     /// <param name="timeout">过期时间间隔</param>
     /// <param name="prefix">指定前缀</param>
     void SetCache(string key, object value, TimeSpan timeout, string? prefix = null);
+
+    /// <summary>
+    /// 设置缓存
+    /// 注：默认过期类型为绝对过期
+    /// </summary>
+    /// <param name="key">缓存Key</param>
+    /// <param name="value">值</param>
+    /// <param name="timeout">过期时间间隔</param>
+    /// <param name="prefix">指定前缀</param>
+    void SetCache(string key, byte[] value, TimeSpan timeout, string? prefix = null);
 
     /// <summary>
     /// 设置缓存（异步）
@@ -49,6 +76,17 @@ public interface IXunetCache
     Task SetCacheAsync(string key, object value, TimeSpan timeout, string? prefix = null);
 
     /// <summary>
+    /// 设置缓存（异步）
+    /// 注：默认过期类型为绝对过期
+    /// </summary>
+    /// <param name="key">缓存Key</param>
+    /// <param name="value">值</param>
+    /// <param name="timeout">过期时间间隔</param>
+    /// <param name="prefix">指定前缀</param>
+    /// <returns></returns>
+    Task SetCacheAsync(string key, byte[] value, TimeSpan timeout, string? prefix = null);
+
+    /// <summary>
     /// 设置缓存
     /// 注：默认过期类型为绝对过期
     /// </summary>
@@ -59,6 +97,16 @@ public interface IXunetCache
     /// <param name="prefix">指定前缀</param>
     void SetCache(string key, object value, TimeSpan timeout, ExpireType expireType, string? prefix = null);
 
+    /// <summary>
+    /// 设置缓存
+    /// 注：默认过期类型为绝对过期
+    /// </summary>
+    /// <param name="key">缓存Key</param>
+    /// <param name="value">值</param>
+    /// <param name="timeout">过期时间间隔</param>
+    /// <param name="expireType">过期类型</param>
+    /// <param name="prefix">指定前缀</param>
+    void SetCache(string key, byte[] value, TimeSpan timeout, ExpireType expireType, string? prefix = null);
 
     /// <summary>
     /// 设置缓存（异步）
@@ -73,12 +121,24 @@ public interface IXunetCache
     Task SetCacheAsync(string key, object value, TimeSpan timeout, ExpireType expireType, string? prefix = null);
 
     /// <summary>
+    /// 设置缓存（异步）
+    /// 注：默认过期类型为绝对过期
+    /// </summary>
+    /// <param name="key">缓存Key</param>
+    /// <param name="value">值</param>
+    /// <param name="timeout">过期时间间隔</param>
+    /// <param name="expireType">过期类型</param>
+    /// <param name="prefix">指定前缀</param>
+    /// <returns></returns>
+    Task SetCacheAsync(string key, byte[] value, TimeSpan timeout, ExpireType expireType, string? prefix = null);
+
+    /// <summary>
     /// 获取缓存
     /// </summary>
     /// <param name="key">缓存Key</param>
     /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    string GetCache(string key, string? prefix = null);
+    string? GetCache(string key, string? prefix = null);
 
     /// <summary>
     /// 获取缓存（异步）
@@ -86,7 +146,23 @@ public interface IXunetCache
     /// <param name="key">缓存Key</param>
     /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    Task<string> GetCacheAsync(string key, string? prefix = null);
+    Task<string?> GetCacheAsync(string key, string? prefix = null);
+
+    /// <summary>
+    /// 获取缓存
+    /// </summary>
+    /// <param name="key">缓存Key</param>
+    /// <param name="prefix">指定前缀</param>
+    /// <returns></returns>
+    byte[]? GetBytes(string key, string? prefix = null);
+
+    /// <summary>
+    /// 获取缓存（异步）
+    /// </summary>
+    /// <param name="key">缓存Key</param>
+    /// <param name="prefix">指定前缀</param>
+    /// <returns></returns>
+    Task<byte[]?> GetBytesAsync(string key, string? prefix = null);
 
     /// <summary>
     /// 获取缓存
@@ -95,7 +171,7 @@ public interface IXunetCache
     /// <param name="key">缓存Key</param>
     /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    T GetCache<T>(string key, string? prefix = null);
+    T? GetCache<T>(string key, string? prefix = null);
 
     /// <summary>
     /// 获取缓存（异步）
@@ -104,7 +180,7 @@ public interface IXunetCache
     /// <param name="key">缓存Key</param>
     /// <param name="prefix">指定前缀</param>
     /// <returns></returns>
-    Task<T> GetCacheAsync<T>(string key, string? prefix = null);
+    Task<T?> GetCacheAsync<T>(string key, string? prefix = null);
 
     /// <summary>
     /// 清除缓存

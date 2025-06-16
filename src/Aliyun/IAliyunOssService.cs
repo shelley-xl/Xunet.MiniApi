@@ -30,9 +30,9 @@ public interface IAliyunOssService
     /// <param name="content">文件流</param>
     /// <param name="key">文件key</param>
     /// <param name="bucket">bucket</param>
-    /// <param name="area">地区</param>
+    /// <param name="region">地区</param>
     /// <returns>文件地址</returns>
-    string PutObject(string taskId, Stream? content, string key, string bucket, string area);
+    string PutObject(string taskId, Stream? content, string key, string bucket, string region);
 
     /// <summary>
     /// 上传文件
@@ -40,24 +40,24 @@ public interface IAliyunOssService
     /// <param name="content">文件流</param>
     /// <param name="key">文件key</param>
     /// <param name="bucket">bucket</param>
-    /// <param name="area">地区</param>
+    /// <param name="region">地区</param>
     /// <returns>文件地址</returns>
-    string PutObject(Stream? content, string key, string bucket, string area);
+    string PutObject(Stream? content, string key, string bucket, string region);
 
     /// <summary>
     /// 删除文件
     /// </summary>
     /// <param name="keys">文件key列表</param>
     /// <param name="bucket">bucket</param>
-    /// <param name="area">地区</param>
-    void DeleteObject(IList<string> keys, string bucket, string area);
+    /// <param name="region">地区</param>
+    void DeleteObject(IList<string> keys, string bucket, string region);
 
     /// <summary>
     /// 查找文件key列表
     /// </summary>
     /// <param name="prefix">前缀</param>
     /// <param name="bucket">bucket</param>
-    /// <param name="area">地区</param>
+    /// <param name="region">地区</param>
     /// <returns></returns>
-    IList<string> GetKeys(string prefix, string bucket, string area);
+    IList<string> GetKeys(string prefix, string bucket, string region);
 }

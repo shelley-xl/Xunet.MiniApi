@@ -22,12 +22,6 @@ public class AutoValidationFilter : IEndpointFilter
 
         foreach (var argument in context.Arguments)
         {
-            if (argument != null && argument is PageRequest request)
-            {
-                // 分页赋默认值
-                request.Page ??= 1;
-                request.Size ??= 20;
-            }
             if (argument != null && serviceProvider.GetService(typeof(IValidator<>).MakeGenericType(argument.GetType())) is IValidator validator)
             {
                 var validationContext = new ValidationContext<object>(argument);

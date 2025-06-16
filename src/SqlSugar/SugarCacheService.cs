@@ -5,7 +5,7 @@
 
 namespace Xunet.MiniApi.SqlSugar;
 
-internal class SugarXunetCache(IXunetCache cache) : ICacheService
+internal class SugarCacheService(IXunetCache cache) : ICacheService
 {
     readonly IXunetCache _cache = cache;
 
@@ -26,12 +26,12 @@ internal class SugarXunetCache(IXunetCache cache) : ICacheService
 
     public V Get<V>(string key)
     {
-        return _cache.GetCache<V>(key);
+        return _cache.GetCache<V>(key)!;
     }
 
     public IEnumerable<string> GetAllKey<V>()
     {
-        return _cache.GetCache<IEnumerable<string>>("*");
+        return _cache.GetCache<IEnumerable<string>>("*")!;
     }
 
     public V GetOrCreate<V>(string cacheKey, Func<V> create, int cacheDurationInSeconds = int.MaxValue)

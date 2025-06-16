@@ -14,11 +14,11 @@ public class PageRequest
     /// 页码
     /// </summary>
     [FromParameter("page", "页码")]
-    public int? Page { get; set; }
+    public int Page { get; set; } = 1;
 
     /// <summary>
     /// 页大小
     /// </summary>
     [FromParameter("size", "页大小")]
-    public int? Size { get; set; }
+    public int Size { get; set; } = 20;
 }

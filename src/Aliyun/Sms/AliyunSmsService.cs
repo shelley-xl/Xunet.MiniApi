@@ -10,5 +10,13 @@ namespace Xunet.MiniApi.Aliyun.Sms;
 /// </summary>
 internal class AliyunSmsService : IAliyunSmsService
 {
-
+    /// <summary>
+    /// 发送短信验证码
+    /// </summary>
+    /// <param name="request">发送短信验证码请求</param>
+    /// <returns></returns>
+    public Task<List<SendSmsCodeDto>> SendSmsAsync(SendSmsCodeRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Filters;
+namespace Xunet.MiniApi.Swagger;
 
 /// <summary>
 /// Swagger自定义参数描述过滤器

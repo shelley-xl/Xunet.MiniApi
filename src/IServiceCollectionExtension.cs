@@ -483,12 +483,9 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetFluentValidation))) return services;
 
-        services.AddFluentValidationAutoValidation(config =>
-        {
-            // 验证失败，停止验证其他项
-            ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
-        });
-
+        // 验证失败，停止验证其他项
+        ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
+        
         // 注册到所有引用的程序集
         var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
         services.AddValidatorsFromAssembly(entryAssembly);
