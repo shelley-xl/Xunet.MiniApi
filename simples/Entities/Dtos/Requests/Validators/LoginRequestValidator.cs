@@ -31,7 +31,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
             {
                 var entity = await _db.Queryable<Accounts>().FirstAsync(a => a.UserName == x.UserName, token);
                 if (entity == null) return false;
-                if (entity.Password != x.Password!.ToMD5Encrypt()) return false;
+                if (entity.Password != x.Password?.ToMD5Encrypt()) return false;
 
                 return true;
             })

@@ -9,12 +9,14 @@ internal static partial class WebApplicationExtension
 {
     internal static WebApplication UseAuthMiniApi(this WebApplication app)
     {
-        var group = app.MapGroup("/api/auth").WithGroupName("test").WithTags("认证中心");
+        var group = app
+            .MapGroup("/api/auth")
+            .WithGroupName("test")
+            .WithTags("认证中心")
+            .AddEndpointFilter<AutoValidationFilter>();
 
         group.MapPost("/login", LoginAsync);
         group.MapPost("/register", RegisterAsync);
-
-        group.AddEndpointFilter<AutoValidationFilter>();
 
         return app;
     }
