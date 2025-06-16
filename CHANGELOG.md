@@ -1,3 +1,16 @@
+## [1.0.13](https://github.com/shelley-xl/Xunet.MiniApi/commit/37288418c5f24e75e9accd5e51eb43fe61525ec8) (2025-06-16)
+
+### Features
+
+- 新增Sql日志事件处理器
+- 分布式缓存支持存储byte[]类型
+- 腾讯云对象存储服务完善
+- 新增.NET 9.0支持
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.12](https://github.com/shelley-xl/Xunet.MiniApi/commit/0d63f2c24e755388c4e4b733fb6f6d2f69ebb0df) (2025-06-12)
 
 ### Features
