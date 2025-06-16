@@ -70,7 +70,7 @@ global using Xunet.MiniApi.Tencent.WeixinMp;
 global using Xunet.MiniApi.Tencent.WeixinMp.Dtos;
 global using Xunet.MiniApi.Tencent.WeixinMp.Dtos.Requests;
 
-#pragma warning disable IDE0130
+#pragma warning disable IDE0130 
 
 namespace Xunet.MiniApi;
 
