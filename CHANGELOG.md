@@ -1,3 +1,13 @@
+## [1.0.14](https://github.com/shelley-xl/Xunet.MiniApi/commit/9cbb9ad06e3e5d8561c6f7b869f2640aa520aeb3) (2025-06-17)
+
+### Features
+
+- 阿里云短信服务完善
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.13](https://github.com/shelley-xl/Xunet.MiniApi/commit/37288418c5f24e75e9accd5e51eb43fe61525ec8) (2025-06-16)
 
 ### Features
