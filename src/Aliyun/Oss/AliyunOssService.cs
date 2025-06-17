@@ -18,9 +18,9 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
     /// </summary>
     static readonly ConcurrentDictionary<string, List<UploadProgressDto>> _progresses = new();
 
-    string? AccessKeyId => config["AliyunSettings:AccessKeyId"];
+    string? AccessKeyId => config["AlibabaCloudSettings:AccessKeyId"];
 
-    string? AccessKeySecret => config["AliyunSettings:AccessKeySecret"];
+    string? AccessKeySecret => config["AlibabaCloudSettings:AccessKeySecret"];
 
     /// <summary>
     /// 创建任务

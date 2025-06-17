@@ -595,9 +595,9 @@ public static class IServiceCollectionExtension
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetAliyunSmsService(this IServiceCollection services)
+    public static IServiceCollection AddXunetAlibabaCloudSmsService(this IServiceCollection services)
     {
-        if (services.HasRegistered(nameof(AddXunetAliyunSmsService))) return services;
+        if (services.HasRegistered(nameof(AddXunetAlibabaCloudSmsService))) return services;
 
         services.AddSingleton<IAliyunSmsService, AliyunSmsService>();
 
@@ -613,9 +613,9 @@ public static class IServiceCollectionExtension
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetAliyunOssService(this IServiceCollection services)
+    public static IServiceCollection AddXunetAlibabaCloudOssService(this IServiceCollection services)
     {
-        if (services.HasRegistered(nameof(AddXunetAliyunOssService))) return services;
+        if (services.HasRegistered(nameof(AddXunetAlibabaCloudOssService))) return services;
 
         services.AddSingleton<IAliyunOssService, AliyunOssService>();
 

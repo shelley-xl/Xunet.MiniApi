@@ -125,7 +125,7 @@ public static class SugarExtension
                 });
             }
 
-            var eventHandler = provider.GetRequiredService<ISqlLogEventHandler>();
+            var eventHandler = provider.GetService<ISqlLogEventHandler>();
             var watch = new Stopwatch();
             var paras = new List<KeyValuePair<string, object>>();
 
