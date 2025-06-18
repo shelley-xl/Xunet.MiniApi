@@ -1,3 +1,15 @@
+## [1.0.15](https://github.com/shelley-xl/Xunet.MiniApi/commit/561d74f0f64cc7093fcdafc50c041e5e4f9b43e0) (2025-06-18)
+
+### Features
+
+- 新增微信小程序服务
+- Redis缓存支持集群模式
+
+### Bug Fixes
+
+- 微信公众号服务优化
+- 修复已知问题
+
 ## [1.0.14](https://github.com/shelley-xl/Xunet.MiniApi/commit/9cbb9ad06e3e5d8561c6f7b869f2640aa520aeb3) (2025-06-17)
 
 ### Features
