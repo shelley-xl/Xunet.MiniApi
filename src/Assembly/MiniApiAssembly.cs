@@ -67,8 +67,7 @@ global using Xunet.MiniApi.Tencent;
 global using Xunet.MiniApi.Tencent.Cos;
 global using Xunet.MiniApi.Tencent.Sms;
 global using Xunet.MiniApi.Tencent.WeixinMp;
-global using Xunet.MiniApi.Tencent.WeixinMp.Dtos;
-global using Xunet.MiniApi.Tencent.WeixinMp.Dtos.Requests;
+global using Xunet.MiniApi.Tencent.MiniProgram;
 
 #pragma warning disable IDE0130 
 

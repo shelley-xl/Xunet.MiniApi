@@ -8,7 +8,7 @@ namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos.Requests;
 /// <summary>
 /// 网页授权请求
 /// </summary>
-public class GetWeixinTokenRequest
+public class WeixinLoginRequest
 {
     /// <summary>
     /// 授权码

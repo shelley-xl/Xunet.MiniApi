@@ -3,25 +3,28 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos.Requests;
+namespace Xunet.MiniApi.Tencent.MiniProgram.Dtos.Requests;
 
 /// <summary>
-/// 获取用户信息请求（scope为snsapi_userinfo）
+/// 获取手机号请求
 /// </summary>
-public class GetWeixinSnsUserInfoRequest
+public class GetPhoneNumberRequest
 {
     /// <summary>
-    /// access_token
+    /// 手机号获取凭证
     /// </summary>
-    public string? AccessToken { get; set; }
+    [JsonPropertyName("code")]
+    public string? Code { get; set; }
 
     /// <summary>
-    /// 用户的唯一标识
+    /// 用户唯一标识
     /// </summary>
+    [JsonPropertyName("openid")]
     public string? OpenId { get; set; }
 
     /// <summary>
-    /// 非必填，语言（zh_CN 简体，zh_TW 繁体，en 英语）
+    /// 接口调用凭证
     /// </summary>
-    public string? Lang { get; set; } = "zh_CN";
+    [JsonIgnore]
+    public string? AccessToken { get; set; }
 }

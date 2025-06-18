@@ -11,10 +11,12 @@ namespace Xunet.MiniApi.Http;
 public static class XunetHttpContext
 {
     #region 当前HttpContext
+
     /// <summary>
     /// 当前HttpContext
     /// </summary>
     public static HttpContext? Current => _accessor?.HttpContext;
+
     #endregion
 
     #region 客户端IP地址
@@ -67,7 +69,7 @@ public static class XunetHttpContext
         get
         {
             var requestIP = _accessor?.HttpContext?.Connection.LocalIpAddress?.ToString();
-            
+
             return string.IsNullOrEmpty(requestIP) ? "127.0.0.1" : requestIP;
         }
     }
@@ -82,7 +84,7 @@ public static class XunetHttpContext
         get
         {
             var userAgent = _accessor?.HttpContext?.Request.Headers.UserAgent.ToString();
-            
+
             return string.IsNullOrEmpty(userAgent) ? null : userAgent;
         }
     }
@@ -97,10 +99,38 @@ public static class XunetHttpContext
         get
         {
             var referer = _accessor?.HttpContext?.Request.Headers.Referer.ToString();
-            
+
             return string.IsNullOrEmpty(referer) ? null : referer;
         }
     }
+    #endregion
+
+    #region 获取服务
+
+    /// <summary>
+    /// 获取服务
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T? GetService<T>()
+    {
+        if (_accessor?.HttpContext == null) return default;
+
+        return _accessor.HttpContext.RequestServices.GetService<T>();
+    }
+
+    /// <summary>
+    /// 获取服务
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T GetRequiredService<T>() where T : notnull
+    {
+        if (_accessor?.HttpContext == null) return default!;
+
+        return _accessor.HttpContext.RequestServices.GetRequiredService<T>();
+    }
+
     #endregion
 
     #region 配置HttpContextAccessor

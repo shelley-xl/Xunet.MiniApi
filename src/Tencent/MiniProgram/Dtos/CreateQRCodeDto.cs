@@ -3,16 +3,16 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos;
+namespace Xunet.MiniApi.Tencent.MiniProgram.Dtos;
 
 /// <summary>
-/// 发送模板消息返回
+/// 创建小程序二维码返回
 /// </summary>
-public class SendTemplateMessageDto : ErrorDto
+public class CreateQRCodeDto : ErrorDto
 {
     /// <summary>
-    /// 消息ID
+    /// 图片 Buffer
     /// </summary>
-    [JsonPropertyName("msgid")]
-    public long? MsgId { get; set; }
+    [JsonPropertyName("buffer")]
+    public byte[]? Buffer { get; set; }
 }

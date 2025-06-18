@@ -47,7 +47,7 @@ public class SendTemplateMessageRequest
     public string? ClientMsgId { get; set; }
 
     /// <summary>
-    /// access_token
+    /// 接口调用凭证
     /// </summary>
     [JsonIgnore]
     public string? AccessToken { get; set; }

@@ -8,7 +8,7 @@ namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos.Requests;
 /// <summary>
 /// 获取用户信息请求
 /// </summary>
-public class GetWeixinUserInfoRequest
+public class GetUserInfoRequest
 {
     /// <summary>
     /// access_token

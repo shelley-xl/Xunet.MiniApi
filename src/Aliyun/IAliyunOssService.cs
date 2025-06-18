@@ -19,7 +19,7 @@ public interface IAliyunOssService
     /// <summary>
     /// 获取进度
     /// </summary>
-    /// <param name="taskId"></param>
+    /// <param name="taskId">任务id</param>
     /// <returns></returns>
     List<UploadProgressDto> GetProgress(string taskId);
 

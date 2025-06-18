@@ -485,7 +485,7 @@ public static class IServiceCollectionExtension
 
         // 验证失败，停止验证其他项
         ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
-        
+
         // 注册到所有引用的程序集
         var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
         services.AddValidatorsFromAssembly(entryAssembly);
@@ -538,10 +538,10 @@ public static class IServiceCollectionExtension
 
     #endregion
 
-    #region 添加缓存
+    #region 添加缓存（未配置RedisConnection节点时，默认内存缓存）
 
     /// <summary>
-    /// 添加缓存
+    /// 添加缓存（未配置RedisConnection节点时，默认内存缓存）
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
@@ -553,9 +553,35 @@ public static class IServiceCollectionExtension
 
         var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
         var redisConnectionString = config.GetConnectionString("RedisConnection");
-        if (string.IsNullOrEmpty(redisConnectionString)) throw new ConfigurationException("未配置Redis连接字符串");
+        if (!string.IsNullOrEmpty(redisConnectionString))
+        {
+            CSRedisClient redisClient;
+            var redisConnectionStringArray = redisConnectionString.Split(';').Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            if (redisConnectionStringArray.Length == 1)
+            {
+                // 单体模式
+                redisClient = new CSRedisClient(redisConnectionString);
+            }
+            else
+            {
+                // 集群模式
+                redisClient = new CSRedisClient(null, redisConnectionStringArray);
+            }
+            // 检查是否包含可用节点
+            if (redisClient.Nodes.Any(x => x.Value.IsAvailable == true))
+            {
+                services.AddSingleton<IDistributedCache>(new CSRedisCache(redisClient));
+            }
+            else
+            {
+                services.AddDistributedMemoryCache();
+            }
+        }
+        else
+        {
+            services.AddDistributedMemoryCache();
+        }
 
-        services.AddSingleton<IDistributedCache>(new CSRedisCache(new CSRedisClient(redisConnectionString)));
         services.AddSingleton<IXunetCache, XunetCache>();
 
         return services;
@@ -672,6 +698,24 @@ public static class IServiceCollectionExtension
         if (services.HasRegistered(nameof(AddXunetWeixinMpService))) return services;
 
         services.AddHttpClient<IWeixinMpService, WeixinMpService>();
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加微信小程序服务
+
+    /// <summary>
+    /// 添加微信小程序服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetMiniProgramService(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetMiniProgramService))) return services;
+
+        services.AddHttpClient<IMiniProgramService, MiniProgramService>();
 
         return services;
     }

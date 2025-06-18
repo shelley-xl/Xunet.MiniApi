@@ -6,19 +6,19 @@
 namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos;
 
 /// <summary>
-/// 获取微信客户端凭证返回
+/// 错误信息返回
 /// </summary>
-public class GetWeixinClientCredentialTokenDto : WeixinErrorDto
+public class ErrorDto
 {
     /// <summary>
-    /// 获取到的凭证
+    /// 错误码
     /// </summary>
-    [JsonPropertyName("access_token")]
-    public string? AccessToken { get; set; }
+    [JsonPropertyName("errcode")]
+    public int? ErrCode { get; set; } = 0;
 
     /// <summary>
-    /// 凭证有效时间，单位：秒
+    /// 错误消息
     /// </summary>
-    [JsonPropertyName("expires_in")]
-    public int? ExpiresIn { get; set; }
+    [JsonPropertyName("errmsg")]
+    public string? ErrMsg { get; set; } = "ok";
 }

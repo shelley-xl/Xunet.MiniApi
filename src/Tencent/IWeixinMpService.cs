@@ -5,37 +5,33 @@
 
 namespace Xunet.MiniApi.Tencent;
 
+using WeixinMp.Dtos;
+using WeixinMp.Dtos.Requests;
+
 /// <summary>
 /// 微信公众号服务
 /// </summary>
 public interface IWeixinMpService
 {
     /// <summary>
+    /// 获取接口调用凭据
+    /// </summary>
+    /// <returns></returns>
+    Task<GetAccessTokenDto> GetAccessTokenAsync();
+
+    /// <summary>
     /// 网页授权
     /// </summary>
     /// <param name="request">网页授权请求</param>
     /// <returns></returns>
-    Task<GetWeixinTokenDto> GetWeixinTokenAsync(GetWeixinTokenRequest request);
-
-    /// <summary>
-    /// 获取用户信息（scope为snsapi_userinfo）
-    /// </summary>
-    /// <param name="request">获取用户信息请求</param>
-    /// <returns></returns>
-    Task<GetWeixinSnsUserInfoDto> GetWeixinUserInfoAsync(GetWeixinSnsUserInfoRequest request);
-
-    /// <summary>
-    /// 获取微信客户端凭证
-    /// </summary>
-    /// <returns></returns>
-    Task<GetWeixinClientCredentialTokenDto> GetWeixinClientCredentialTokenAsync();
+    Task<WeixinLoginDto> WeixinLoginAsync(WeixinLoginRequest request);
 
     /// <summary>
     /// 获取用户信息
     /// </summary>
     /// <param name="request">获取用户信息请求</param>
     /// <returns></returns>
-    Task<GetWeixinUserInfoDto> GetWeixinUserInfoAsync(GetWeixinUserInfoRequest request);
+    Task<GetUserInfoDto> GetUserInfoAsync(GetUserInfoRequest request);
 
     /// <summary>
     /// 发送模板消息

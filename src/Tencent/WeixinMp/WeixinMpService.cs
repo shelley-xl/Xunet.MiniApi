@@ -5,11 +5,19 @@
 
 namespace Xunet.MiniApi.Tencent.WeixinMp;
 
+using WeixinMp.Dtos;
+using WeixinMp.Dtos.Requests;
+
 /// <summary>
-/// 微信服务实现
+/// 微信公众号服务实现
 /// </summary>
 internal class WeixinMpService : IWeixinMpService
 {
+    #region 构造函数
+
+    internal string? AppId { get; private set; }
+    internal string? AppSecret { get; private set; }
+
     readonly HttpClient _client;
     readonly IConfiguration _config;
 
@@ -21,78 +29,82 @@ internal class WeixinMpService : IWeixinMpService
     public WeixinMpService(HttpClient client, IConfiguration config)
     {
         _client = client;
-        _client.BaseAddress = new Uri("https://api.weixin.qq.com");
         _config = config;
+
+        _client.BaseAddress = new Uri("https://api.weixin.qq.com");
+
+        AppId = _config["WeixinMpSettings:AppId"];
+        AppSecret = _config["WeixinMpSettings:AppSecret"];
     }
+
+    #endregion
+
+    #region 获取接口调用凭据
+
+    /// <summary>
+    /// 获取接口调用凭据
+    /// </summary>
+    /// <returns></returns>
+    public async Task<GetAccessTokenDto> GetAccessTokenAsync()
+    {
+        GetAccessTokenDto? result;
+
+        // 查找缓存服务，缓存存在，直接返回
+        var cache = XunetHttpContext.GetService<IXunetCache>();
+        if (cache != null)
+        {
+            result = await cache.GetCacheAsync<GetAccessTokenDto>($"{AppId}_access_token");
+            if (result != null) return result;
+        }
+
+        var response = await _client.GetAsync($"/cgi-bin/token?grant_type=client_credential&appid={AppId}&secret={AppSecret}");
+
+        result = await response.Content.ReadFromJsonAsync<GetAccessTokenDto>() ?? default!;
+
+        // 如果使用缓存，缓存access_token
+        if (cache != null && result.ExpiresIn.HasValue)
+        {
+            await cache.SetCacheAsync($"{AppId}_access_token", result, TimeSpan.FromSeconds(result.ExpiresIn.Value - 300));
+        }
+
+        return result;
+    }
+
+    #endregion
+
+    #region 网页授权
 
     /// <summary>
     /// 网页授权
     /// </summary>
     /// <param name="request">网页授权请求</param>
     /// <returns></returns>
-    public async Task<GetWeixinTokenDto> GetWeixinTokenAsync(GetWeixinTokenRequest request)
+    public async Task<WeixinLoginDto> WeixinLoginAsync(WeixinLoginRequest request)
     {
-        var appId = _config["WeixinMpSettings:AppId"];
-        var appSecret = _config["WeixinMpSettings:AppSecret"];
+        var response = await _client.GetAsync($"/sns/oauth2/access_token?appid={AppId}&secret={AppSecret}&code={request.Code}&grant_type=authorization_code");
 
-        var response = await _client.GetAsync($"/sns/oauth2/access_token?appid={appId}&secret={appSecret}&code={request.Code}&grant_type=authorization_code");
-
-        response.EnsureSuccessStatusCode();
-
-        var dto = await response.Content.ReadFromJsonAsync<GetWeixinTokenDto>();
-
-        return dto!;
+        return await response.Content.ReadFromJsonAsync<WeixinLoginDto>() ?? default!;
     }
 
-    /// <summary>
-    /// 获取用户信息（scope为snsapi_userinfo）
-    /// </summary>
-    /// <param name="request">获取用户信息请求</param>
-    /// <returns></returns>
-    public async Task<GetWeixinSnsUserInfoDto> GetWeixinUserInfoAsync(GetWeixinSnsUserInfoRequest request)
-    {
-        var response = await _client.GetAsync($"/sns/userinfo?access_token={request.AccessToken}&openid={request.OpenId}&lang={request.Lang}");
+    #endregion
 
-        response.EnsureSuccessStatusCode();
-
-        var dto = await response.Content.ReadFromJsonAsync<GetWeixinSnsUserInfoDto>();
-
-        return dto!;
-    }
-
-    /// <summary>
-    /// 获取微信客户端凭证
-    /// </summary>
-    /// <returns></returns>
-    public async Task<GetWeixinClientCredentialTokenDto> GetWeixinClientCredentialTokenAsync()
-    {
-        var appId = _config["WeixinMpSettings:AppId"];
-        var appSecret = _config["WeixinMpSettings:AppSecret"];
-
-        var response = await _client.GetAsync($"/cgi-bin/token?grant_type=client_credential&appid={appId}&secret={appSecret}");
-
-        response.EnsureSuccessStatusCode();
-
-        var dto = await response.Content.ReadFromJsonAsync<GetWeixinClientCredentialTokenDto>();
-
-        return dto!;
-    }
+    #region 获取用户信息
 
     /// <summary>
     /// 获取用户信息
     /// </summary>
     /// <param name="request">获取用户信息请求</param>
     /// <returns></returns>
-    public async Task<GetWeixinUserInfoDto> GetWeixinUserInfoAsync(GetWeixinUserInfoRequest request)
+    public async Task<GetUserInfoDto> GetUserInfoAsync(GetUserInfoRequest request)
     {
         var response = await _client.GetAsync($"/cgi-bin/user/info?access_token={request.AccessToken}&openid={request.OpenId}&lang={request.Lang}");
 
-        response.EnsureSuccessStatusCode();
-
-        var dto = await response.Content.ReadFromJsonAsync<GetWeixinUserInfoDto>();
-
-        return dto!;
+        return await response.Content.ReadFromJsonAsync<GetUserInfoDto>() ?? default!;
     }
+
+    #endregion
+
+    #region 发送模板消息
 
     /// <summary>
     /// 发送模板消息
@@ -105,10 +117,8 @@ internal class WeixinMpService : IWeixinMpService
 
         var response = await _client.PostAsync($"/cgi-bin/message/template/send?access_token={request.AccessToken}", content);
 
-        response.EnsureSuccessStatusCode();
-
-        var dto = await response.Content.ReadFromJsonAsync<SendTemplateMessageDto>();
-
-        return dto!;
+        return await response.Content.ReadFromJsonAsync<SendTemplateMessageDto>() ?? default!;
     }
+
+    #endregion
 }

@@ -8,7 +8,7 @@ namespace Xunet.MiniApi.Tencent.WeixinMp.Dtos;
 /// <summary>
 /// 获取用户信息返回
 /// </summary>
-public class GetWeixinUserInfoDto : WeixinErrorDto
+public class GetUserInfoDto : ErrorDto
 {
     /// <summary>
     /// 用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息。
