@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Xunet.MiniApi.Tests": {
+    "Xunet.MiniApi.Simples": {
       "commandName": "Project",
       "launchUrl": "/",
       "environmentVariables": {
