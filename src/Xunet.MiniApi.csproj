@@ -9,7 +9,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>latest</LangVersion>
 		<!-- version numbers will be updated by build -->
-		<Version>1.0.15</Version>
+		<Version>1.0.16</Version>
 		<TotalDays>$([System.DateTime]::Now.Date.Subtract($([System.DateTime]::Parse($([System.String]::Format("{0}-4-13",2025))))).TotalDays)</TotalDays>
 		<AssemblyVersion>$(Version).$(TotalDays)</AssemblyVersion>
 		<FileVersion>$(Version).$(TotalDays)</FileVersion>
@@ -45,9 +45,11 @@
 		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
 		<PackageReference Include="OpenIddict.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="SkiaSharp" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.0" />
 		<PackageReference Include="SqlSugarCore" Version="5.1.4.196" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
-		<PackageReference Include="TencentCloudSDK" Version="3.0.1261" />
+		<PackageReference Include="TencentCloudSDK" Version="3.0.1267" />
 		<PackageReference Include="Tencent.QCloud.Cos.Sdk" Version="5.4.48" />
 	</ItemGroup>
 
