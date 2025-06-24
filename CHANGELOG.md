@@ -1,3 +1,11 @@
+## [1.0.16](https://github.com/shelley-xl/Xunet.MiniApi/commit/ab2fb3a0fc5a2a9b1c760f07f6361fb8511fced0) (2025-06-24)
+
+### Features
+
+- 微信公众号/小程序服务优化
+- 健康检查优化
+- 新增SkiaSharp组件支持
+
 ## [1.0.15](https://github.com/shelley-xl/Xunet.MiniApi/commit/561d74f0f64cc7093fcdafc50c041e5e4f9b43e0) (2025-06-18)
 
 ### Features
