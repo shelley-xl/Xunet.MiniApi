@@ -42,10 +42,18 @@ public static class IApplicationBuilderExtension
             Predicate = _ => true,
             ResponseWriter = (context, report) =>
             {
-                return context.Response.WriteAsJsonAsync(new OperateResultDto
+                return context.Response.WriteAsJsonAsync(new QueryResultDto<HealthResultDto>
                 {
-                    Code = XunetCode.Success,
-                    Message = report.Status.ToString(),
+                    Data = new HealthResultDto
+                    {
+                        Status = report.Status.ToString(),
+                        Checks = report.Entries.Select(x => new HealthResultDto.ChecksResult
+                        {
+                            Name = x.Key,
+                            Status = x.Value.Status.ToString(),
+                            Description = x.Value.Description,
+                        }),
+                    }
                 });
             }
         });

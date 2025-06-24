@@ -44,10 +44,17 @@ internal class MiniProgramService : IMiniProgramService
     /// <summary>
     /// 获取接口调用凭据
     /// </summary>
+    /// <param name="request">获取接口调用凭据请求</param>
     /// <returns></returns>
-    public async Task<GetAccessTokenDto> GetAccessTokenAsync()
+    public async Task<GetAccessTokenDto> GetAccessTokenAsync(GetAccessTokenRequest? request = null)
     {
         GetAccessTokenDto? result;
+
+        if (request != null)
+        {
+            AppId = request.AppId;
+            AppSecret = request.AppSecret;
+        }
 
         // 查找缓存服务，缓存存在，直接返回
         var cache = XunetHttpContext.GetService<IXunetCache>();

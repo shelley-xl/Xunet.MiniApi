@@ -82,13 +82,11 @@ public static class IServiceCollectionExtension
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetHealthChecks(this IServiceCollection services)
+    public static IHealthChecksBuilder AddXunetHealthChecks(this IServiceCollection services)
     {
-        if (services.HasRegistered(nameof(AddXunetHealthChecks))) return services;
+        if (services.HasRegistered(nameof(AddXunetHealthChecks))) return default!;
 
-        services.AddHealthChecks();
-
-        return services;
+        return services.AddHealthChecks();
     }
 
     #endregion

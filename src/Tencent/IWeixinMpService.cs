@@ -16,8 +16,9 @@ public interface IWeixinMpService
     /// <summary>
     /// 获取接口调用凭据
     /// </summary>
+    /// <param name="request">获取接口调用凭据请求</param>
     /// <returns></returns>
-    Task<GetAccessTokenDto> GetAccessTokenAsync();
+    Task<GetAccessTokenDto> GetAccessTokenAsync(GetAccessTokenRequest? request = null);
 
     /// <summary>
     /// 网页授权
