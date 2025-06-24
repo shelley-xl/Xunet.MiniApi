@@ -108,6 +108,16 @@ internal class MiniProgramService : IMiniProgramService
 
         var response = await _client.PostAsync($"/wxa/getwxacode?access_token={request.AccessToken}", content);
 
+        var buffer = await response.Content.ReadAsByteArrayAsync();
+
+        if (buffer[0] == 0xFF && buffer[1] == 0xD8) // 检查JPEG头
+        {
+            return new CreateQRCodeDto
+            {
+                Buffer = buffer
+            };
+        }
+
         return await response.Content.ReadFromJsonAsync<CreateQRCodeDto>() ?? default!;
     }
 
@@ -126,6 +136,16 @@ internal class MiniProgramService : IMiniProgramService
 
         var response = await _client.PostAsync($"/cgi-bin/wxaapp/createwxaqrcode?access_token={request.AccessToken}", content);
 
+        var buffer = await response.Content.ReadAsByteArrayAsync();
+
+        if (buffer[0] == 0xFF && buffer[1] == 0xD8) // 检查JPEG头
+        {
+            return new CreateQRCodeDto
+            {
+                Buffer = buffer
+            };
+        }
+
         return await response.Content.ReadFromJsonAsync<CreateQRCodeDto>() ?? default!;
     }
 
@@ -143,6 +163,16 @@ internal class MiniProgramService : IMiniProgramService
         var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
         var response = await _client.PostAsync($"/wxa/getwxacodeunlimit?access_token={request.AccessToken}", content);
+
+        var buffer = await response.Content.ReadAsByteArrayAsync();
+
+        if (buffer[0] == 0xFF && buffer[1] == 0xD8) // 检查JPEG头
+        {
+            return new CreateQRCodeDto
+            {
+                Buffer = buffer
+            };
+        }
 
         return await response.Content.ReadFromJsonAsync<CreateQRCodeDto>() ?? default!;
     }
