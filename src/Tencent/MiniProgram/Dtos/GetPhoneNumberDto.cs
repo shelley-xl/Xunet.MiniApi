@@ -13,6 +13,7 @@ public class GetPhoneNumberDto : ErrorDto
     /// <summary>
     /// 用户手机号信息
     /// </summary>
+    [JsonPropertyName("phone_info")]
     public PhoneInfoObject? PhoneInfo { get; set; }
 
     /// <summary>
