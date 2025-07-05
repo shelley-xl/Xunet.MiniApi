@@ -11,6 +11,7 @@ namespace Xunet.MiniApi;
 public static class IServiceCollectionExtension
 {
     #region 服务是否已注册
+
     private static readonly ConcurrentDictionary<string, char> keyValuePairs = new();
     /// <summary>
     /// 服务是否已注册
@@ -20,6 +21,7 @@ public static class IServiceCollectionExtension
     /// <returns></returns>
     public static bool HasRegistered(this IServiceCollection _, string modelName)
         => !keyValuePairs.TryAdd(modelName.ToLower(), '1');
+
     #endregion
 
     #region 添加HttpContext访问对象
@@ -327,17 +329,16 @@ public static class IServiceCollectionExtension
 
     #endregion
 
-    #region 添加OpenIddict认证
+    #region 添加OpenIddict客户端
 
     /// <summary>
-    /// 添加OpenIddict认证
+    /// 添加OpenIddict客户端
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="grantTypes"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetOpenIddict(this IServiceCollection services, string[]? grantTypes = null)
+    public static IServiceCollection AddXunetOpenIddictClient(this IServiceCollection services)
     {
-        if (services.HasRegistered(nameof(AddXunetOpenIddict))) return services;
+        if (services.HasRegistered(nameof(AddXunetOpenIddictClient))) return services;
 
         var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
@@ -346,16 +347,6 @@ public static class IServiceCollectionExtension
         // 注册OpenIddict客户端
         .AddClient(options =>
         {
-            // 仅允许的授权类型
-            if (grantTypes == null || grantTypes.Length == 0)
-            {
-                grantTypes = config.GetSection("OpenIddictClientRegistration:GrantTypes").Get<string[]?>() ?? [];
-            }
-            foreach (var grantType in grantTypes)
-            {
-                options.AllowCustomFlow(grantType);
-            }
-
             // Disable token storage, which is not necessary for non-interactive flows like
             // grant_type=password, grant_type=client_credentials or grant_type=refresh_token.
             options.DisableTokenStorage();
@@ -366,14 +357,6 @@ public static class IServiceCollectionExtension
             options
             .UseSystemNetHttp()
             .SetProductInformation(Assembly.GetEntryAssembly()!);
-
-            // Add a client registration matching the client application definition in the server project.
-            options.AddRegistration(new OpenIddictClientRegistration
-            {
-                Issuer = new Uri(config["OpenIddictClientRegistration:Issuer"]!, UriKind.Absolute),
-                ClientId = config["OpenIddictClientRegistration:ClientId"],
-                ClientSecret = config["OpenIddictClientRegistration:ClientSecret"],
-            });
         })
 
         .AddValidation(options =>
@@ -390,11 +373,6 @@ public static class IServiceCollectionExtension
         services.AddAuthentication(options =>
         {
             options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-        });
-
-        services.AddHttpClient("identity-server", client =>
-        {
-            client.BaseAddress = new Uri(config["OpenIddictClientRegistration:Issuer"]!);
         });
 
         return services;

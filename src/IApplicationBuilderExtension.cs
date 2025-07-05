@@ -63,23 +63,6 @@ public static class IApplicationBuilderExtension
 
     #endregion
 
-    #region 使用认证授权
-
-    /// <summary>
-    /// 使用认证授权
-    /// </summary>
-    /// <param name="app"></param>
-    /// <returns></returns>
-    public static WebApplication UseXunetAuthentication(this WebApplication app)
-    {
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        return app;
-    }
-
-    #endregion
-
     #region 使用Swagger
 
     /// <summary>
