@@ -13,6 +13,7 @@ public static class IServiceCollectionExtension
     #region 服务是否已注册
 
     private static readonly ConcurrentDictionary<string, char> keyValuePairs = new();
+
     /// <summary>
     /// 服务是否已注册
     /// </summary>
@@ -275,9 +276,9 @@ public static class IServiceCollectionExtension
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetJwtAuth(this IServiceCollection services)
+    public static IServiceCollection AddXunetJwtBearer(this IServiceCollection services)
     {
-        if (services.HasRegistered(nameof(AddXunetJwtAuth))) return services;
+        if (services.HasRegistered(nameof(AddXunetJwtBearer))) return services;
 
         var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
