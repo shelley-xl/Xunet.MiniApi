@@ -47,7 +47,7 @@ builder.Services.AddXunetHttpContextAccessor();
 builder.Services.AddXunetHealthChecks();
 builder.Services.AddXunetSwagger();
 builder.Services.AddXunetSqliteStorage();
-builder.Services.AddXunetJwtAuth();
+builder.Services.AddXunetJwtBearer();
 builder.Services.AddXunetCors();
 builder.Services.AddXunetRateLimiter();
 builder.Services.AddXunetEventHandler();
@@ -63,9 +63,10 @@ app.UseXunetHttpContextAccessor();
 app.UseXunetHealthChecks();
 app.UseXunetSwagger();
 app.UseXunetStorage();
-app.UseXunetAuthentication();
 app.UseXunetCors();
 app.UseRateLimiter();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the MiniApi request pipeline.
 
