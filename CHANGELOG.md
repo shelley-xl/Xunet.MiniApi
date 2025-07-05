@@ -1,159 +1,165 @@
+## [1.0.19](https://github.com/shelley-xl/Xunet.MiniApi/commit/a11f8825ebcf11e5a64ee96c8fb7ae04ab8fd7d6) (2025-07-05)
+
+### Features
+
+- OpenIddictå®¢æˆ·ç«¯è°ƒæ•´ã€ä¼˜åŒ–
+
 ## [1.0.18](https://github.com/shelley-xl/Xunet.MiniApi/commit/bb9e410941ba05f5a4931de4266222a9ed01da1a) (2025-06-26)
 
 ### Bug Fixes
 
-- ĞŞ¸´ÒÑÖªÎÊÌâ
+- ä¿®å¤å·²çŸ¥é—®é¢˜
 
 ## [1.0.17](https://github.com/shelley-xl/Xunet.MiniApi/commit/a5061ac890443ff630166ad9865dcbf0f9ff7d35) (2025-06-24)
 
 ### Bug Fixes
 
-- ĞŞ¸´ÒÑÖªÎÊÌâ
+- ä¿®å¤å·²çŸ¥é—®é¢˜
 
 ## [1.0.16](https://github.com/shelley-xl/Xunet.MiniApi/commit/ab2fb3a0fc5a2a9b1c760f07f6361fb8511fced0) (2025-06-24)
 
 ### Features
 
-- Î¢ĞÅ¹«ÖÚºÅ/Ğ¡³ÌĞò·şÎñÓÅ»¯
-- ½¡¿µ¼ì²éÓÅ»¯
-- ĞÂÔöSkiaSharp×é¼şÖ§³Ö
+- å¾®ä¿¡å…¬ä¼—å·/å°ç¨‹åºæœåŠ¡ä¼˜åŒ–
+- å¥åº·æ£€æŸ¥ä¼˜åŒ–
+- æ–°å¢SkiaSharpç»„ä»¶æ”¯æŒ
 
 ## [1.0.15](https://github.com/shelley-xl/Xunet.MiniApi/commit/561d74f0f64cc7093fcdafc50c041e5e4f9b43e0) (2025-06-18)
 
 ### Features
 
-- ĞÂÔöÎ¢ĞÅĞ¡³ÌĞò·şÎñ
-- Redis»º´æÖ§³Ö¼¯ÈºÄ£Ê½
+- æ–°å¢å¾®ä¿¡å°ç¨‹åºæœåŠ¡
+- Redisç¼“å­˜æ”¯æŒé›†ç¾¤æ¨¡å¼
 
 ### Bug Fixes
 
-- Î¢ĞÅ¹«ÖÚºÅ·şÎñÓÅ»¯
-- ĞŞ¸´ÒÑÖªÎÊÌâ
+- å¾®ä¿¡å…¬ä¼—å·æœåŠ¡ä¼˜åŒ–
+- ä¿®å¤å·²çŸ¥é—®é¢˜
 
 ## [1.0.14](https://github.com/shelley-xl/Xunet.MiniApi/commit/9cbb9ad06e3e5d8561c6f7b869f2640aa520aeb3) (2025-06-17)
 
 ### Features
 
-- °¢ÀïÔÆ¶ÌĞÅ·şÎñÍêÉÆ
+- é˜¿é‡Œäº‘çŸ­ä¿¡æœåŠ¡å®Œå–„
 
 ### Bug Fixes
 
-- ĞŞ¸´ÒÑÖªÎÊÌâ
+- ä¿®å¤å·²çŸ¥é—®é¢˜
 
 ## [1.0.13](https://github.com/shelley-xl/Xunet.MiniApi/commit/37288418c5f24e75e9accd5e51eb43fe61525ec8) (2025-06-16)
 
 ### Features
 
-- ĞÂÔöSqlÈÕÖ¾ÊÂ¼ş´¦ÀíÆ÷
-- ·Ö²¼Ê½»º´æÖ§³Ö´æ´¢byte[]ÀàĞÍ
-- ÌÚÑ¶ÔÆ¶ÔÏó´æ´¢·şÎñÍêÉÆ
-- ĞÂÔö.NET 9.0Ö§³Ö
+- æ–°å¢Sqlæ—¥å¿—äº‹ä»¶å¤„ç†å™¨
+- åˆ†å¸ƒå¼ç¼“å­˜æ”¯æŒå­˜å‚¨byte[]ç±»å‹
+- è…¾è®¯äº‘å¯¹è±¡å­˜å‚¨æœåŠ¡å®Œå–„
+- æ–°å¢.NET 9.0æ”¯æŒ
 
 ### Bug Fixes
 
-- ĞŞ¸´ÒÑÖªÎÊÌâ
+- ä¿®å¤å·²çŸ¥é—®é¢˜
 
 ## [1.0.12](https://github.com/shelley-xl/Xunet.MiniApi/commit/0d63f2c24e755388c4e4b733fb6f6d2f69ebb0df) (2025-06-12)
 
 ### Features
 
-- °¢ÀïÔÆ¶ÔÏó´æ´¢·şÎñÍêÉÆ
+- é˜¿é‡Œäº‘å¯¹è±¡å­˜å‚¨æœåŠ¡å®Œå–„
 
 ## [1.0.11](https://github.com/shelley-xl/Xunet.MiniApi/commit/19ac86cbe34554d7e7bd1ad4e72f91d1b687de5e) (2025-06-10)
 
 ### Features
 
-- HttpJsonÅäÖÃÖ§³Ö¶¨ÖÆ»¯
-- ĞÂÔöIgnoreSugarEntityÌØĞÔ£¬Ôö¼ÓCodeFirstÁé»îĞÔ
-- ĞÂÔö°¢ÀïÔÆ¶ÌĞÅ·şÎñ¡¢¶ÔÏó´æ´¢·şÎñ½Ó¿Ú
-- ĞÂÔöÌÚÑ¶ÔÆ¶ÌĞÅ·şÎñ¡¢¶ÔÏó´æ´¢·şÎñ½Ó¿Ú
+- HttpJsoné…ç½®æ”¯æŒå®šåˆ¶åŒ–
+- æ–°å¢IgnoreSugarEntityç‰¹æ€§ï¼Œå¢åŠ CodeFirstçµæ´»æ€§
+- æ–°å¢é˜¿é‡Œäº‘çŸ­ä¿¡æœåŠ¡ã€å¯¹è±¡å­˜å‚¨æœåŠ¡æ¥å£
+- æ–°å¢è…¾è®¯äº‘çŸ­ä¿¡æœåŠ¡ã€å¯¹è±¡å­˜å‚¨æœåŠ¡æ¥å£
 
 ### Bug Fixes
 
-- ĞŞ¸´ÒÑÖªÎÊÌâ
-- Î¢ĞÅ¹«ÖÚºÅ·şÎñÓÅ»¯
+- ä¿®å¤å·²çŸ¥é—®é¢˜
+- å¾®ä¿¡å…¬ä¼—å·æœåŠ¡ä¼˜åŒ–
 
 ## [1.0.10](https://github.com/shelley-xl/Xunet.MiniApi/commit/9c577c340d396c4b0bc302afcfcfb191bca7d620) (2025-06-09)
 
 ### Features
 
-- ·Ö²¼Ê½»º´æÓÅ»¯£ºkeyÖ§³Ö×Ô¶¨ÒåÇ°×º
+- åˆ†å¸ƒå¼ç¼“å­˜ä¼˜åŒ–ï¼škeyæ”¯æŒè‡ªå®šä¹‰å‰ç¼€
 
 ## [1.0.9](https://github.com/shelley-xl/Xunet.MiniApi/commit/4d8ec4715e24870cda0019d259033ecd7c65f4d2) (2025-06-04)
 
 ### Features
 
-- ²éÑ¯²ÎÊıÌØĞÔÓÅ»¯
-- ²ÎÊıÇ©ÃûÑéÖ¤ÖĞ¼ä¼ş
+- æŸ¥è¯¢å‚æ•°ç‰¹æ€§ä¼˜åŒ–
+- å‚æ•°ç­¾åéªŒè¯ä¸­é—´ä»¶
 
 ### Bug Fixes
 
-- ĞŞ¸´ÒÑÖªÎÊÌâ
+- ä¿®å¤å·²çŸ¥é—®é¢˜
 
 ## [1.0.8](https://github.com/shelley-xl/Xunet.MiniApi/commit/e3a95a977da7dbe489de4eacd0b923d7b91b61ef) (2025-06-04)
 
 ### Features
 
-- Êı¾İ²éÑ¯ĞÂÔö·Ö²¼Ê½»º´æÖ§³Ö
-- Êı¾İ´æ´¢ĞÂÔö¶ÁĞ´·ÖÀë
-- Êı¾İ´æ´¢ÓÅ»¯
+- æ•°æ®æŸ¥è¯¢æ–°å¢åˆ†å¸ƒå¼ç¼“å­˜æ”¯æŒ
+- æ•°æ®å­˜å‚¨æ–°å¢è¯»å†™åˆ†ç¦»
+- æ•°æ®å­˜å‚¨ä¼˜åŒ–
 
 ### Bug Fixes
 
-- ĞŞ¸´ÒÑÖªÎÊÌâ
+- ä¿®å¤å·²çŸ¥é—®é¢˜
 
 ## [1.0.7](https://github.com/shelley-xl/Xunet.MiniApi/commit/c1b051bc75ffa1cbbb08bf2956322fc3db8c1715) (2025-06-03)
 
 ### Bug Fixes
 
-- ĞŞ¸´Î¢ĞÅ¹«ÖÚºÅAPI¿Í»§¶Ë·µ»ØÖµÎÊÌâ
+- ä¿®å¤å¾®ä¿¡å…¬ä¼—å·APIå®¢æˆ·ç«¯è¿”å›å€¼é—®é¢˜
 
 ## [1.0.6](https://github.com/shelley-xl/Xunet.MiniApi/commit/8cafbccea244201244cc3b29d55eb264582195e4) (2025-06-03)
 
 ### Features
 
-- ĞÂÔöÎ¢ĞÅ¹«ÖÚºÅAPI¿Í»§¶Ë
+- æ–°å¢å¾®ä¿¡å…¬ä¼—å·APIå®¢æˆ·ç«¯
 
 ## [1.0.5](https://github.com/shelley-xl/Xunet.MiniApi/commit/e2b6df5ed9a3e4bccda539b560c754995435678a) (2025-06-03)
 
 ### Bug Fixes
 
-- ĞŞ¸´OpenIddict²ÎÊıÎÊÌâ
+- ä¿®å¤OpenIddictå‚æ•°é—®é¢˜
 
 ## [1.0.4](https://github.com/shelley-xl/Xunet.MiniApi/commit/640500840758efc4fd182d73db69ba48ff0e195b) (2025-06-03)
 
 ### Bug Fixes
 
-- ĞŞ¸´SwaggerÎÄµµÎŞ·¨Õı³£ÏÔÊ¾ÎÊÌâ
+- ä¿®å¤Swaggeræ–‡æ¡£æ— æ³•æ­£å¸¸æ˜¾ç¤ºé—®é¢˜
 
 ## [1.0.3](https://github.com/shelley-xl/Xunet.MiniApi/commit/cf9b4d30151f9adbcf0c700035b0a1280ac3bd5c) (2025-06-03)
 
 ### Features
 
-- Êı¾İ´æ´¢¡¢SwaggerÖ§³ÖÅäÖÃÎÄ¼ş¶ÁÈ¡
-- ²âÊÔÏîÄ¿ÓÅ»¯
+- æ•°æ®å­˜å‚¨ã€Swaggeræ”¯æŒé…ç½®æ–‡ä»¶è¯»å–
+- æµ‹è¯•é¡¹ç›®ä¼˜åŒ–
 
 ## [1.0.2](https://github.com/shelley-xl/Xunet.MiniApi/commit/fe80335269bf78fa1da822d57452367ae60eea39) (2025-05-30)
 
 ### Features
-- ÏîÄ¿ÖØ¹¹¡¢ÓÅ»¯¡¢ÍêÉÆ
-- ĞÂÔöÇëÇó¡¢Òì³£ÈÕÖ¾ÊÂ¼ş´¦ÀíÆ÷
+- é¡¹ç›®é‡æ„ã€ä¼˜åŒ–ã€å®Œå–„
+- æ–°å¢è¯·æ±‚ã€å¼‚å¸¸æ—¥å¿—äº‹ä»¶å¤„ç†å™¨
 
 ## [1.0.1](https://github.com/shelley-xl/Xunet.MiniApi/commit/14d573522d0bc8e1bf6785be94454a18a3d18d40) (2025-04-18)
 
 ### Features
 
-- ×îÇáÁ¿µÄMinimal API
-- Í³Ò»µÄ½Ó¿ÚÏìÓ¦¸ñÊ½·µ»Ø
-- ×Ô¶¨ÒåÒì³£´¦ÀíºÍÊı¾İ³Ö¾Ã»¯
-- ×Ô¶¨ÒåÇëÇó´¦ÀíÖĞ¼ä¼ş
-- ²ÎÊıÇ©ÃûÖĞ¼ä¼ş
-- ÄÚÖÃ½¡¿µ¼ì²éÂ·ÓÉ
-- »ùÓÚSystem.Text.JsonµÄĞòÁĞ»¯ºÍ·´ĞòÁĞ»¯
-- Ö§³ÖSqlite¡¢MySql¡¢SqlServerµÈÖ÷Á÷Êı¾İ¿â
-- Swagger½Ó¿ÚÎÄµµ
-- ²ÎÊı×Ô¶¯ÑéÖ¤
-- ÈÏÖ¤ºÍÊÚÈ¨
-- ÊÚÈ¨²ßÂÔÖ§³Ö
-- ÏŞÁ÷²ßÂÔÖ§³Ö
-- ¿çÓò²ßÂÔÖ§³Ö
+- æœ€è½»é‡çš„Minimal API
+- ç»Ÿä¸€çš„æ¥å£å“åº”æ ¼å¼è¿”å›
+- è‡ªå®šä¹‰å¼‚å¸¸å¤„ç†å’Œæ•°æ®æŒä¹…åŒ–
+- è‡ªå®šä¹‰è¯·æ±‚å¤„ç†ä¸­é—´ä»¶
+- å‚æ•°ç­¾åä¸­é—´ä»¶
+- å†…ç½®å¥åº·æ£€æŸ¥è·¯ç”±
+- åŸºäºSystem.Text.Jsonçš„åºåˆ—åŒ–å’Œååºåˆ—åŒ–
+- æ”¯æŒSqliteã€MySqlã€SqlServerç­‰ä¸»æµæ•°æ®åº“
+- Swaggeræ¥å£æ–‡æ¡£
+- å‚æ•°è‡ªåŠ¨éªŒè¯
+- è®¤è¯å’Œæˆæƒ
+- æˆæƒç­–ç•¥æ”¯æŒ
+- é™æµç­–ç•¥æ”¯æŒ
+- è·¨åŸŸç­–ç•¥æ”¯æŒ
