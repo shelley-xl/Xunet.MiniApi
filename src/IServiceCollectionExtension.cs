@@ -376,6 +376,8 @@ public static class IServiceCollectionExtension
             options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
         });
 
+        services.AddAuthorizationBuilder();
+
         return services;
     }
 
