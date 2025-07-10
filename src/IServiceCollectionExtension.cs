@@ -348,6 +348,36 @@ public static class IServiceCollectionExtension
         // 注册OpenIddict客户端
         .AddClient(options =>
         {
+            // 允许的授权类型
+            var grantTypes = config.GetSection("OpenIddictClient:GrantTypes").Get<string[]>() ?? [];
+            foreach (var grantType in grantTypes)
+            {
+                switch (grantType)
+                {
+                    case OpenIddict.Abstractions.OpenIddictConstants.GrantTypes.ClientCredentials:
+                        options.AllowClientCredentialsFlow();
+                        break;
+                    case OpenIddict.Abstractions.OpenIddictConstants.GrantTypes.Password:
+                        options.AllowPasswordFlow();
+                        break;
+                    case OpenIddict.Abstractions.OpenIddictConstants.GrantTypes.AuthorizationCode:
+                        options.AllowAuthorizationCodeFlow();
+                        break;
+                    case OpenIddict.Abstractions.OpenIddictConstants.GrantTypes.RefreshToken:
+                        options.AllowRefreshTokenFlow();
+                        break;
+                    case OpenIddict.Abstractions.OpenIddictConstants.GrantTypes.DeviceCode:
+                        options.AllowDeviceAuthorizationFlow();
+                        break;
+                    case OpenIddict.Abstractions.OpenIddictConstants.GrantTypes.Implicit:
+                        options.AllowImplicitFlow();
+                        break;
+                    default:
+                        options.AllowCustomFlow(grantType);
+                        break;
+                }
+            }
+
             // Disable token storage, which is not necessary for non-interactive flows like
             // grant_type=password, grant_type=client_credentials or grant_type=refresh_token.
             options.DisableTokenStorage();
@@ -358,13 +388,26 @@ public static class IServiceCollectionExtension
             options
             .UseSystemNetHttp()
             .SetProductInformation(Assembly.GetEntryAssembly()!);
+
+            // 是否使用客户端注册
+            var useRegistration = config.GetSection("OpenIddictClient:UseRegistration").Get<bool?>() ?? false;
+            if (useRegistration)
+            {
+                // 注册客户端
+                options.AddRegistration(new OpenIddictClientRegistration
+                {
+                    ClientId = config["OpenIddictClient:ClientId"]!,
+                    ClientSecret = config["OpenIddictClient:ClientSecret"]!,
+                    Issuer = new Uri(config["OpenIddictClient:Issuer"]!),
+                });
+            }
         })
 
         .AddValidation(options =>
         {
-            options.SetIssuer(new Uri(config["OpenIddictClientRegistration:Issuer"]!, UriKind.Absolute));
+            options.SetIssuer(new Uri(config["OpenIddictClient:Issuer"]!, UriKind.Absolute));
 
-            options.AddEncryptionKey(new SymmetricSecurityKey(Convert.FromBase64String(config["OpenIddictClientRegistration:EncryptionKey"]!)));
+            options.AddEncryptionKey(new SymmetricSecurityKey(Convert.FromBase64String(config["OpenIddictClient:EncryptionKey"]!)));
 
             options.UseSystemNetHttp();
 
