@@ -405,7 +405,7 @@ public static class IServiceCollectionExtension
 
         .AddValidation(options =>
         {
-            options.SetIssuer(new Uri(config["OpenIddictClient:Issuer"]!, UriKind.Absolute));
+            options.SetIssuer(new Uri(config["OpenIddictClient:Issuer"]!));
 
             options.AddEncryptionKey(new SymmetricSecurityKey(Convert.FromBase64String(config["OpenIddictClient:EncryptionKey"]!)));
 
@@ -420,6 +420,11 @@ public static class IServiceCollectionExtension
         });
 
         services.AddAuthorizationBuilder();
+
+        services.AddHttpClient("identity-client", client =>
+        {
+            client.BaseAddress = new Uri(config["OpenIddictClient:Issuer"]!);
+        });
 
         return services;
     }
