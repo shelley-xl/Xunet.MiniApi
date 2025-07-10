@@ -1,3 +1,9 @@
+## [1.0.22](https://github.com/shelley-xl/Xunet.MiniApi/commit/6f3f89aa27eee8cbe4f8fc26029b54673d095309) (2025-07-11)
+
+### Features
+
+- 新增OpenIddict客户端支持
+
 ## [1.0.21](https://github.com/shelley-xl/Xunet.MiniApi/commit/116fed68e645aa3744c1bfc4470dac31df7d6e68) (2025-07-10)
 
 ### Features
