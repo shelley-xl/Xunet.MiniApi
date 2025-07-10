@@ -1,3 +1,13 @@
+## [1.0.21](https://github.com/shelley-xl/Xunet.MiniApi/commit/116fed68e645aa3744c1bfc4470dac31df7d6e68) (2025-07-10)
+
+### Features
+
+- OpenIddict优化调整
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.20](https://github.com/shelley-xl/Xunet.MiniApi/commit/da7cdecacb8f39b68b2dd03fece33590e17d0422) (2025-07-05)
 
 ### Bug Fixes
