@@ -1,3 +1,10 @@
+## [1.0.24](https://github.com/shelley-xl/Xunet.MiniApi/commit/50dbffd3d6ffbedb1c6cd725706470d14eda430d) (2025-07-12)
+
+### Features
+
+- 新增图形验证码辅助类
+- OpenIddict客户端优化
+
 ## [1.0.23](https://github.com/shelley-xl/Xunet.MiniApi/commit/cd4f0aab9e7c09ccaa425ee8912744564bf416fb) (2025-07-11)
 
 ### Bug Fixes
