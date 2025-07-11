@@ -19,6 +19,20 @@ public static class OpenIddictClientServiceExtension
 
     static string ClientSecret => Configuration["OpenIddictClient:ClientSecret"]!;
 
+    static JsonSerializerOptions JsonOptions
+    {
+        get
+        {
+            return new JsonSerializerOptions
+            {
+                // 不区分大小写
+                PropertyNameCaseInsensitive = true,
+                // 编码
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            };
+        }
+    }
+
     static HttpClient IdentityClient
     {
         get
@@ -42,25 +56,9 @@ public static class OpenIddictClientServiceExtension
 
         var response = await IdentityClient.PostAsync("/connect/token", content, cancellationToken);
 
-        response.EnsureSuccessStatusCode();
-
         var result = await response.Content.ReadFromJsonAsync<OpenIddictResponse>(JsonOptions, cancellationToken);
 
         return result;
-    }
-
-    static JsonSerializerOptions JsonOptions
-    {
-        get
-        {
-            return new JsonSerializerOptions
-            {
-                // 不区分大小写
-                PropertyNameCaseInsensitive = true,
-                // 编码
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            };
-        }
     }
 
     /// <summary>
@@ -73,8 +71,6 @@ public static class OpenIddictClientServiceExtension
     public static async Task<JsonNode?> RequestEndpointGetAsync(this OpenIddictClientService _, string path, CancellationToken cancellationToken = default)
     {
         var response = await IdentityClient.GetAsync(path, cancellationToken);
-
-        response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
 
@@ -102,7 +98,73 @@ public static class OpenIddictClientServiceExtension
 
         var response = await IdentityClient.PostAsync(path, content, cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
+
+        return result;
+    }
+
+    /// <summary>
+    /// 发送Put请求
+    /// </summary>
+    /// <param name="_"></param>
+    /// <param name="path"></param>
+    /// <param name="body"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async Task<JsonNode?> RequestEndpointPutAsync(this OpenIddictClientService _, string path, object? body = null, CancellationToken cancellationToken = default)
+    {
+        HttpContent? content = null;
+
+        if (body != null)
+        {
+            var json = JsonSerializer.Serialize(body);
+
+            content = new StringContent(json, Encoding.UTF8, "application/json");
+        }
+
+        var response = await IdentityClient.PutAsync(path, content, cancellationToken);
+
+        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
+
+        return result;
+    }
+
+    /// <summary>
+    /// 发送Patch请求
+    /// </summary>
+    /// <param name="_"></param>
+    /// <param name="path"></param>
+    /// <param name="body"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async Task<JsonNode?> RequestEndpointPatchAsync(this OpenIddictClientService _, string path, object? body = null, CancellationToken cancellationToken = default)
+    {
+        HttpContent? content = null;
+
+        if (body != null)
+        {
+            var json = JsonSerializer.Serialize(body);
+
+            content = new StringContent(json, Encoding.UTF8, "application/json");
+        }
+
+        var response = await IdentityClient.PatchAsync(path, content, cancellationToken);
+
+        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
+
+        return result;
+    }
+
+    /// <summary>
+    /// 发送Delete请求 
+    /// </summary>
+    /// <param name="_"></param>
+    /// <param name="path"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async Task<JsonNode?> RequestEndpointDeleteAsync(this OpenIddictClientService _, string path, CancellationToken cancellationToken = default)
+    {
+        var response = await IdentityClient.DeleteAsync(path, cancellationToken);
 
         var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
 
