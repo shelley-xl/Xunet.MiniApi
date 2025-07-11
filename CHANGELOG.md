@@ -1,3 +1,9 @@
+## [1.0.23](https://github.com/shelley-xl/Xunet.MiniApi/commit/cd4f0aab9e7c09ccaa425ee8912744564bf416fb) (2025-07-11)
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.22](https://github.com/shelley-xl/Xunet.MiniApi/commit/6f3f89aa27eee8cbe4f8fc26029b54673d095309) (2025-07-11)
 
 ### Features
