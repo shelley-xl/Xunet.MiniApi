@@ -5,9 +5,6 @@
 
 namespace Xunet.MiniApi.Extensions;
 
-using OpenIddict.Abstractions;
-using static OpenIddict.Abstractions.OpenIddictConstants;
-
 /// <summary>
 /// 认证中心客户端扩展类
 /// </summary>
@@ -18,20 +15,6 @@ public static class OpenIddictClientServiceExtension
     static string ClientId => Configuration["OpenIddictClient:ClientId"]!;
 
     static string ClientSecret => Configuration["OpenIddictClient:ClientSecret"]!;
-
-    static JsonSerializerOptions JsonOptions
-    {
-        get
-        {
-            return new JsonSerializerOptions
-            {
-                // 不区分大小写
-                PropertyNameCaseInsensitive = true,
-                // 编码
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            };
-        }
-    }
 
     static HttpClient IdentityClient
     {
@@ -45,7 +28,16 @@ public static class OpenIddictClientServiceExtension
         }
     }
 
-    static async Task<OpenIddictResponse?> RequestTokenAsync(List<KeyValuePair<string, string?>> parameters, IEnumerable<KeyValuePair<string, string?>>? pairs = null, CancellationToken cancellationToken = default)
+    static HttpClient AddAuthorizationHeader(this HttpClient client, string? token = null)
+    {
+        if (string.IsNullOrEmpty(token)) return client;
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        return client;
+    }
+
+    static async Task<OpenIddict.Abstractions.OpenIddictResponse?> RequestTokenAsync(List<KeyValuePair<string, string?>> parameters, IEnumerable<KeyValuePair<string, string?>>? pairs = null, CancellationToken cancellationToken = default)
     {
         if (pairs != null && pairs.Any())
         {
@@ -56,7 +48,7 @@ public static class OpenIddictClientServiceExtension
 
         var response = await IdentityClient.PostAsync("/connect/token", content, cancellationToken);
 
-        var result = await response.Content.ReadFromJsonAsync<OpenIddictResponse>(JsonOptions, cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<OpenIddict.Abstractions.OpenIddictResponse>(cancellationToken);
 
         return result;
     }
@@ -66,13 +58,14 @@ public static class OpenIddictClientServiceExtension
     /// </summary>
     /// <param name="_"></param>
     /// <param name="path"></param>
+    /// <param name="token"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<JsonNode?> RequestEndpointGetAsync(this OpenIddictClientService _, string path, CancellationToken cancellationToken = default)
+    public static async Task<JsonNode?> RequestEndpointGetAsync(this OpenIddictClientService _, string path, string? token = null, CancellationToken cancellationToken = default)
     {
-        var response = await IdentityClient.GetAsync(path, cancellationToken);
+        var response = await IdentityClient.AddAuthorizationHeader(token).GetAsync(path, cancellationToken);
 
-        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(cancellationToken);
 
         return result;
     }
@@ -83,9 +76,10 @@ public static class OpenIddictClientServiceExtension
     /// <param name="_"></param>
     /// <param name="path"></param>
     /// <param name="body"></param>
+    /// <param name="token"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<JsonNode?> RequestEndpointPostAsync(this OpenIddictClientService _, string path, object? body = null, CancellationToken cancellationToken = default)
+    public static async Task<JsonNode?> RequestEndpointPostAsync(this OpenIddictClientService _, string path, object? body = null, string? token = null, CancellationToken cancellationToken = default)
     {
         HttpContent? content = null;
 
@@ -96,9 +90,9 @@ public static class OpenIddictClientServiceExtension
             content = new StringContent(json, Encoding.UTF8, "application/json");
         }
 
-        var response = await IdentityClient.PostAsync(path, content, cancellationToken);
+        var response = await IdentityClient.AddAuthorizationHeader(token).PostAsync(path, content, cancellationToken);
 
-        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(cancellationToken);
 
         return result;
     }
@@ -109,9 +103,10 @@ public static class OpenIddictClientServiceExtension
     /// <param name="_"></param>
     /// <param name="path"></param>
     /// <param name="body"></param>
+    /// <param name="token"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<JsonNode?> RequestEndpointPutAsync(this OpenIddictClientService _, string path, object? body = null, CancellationToken cancellationToken = default)
+    public static async Task<JsonNode?> RequestEndpointPutAsync(this OpenIddictClientService _, string path, object? body = null, string? token = null, CancellationToken cancellationToken = default)
     {
         HttpContent? content = null;
 
@@ -122,9 +117,9 @@ public static class OpenIddictClientServiceExtension
             content = new StringContent(json, Encoding.UTF8, "application/json");
         }
 
-        var response = await IdentityClient.PutAsync(path, content, cancellationToken);
+        var response = await IdentityClient.AddAuthorizationHeader(token).PutAsync(path, content, cancellationToken);
 
-        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(cancellationToken);
 
         return result;
     }
@@ -135,9 +130,10 @@ public static class OpenIddictClientServiceExtension
     /// <param name="_"></param>
     /// <param name="path"></param>
     /// <param name="body"></param>
+    /// <param name="token"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<JsonNode?> RequestEndpointPatchAsync(this OpenIddictClientService _, string path, object? body = null, CancellationToken cancellationToken = default)
+    public static async Task<JsonNode?> RequestEndpointPatchAsync(this OpenIddictClientService _, string path, object? body = null, string? token = null, CancellationToken cancellationToken = default)
     {
         HttpContent? content = null;
 
@@ -148,9 +144,9 @@ public static class OpenIddictClientServiceExtension
             content = new StringContent(json, Encoding.UTF8, "application/json");
         }
 
-        var response = await IdentityClient.PatchAsync(path, content, cancellationToken);
+        var response = await IdentityClient.AddAuthorizationHeader(token).PatchAsync(path, content, cancellationToken);
 
-        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(cancellationToken);
 
         return result;
     }
@@ -160,13 +156,14 @@ public static class OpenIddictClientServiceExtension
     /// </summary>
     /// <param name="_"></param>
     /// <param name="path"></param>
+    /// <param name="token"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<JsonNode?> RequestEndpointDeleteAsync(this OpenIddictClientService _, string path, CancellationToken cancellationToken = default)
+    public static async Task<JsonNode?> RequestEndpointDeleteAsync(this OpenIddictClientService _, string path, string? token = null, CancellationToken cancellationToken = default)
     {
-        var response = await IdentityClient.DeleteAsync(path, cancellationToken);
+        var response = await IdentityClient.AddAuthorizationHeader(token).DeleteAsync(path, cancellationToken);
 
-        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(JsonOptions, cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<JsonNode?>(cancellationToken);
 
         return result;
     }
@@ -178,11 +175,11 @@ public static class OpenIddictClientServiceExtension
     /// <param name="pairs"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<OpenIddictResponse?> RequestClientCredentialsTokenAsync(this OpenIddictClientService _, IEnumerable<KeyValuePair<string, string?>>? pairs = null, CancellationToken cancellationToken = default)
+    public static async Task<OpenIddict.Abstractions.OpenIddictResponse?> RequestClientCredentialsTokenAsync(this OpenIddictClientService _, IEnumerable<KeyValuePair<string, string?>>? pairs = null, CancellationToken cancellationToken = default)
     {
         var parameters = new List<KeyValuePair<string, string?>>
         {
-            new("grant_type", GrantTypes.ClientCredentials),
+            new("grant_type", OpenIddict.Abstractions.OpenIddictConstants.GrantTypes.ClientCredentials),
             new("client_id", ClientId),
             new("client_secret", ClientSecret),
         };
@@ -201,11 +198,11 @@ public static class OpenIddictClientServiceExtension
     /// <param name="pairs"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<OpenIddictResponse?> RequestPasswordTokenAsync(this OpenIddictClientService _, string userName, string password, IEnumerable<KeyValuePair<string, string?>>? pairs = null, CancellationToken cancellationToken = default)
+    public static async Task<OpenIddict.Abstractions.OpenIddictResponse?> RequestPasswordTokenAsync(this OpenIddictClientService _, string userName, string password, IEnumerable<KeyValuePair<string, string?>>? pairs = null, CancellationToken cancellationToken = default)
     {
         var parameters = new List<KeyValuePair<string, string?>>
         {
-            new("grant_type", GrantTypes.Password),
+            new("grant_type", OpenIddict.Abstractions.OpenIddictConstants.GrantTypes.Password),
             new("client_id", ClientId),
             new("client_secret", ClientSecret),
             new("username", userName),
@@ -225,7 +222,7 @@ public static class OpenIddictClientServiceExtension
     /// <param name="pairs"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<OpenIddictResponse?> RequestCustomTokenAsync(this OpenIddictClientService _, string grantType, IEnumerable<KeyValuePair<string, string?>>? pairs = null, CancellationToken cancellationToken = default)
+    public static async Task<OpenIddict.Abstractions.OpenIddictResponse?> RequestCustomTokenAsync(this OpenIddictClientService _, string grantType, IEnumerable<KeyValuePair<string, string?>>? pairs = null, CancellationToken cancellationToken = default)
     {
         var parameters = new List<KeyValuePair<string, string?>>
         {
