@@ -1,45 +1,45 @@
-﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THIS FILE IS PART OF Xunet.MiniApi PROJECT
 // THE Xunet.MiniApi PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Middlewares;
+namespace Xunet.MiniApi.Filters;
 
 /// <summary>
-/// 参数签名中间件
+/// 签名验证过滤器
 /// </summary>
-/// <param name="next">下一个中间件</param>
-public class SignValidatorMiddleware(RequestDelegate next)
+public class SignValidationFilter : IEndpointFilter
 {
     /// <summary>
     /// 处理方法
     /// </summary>
-    /// <param name="context">请求上下文</param>
+    /// <param name="context"></param>
+    /// <param name="next"></param>
     /// <returns></returns>
-    public async Task InvokeAsync(HttpContext context)
+    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        var config = context.RequestServices.GetRequiredService<IConfiguration>();
+        var config = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
         var secretKey = config["SignSettings:SecretKey"] ?? throw new ConfigurationException("未配置参数签名SecretKey");
         var parameters = new Dictionary<string, string?>();
         // 收集body参数
-        context.Request.EnableBuffering();
-        using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, false, leaveOpen: true);
+        context.HttpContext.Request.EnableBuffering();
+        using var reader = new StreamReader(context.HttpContext.Request.Body, Encoding.UTF8, false, leaveOpen: true);
         var requestBody = await reader.ReadToEndAsync();
-        context.Request.Body.Position = 0;
+        context.HttpContext.Request.Body.Position = 0;
         var bodyDic = JsonSerializer.Deserialize<Dictionary<string, object>>(requestBody);
         foreach (var (key, value) in bodyDic ?? [])
         {
             parameters.Add(key, value.ToString());
         }
         // 收集查询参数
-        foreach (var (key, value) in context.Request.Query)
+        foreach (var (key, value) in context.HttpContext.Request.Query)
         {
             parameters.Add(key, value.ToString());
         }
         // 收集表单参数
-        if (context.Request.HasFormContentType)
+        if (context.HttpContext.Request.HasFormContentType)
         {
-            foreach (var (key, value) in context.Request.Form)
+            foreach (var (key, value) in context.HttpContext.Request.Form)
             {
                 parameters.Add(key, value.ToString());
             }
@@ -47,29 +47,29 @@ public class SignValidatorMiddleware(RequestDelegate next)
         // 获取客户端签名
         if (!parameters.TryGetValue("sign", out var clientSign) || string.IsNullOrEmpty(clientSign))
         {
-            await SignErrorResult(context);
-            return;
+            await SignErrorResult(context.HttpContext);
+            return await next(context);
         }
         // 移除签名参数
         parameters.Remove("sign");
         // 验证时间戳
         if (!parameters.TryGetValue("timestamp", out var timestampStr) || !long.TryParse(timestampStr, out var timestamp) || !ValidateTimestamp(timestamp))
         {
-            await SignErrorResult(context);
-            return;
+            await SignErrorResult(context.HttpContext);
+            return await next(context);
         }
         // 获取nonce
         if (!parameters.TryGetValue("nonce", out var nonce) || string.IsNullOrEmpty(nonce))
         {
-            await SignErrorResult(context);
-            return;
+            await SignErrorResult(context.HttpContext);
+            return await next(context);
         }
         // 验证nonce
-        var cache = context.RequestServices.GetRequiredService<IMemoryCache>();
+        var cache = context.HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
         if (cache.TryGetValue(nonce, out _))
         {
-            await SignErrorResult(context);
-            return;
+            await SignErrorResult(context.HttpContext);
+            return await next(context);
         }
         // 排序并编码参数
         var sortedParams = parameters.OrderBy(p => p.Key).ToDictionary(p => p.Key, p => Uri.EscapeDataString(p.Value?.ToString() ?? ""));
@@ -79,12 +79,12 @@ public class SignValidatorMiddleware(RequestDelegate next)
         var serverSign = ComputeSignature(signString, secretKey);
         if (!SecureCompare(serverSign, clientSign))
         {
-            await SignErrorResult(context);
-            return;
+            await SignErrorResult(context.HttpContext);
+            return await next(context);
         }
         // nonce缓存
         cache.Set(nonce, true, TimeSpan.FromMinutes(5));
-        await next(context);
+        return await next(context);
     }
     // 返回参数签名错误
     static async Task SignErrorResult(HttpContext context)

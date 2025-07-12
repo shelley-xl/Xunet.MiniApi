@@ -36,24 +36,27 @@ public class CustomExceptionMiddleware(RequestDelegate next)
             var eventHandler = context.RequestServices.GetService<IExceptionLogEventHandler>();
             eventHandler?.InvokeAsync(context, ex, string.IsNullOrEmpty(requestBody) ? null : requestBody);
 
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            if (context.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
+            if (!context.Response.HasStarted)
             {
-                // 开发环境输出详细异常信息
-                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                if (context.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
                 {
-                    Code = XunetCode.SystemException,
-                    Message = ex.ToString(),
-                });
-            }
-            else
-            {
-                // 非开发环境输出友好提示信息
-                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                    // 开发环境输出详细异常信息
+                    await context.Response.WriteAsJsonAsync(new OperateResultDto
+                    {
+                        Code = XunetCode.SystemException,
+                        Message = ex.ToString(),
+                    });
+                }
+                else
                 {
-                    Code = XunetCode.SystemException,
-                    Message = "系统异常，请联系管理员！",
-                });
+                    // 非开发环境输出友好提示信息
+                    await context.Response.WriteAsJsonAsync(new OperateResultDto
+                    {
+                        Code = XunetCode.SystemException,
+                        Message = "系统异常，请联系管理员！",
+                    });
+                }
             }
         }
     }

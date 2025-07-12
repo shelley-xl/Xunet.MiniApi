@@ -189,9 +189,9 @@ public static class IApplicationBuilderExtension
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IApplicationBuilder UseXunetSignValidator(this IApplicationBuilder builder)
+    public static IApplicationBuilder UseXunetSignValidation(this IApplicationBuilder builder)
     {
-        return builder.UseMiddleware<SignValidatorMiddleware>();
+        return builder.UseMiddleware<SignValidationMiddleware>();
     }
 
     #endregion

@@ -38,6 +38,5 @@ public static class RateLimiterPolicy
     /// <summary>
     /// 自定义短信验证码限流器
     /// </summary>
-
     public const string SmsCode = "sms_code";
 }

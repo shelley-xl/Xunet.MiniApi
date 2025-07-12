@@ -34,50 +34,53 @@ public class RequestHandlerMiddleware(RequestDelegate next)
             // 执行下一个中间件
             await next(context);
 
-            switch (context.Response.StatusCode)
+            if (!context.Response.HasStarted)
             {
-                case StatusCodes.Status400BadRequest:
-                    // 400 无效的请求
-                    await context.Response.WriteAsJsonAsync(new OperateResultDto
-                    {
-                        Code = XunetCode.BadRequest,
-                        Message = "无效的请求"
-                    });
-                    break;
-                case StatusCodes.Status401Unauthorized:
-                    // 401 未授权
-                    await context.Response.WriteAsJsonAsync(new OperateResultDto
-                    {
-                        Code = XunetCode.Unauthorized,
-                        Message = "未授权"
-                    });
-                    break;
-                case StatusCodes.Status403Forbidden:
-                    // 403 禁止访问
-                    await context.Response.WriteAsJsonAsync(new OperateResultDto
-                    {
-                        Code = XunetCode.Forbidden,
-                        Message = "禁止访问"
-                    });
-                    break;
-                case StatusCodes.Status404NotFound:
-                    // 404 资源未找到
-                    await context.Response.WriteAsJsonAsync(new OperateResultDto
-                    {
-                        Code = XunetCode.NotFound,
-                        Message = "资源未找到"
-                    });
-                    break;
-                case StatusCodes.Status405MethodNotAllowed:
-                    // 405 方法不允许
-                    await context.Response.WriteAsJsonAsync(new OperateResultDto
-                    {
-                        Code = XunetCode.MethodNotAllowed,
-                        Message = "方法不允许"
-                    });
-                    break;
-                default:
-                    break;
+                switch (context.Response.StatusCode)
+                {
+                    case StatusCodes.Status400BadRequest:
+                        // 400 无效的请求
+                        await context.Response.WriteAsJsonAsync(new OperateResultDto
+                        {
+                            Code = XunetCode.BadRequest,
+                            Message = "无效的请求"
+                        });
+                        break;
+                    case StatusCodes.Status401Unauthorized:
+                        // 401 未授权
+                        await context.Response.WriteAsJsonAsync(new OperateResultDto
+                        {
+                            Code = XunetCode.Unauthorized,
+                            Message = "未授权"
+                        });
+                        break;
+                    case StatusCodes.Status403Forbidden:
+                        // 403 禁止访问
+                        await context.Response.WriteAsJsonAsync(new OperateResultDto
+                        {
+                            Code = XunetCode.Forbidden,
+                            Message = "禁止访问"
+                        });
+                        break;
+                    case StatusCodes.Status404NotFound:
+                        // 404 资源未找到
+                        await context.Response.WriteAsJsonAsync(new OperateResultDto
+                        {
+                            Code = XunetCode.NotFound,
+                            Message = "资源未找到"
+                        });
+                        break;
+                    case StatusCodes.Status405MethodNotAllowed:
+                        // 405 方法不允许
+                        await context.Response.WriteAsJsonAsync(new OperateResultDto
+                        {
+                            Code = XunetCode.MethodNotAllowed,
+                            Message = "方法不允许"
+                        });
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         finally

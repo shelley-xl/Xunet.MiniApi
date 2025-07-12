@@ -206,15 +206,9 @@ public static class IServiceCollectionExtension
             // 同一个IP限制10个请求每分钟
             limiterOptions.AddPolicy(policyName: RateLimiterPolicy.VeryCode, context =>
             {
-                var requestIP = XunetHttpContext.ClientIPAddress;
+                var partitionKey = XunetHttpContext.ClientIPAddress;
 
-                var requestPath = context.Request.Path;
-
-                var requestMethod = context.Request.Method;
-
-                var clientKey = $"{requestIP}.{requestPath}.{requestMethod}";
-
-                return RateLimitPartition.GetFixedWindowLimiter(partitionKey: clientKey, _ => new FixedWindowRateLimiterOptions
+                return RateLimitPartition.GetFixedWindowLimiter(partitionKey: partitionKey, _ => new FixedWindowRateLimiterOptions
                 {
                     PermitLimit = 10,
                     Window = TimeSpan.FromSeconds(60),
@@ -226,14 +220,27 @@ public static class IServiceCollectionExtension
             #region 自定义限流策略 => 短信验证码限流器
             // 自定义限流策略 => 短信验证码限流器
             // 同一个手机号限制1个请求每分钟
-            limiterOptions.AddPolicy(policyName: RateLimiterPolicy.SmsCode, httpContext =>
+            limiterOptions.AddPolicy(policyName: RateLimiterPolicy.SmsCode, context =>
             {
-                var request = XunetHttpContext.Current?.Request!;
-                request.EnableBuffering();
-                var node = JsonNode.Parse(request.Body);
-                var phoneNumber = node?["phoneNumber"]?.ToString();
-                request.Body.Position = 0;
-                return RateLimitPartition.GetFixedWindowLimiter(partitionKey: phoneNumber, _ => new FixedWindowRateLimiterOptions
+                var requestIP = XunetHttpContext.ClientIPAddress;
+
+                string? phoneNumber = null;
+                if (context.Request.Method == HttpMethods.Post)
+                {
+                    context.Request.EnableBuffering();
+                    var node = JsonNode.Parse(context.Request.Body);
+                    phoneNumber = node?["phone"]?.ToString();
+                    context.Request.Body.Position = 0;
+                }
+                else if (context.Request.Method == HttpMethods.Get)
+                {
+                    phoneNumber = context.Request.Query["phone"].FirstOrDefault();
+                }
+                phoneNumber ??= "0";
+
+                var partitionKey = $"{requestIP}.{phoneNumber}";
+
+                return RateLimitPartition.GetFixedWindowLimiter(partitionKey: partitionKey, _ => new FixedWindowRateLimiterOptions
                 {
                     PermitLimit = 1,
                     Window = TimeSpan.FromSeconds(60),
