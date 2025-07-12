@@ -1,3 +1,13 @@
+## [1.0.25](https://github.com/shelley-xl/Xunet.MiniApi/commit/564cedd1b94c03f7ba868b6409f93f076f70df98) (2025-07-12)
+
+### Features
+
+- 新增签名验证过滤器
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.24](https://github.com/shelley-xl/Xunet.MiniApi/commit/50dbffd3d6ffbedb1c6cd725706470d14eda430d) (2025-07-12)
 
 ### Features
