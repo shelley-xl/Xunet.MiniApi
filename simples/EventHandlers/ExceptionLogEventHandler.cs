@@ -15,9 +15,8 @@ public class ExceptionLogEventHandler : IExceptionLogEventHandler
     /// </summary>
     /// <param name="context">请求上下文</param>
     /// <param name="exception">异常信息</param>
-    /// <param name="body">请求body</param>
     /// <returns></returns>
-    public async Task InvokeAsync(HttpContext context, Exception exception, string? body)
+    public async Task InvokeAsync(HttpContext context, Exception exception)
     {
         // 忽略健康检查请求
         if (context.Request.Path == "/health/check") return;
@@ -25,6 +24,10 @@ public class ExceptionLogEventHandler : IExceptionLogEventHandler
         // ...
 
         // TODO: 记录日志
+        // 请求Id
+        // var requestId = XunetHttpContext.RequestId;
+        // 跟踪Id
+        // var traceId = XunetHttpContext.TraceId;
 
         await Task.CompletedTask;
     }

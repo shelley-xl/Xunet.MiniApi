@@ -23,7 +23,6 @@ builder.Services.AddXunetMapper();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseXunetCustomException();
 app.UseXunetRequestHandler();
 app.UseXunetHttpContextAccessor();
 app.UseXunetHealthChecks();

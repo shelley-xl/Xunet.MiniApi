@@ -17,7 +17,7 @@ public class RequestLogEventHandler : IRequestLogEventHandler
     /// <param name="body">请求body</param>
     /// <param name="duration">请求耗时</param>
     /// <returns></returns>
-    public async Task InvokeAsync(HttpContext context, string? body, long duration)
+    public async Task InvokeAsync(HttpContext context, long duration, string? body = null)
     {
         // 忽略健康检查请求
         if (context.Request.Path == "/health/check") return;
@@ -25,6 +25,10 @@ public class RequestLogEventHandler : IRequestLogEventHandler
         // ...
 
         // TODO: 记录日志
+        // 请求Id
+        // var requestId = XunetHttpContext.RequestId;
+        // 跟踪Id
+        // var traceId = XunetHttpContext.TraceId;
 
         await Task.CompletedTask;
     }
