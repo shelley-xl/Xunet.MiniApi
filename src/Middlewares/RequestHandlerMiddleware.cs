@@ -1,4 +1,4 @@
-﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+// THIS FILE IS PART OF Xunet.MiniApi PROJECT
 // THE Xunet.MiniApi PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
@@ -18,84 +18,191 @@ public class RequestHandlerMiddleware(RequestDelegate next)
     /// <returns></returns>
     public async Task InvokeAsync(HttpContext context)
     {
+        var requestEventHandler = context.RequestServices.GetService<IRequestLogEventHandler>();
+        var exceptionEventHandler = context.RequestServices.GetService<IExceptionLogEventHandler>();
+        var body = string.Empty;
+
+        try
+        {
+            // 预处理，并返回body
+            body = await PrepareHandlerAsync(requestEventHandler, context);
+
+            // 执行下一个中间件
+            await next(context);
+
+            // 状态码处理
+            await StatusCodeHandlerAsync(context);
+        }
+        catch (Exception ex)
+        {
+            // 异常处理
+            await ExceptionHandlerAsync(exceptionEventHandler, context, ex);
+        }
+        finally
+        {
+            // 请求处理
+            await RequestHandlerAsync(requestEventHandler, exceptionEventHandler, context, body);
+        }
+    }
+
+    static async Task<string?> PrepareHandlerAsync(IRequestLogEventHandler? requestEventHandler, HttpContext context)
+    {
+        // 记录请求开始时间
+        context.Items["StartTime"] = Stopwatch.StartNew();
         // 设置响应头
         var activity = context.Features?.Get<IHttpActivityFeature>()?.Activity;
         context.Response.Headers["X-Request-Id"] = context.TraceIdentifier;
         context.Response.Headers["X-Trace-Id"] = activity?.TraceId.ToHexString();
-        // 启用请求体缓冲以便多次读取
-        context.Request.EnableBuffering();
+
         // 读取请求Body
-        using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, false, leaveOpen: true);
-        var requestBody = await reader.ReadToEndAsync();
-        context.Request.Body.Position = 0;
+        if (requestEventHandler != null)
+        {
+            // 如果是文件上传请求则跳过body读取
+            if (context.Request.ContentType?.StartsWith("multipart/form-data") == true || context.Request.ContentType?.StartsWith("application/octet-stream") == true)
+            {
+                return null;
+            }
+
+            // 启用请求体缓冲以便多次读取
+            context.Request.EnableBuffering();
+            // 读取请求Body
+            using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, false, leaveOpen: true);
+            var body = await reader.ReadToEndAsync();
+            body = string.IsNullOrWhiteSpace(body) ? null : body;
+            context.Request.Body.Position = 0;
+
+            return body;
+        }
+
+        return null;
+    }
+
+    static async Task StatusCodeHandlerAsync(HttpContext context)
+    {
+        if (context.Response.HasStarted) return;
+
+        switch (context.Response.StatusCode)
+        {
+            case StatusCodes.Status400BadRequest:
+                // 400 请求无效
+                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                {
+                    Code = XunetCode.BadRequest,
+                    Message = "请求无效"
+                });
+                break;
+            case StatusCodes.Status401Unauthorized:
+                // 401 未授权
+                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                {
+                    Code = XunetCode.Unauthorized,
+                    Message = "未授权"
+                });
+                break;
+            case StatusCodes.Status403Forbidden:
+                // 403 禁止访问
+                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                {
+                    Code = XunetCode.Forbidden,
+                    Message = "禁止访问"
+                });
+                break;
+            case StatusCodes.Status404NotFound:
+                // 404 资源未找到
+                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                {
+                    Code = XunetCode.NotFound,
+                    Message = "资源未找到"
+                });
+                break;
+            case StatusCodes.Status405MethodNotAllowed:
+                // 405 方法不允许
+                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                {
+                    Code = XunetCode.MethodNotAllowed,
+                    Message = "方法不允许"
+                });
+                break;
+            case StatusCodes.Status200OK:
+                // 200 OK
+                break;
+            case StatusCodes.Status201Created:
+                // 201 创建成功
+                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                {
+                    Code = XunetCode.Created,
+                    Message = "创建成功"
+                });
+                break;
+            case StatusCodes.Status204NoContent:
+                // 204 无内容
+                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                {
+                    Code = XunetCode.NoContent,
+                    Message = "无内容"
+                });
+                break;
+            default:
+                await context.Response.WriteAsJsonAsync(new OperateResultDto
+                {
+                    Code = XunetCode.RequestError,
+                    Message = "请求错误"
+                });
+                break;
+        }
+    }
+
+    static async Task RequestHandlerAsync(IRequestLogEventHandler? requestEventHandler, IExceptionLogEventHandler? exceptionEventHandler, HttpContext context, string? body = null)
+    {
+        if (requestEventHandler == null) return;
+
+        // 记录请求日志
+        var duration = 0L;
+        if (context.Items.TryGetValue("Duration", out var durationObj) && long.TryParse(durationObj?.ToString(), out duration))
+        {
+            context.Items.Remove("Duration");
+            context.Items.Remove("StartTime");
+        }
 
         try
         {
-            // 执行下一个中间件
-            await next(context);
-
-            if (!context.Response.HasStarted)
-            {
-                switch (context.Response.StatusCode)
-                {
-                    case StatusCodes.Status400BadRequest:
-                        // 400 无效的请求
-                        await context.Response.WriteAsJsonAsync(new OperateResultDto
-                        {
-                            Code = XunetCode.BadRequest,
-                            Message = "无效的请求"
-                        });
-                        break;
-                    case StatusCodes.Status401Unauthorized:
-                        // 401 未授权
-                        await context.Response.WriteAsJsonAsync(new OperateResultDto
-                        {
-                            Code = XunetCode.Unauthorized,
-                            Message = "未授权"
-                        });
-                        break;
-                    case StatusCodes.Status403Forbidden:
-                        // 403 禁止访问
-                        await context.Response.WriteAsJsonAsync(new OperateResultDto
-                        {
-                            Code = XunetCode.Forbidden,
-                            Message = "禁止访问"
-                        });
-                        break;
-                    case StatusCodes.Status404NotFound:
-                        // 404 资源未找到
-                        await context.Response.WriteAsJsonAsync(new OperateResultDto
-                        {
-                            Code = XunetCode.NotFound,
-                            Message = "资源未找到"
-                        });
-                        break;
-                    case StatusCodes.Status405MethodNotAllowed:
-                        // 405 方法不允许
-                        await context.Response.WriteAsJsonAsync(new OperateResultDto
-                        {
-                            Code = XunetCode.MethodNotAllowed,
-                            Message = "方法不允许"
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
+            await requestEventHandler.InvokeAsync(context, duration, body);
         }
-        finally
+        catch (Exception ex)
         {
-            // 记录请求日志
-            var duration = 0L;
-            if (context.Items.ContainsKey("Duration"))
-            {
-                duration = Convert.ToInt64(context.Items["Duration"]);
-                context.Items.Remove("Duration");
-                context.Items.Remove("StartTime");
-            }
-
-            var eventHandler = context.RequestServices.GetService<IRequestLogEventHandler>();
-            eventHandler?.InvokeAsync(context, string.IsNullOrEmpty(requestBody) ? null : requestBody, duration);
+            await ExceptionHandlerAsync(exceptionEventHandler, context, ex);
         }
+    }
+
+    static async Task ExceptionHandlerAsync(IExceptionLogEventHandler? exceptionEventHandler, HttpContext context, Exception ex)
+    {
+        if (exceptionEventHandler != null)
+        {
+            await exceptionEventHandler.InvokeAsync(context, ex);
+        }
+
+        if (context.Response.HasStarted) return;
+
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+        if (context.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
+        {
+            // 开发环境输出详细异常信息
+            await context.Response.WriteAsJsonAsync(new OperateResultDto
+            {
+                Code = XunetCode.SystemException,
+                Message = ex.ToString(),
+            });
+        }
+        else
+        {
+            // 非开发环境输出友好提示信息
+            await context.Response.WriteAsJsonAsync(new OperateResultDto
+            {
+                Code = XunetCode.SystemException,
+                Message = "系统异常，请联系管理员！",
+            });
+        }
+
     }
 }

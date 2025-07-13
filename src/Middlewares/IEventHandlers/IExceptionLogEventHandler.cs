@@ -15,7 +15,6 @@ public interface IExceptionLogEventHandler : IEventHandler
     /// </summary>
     /// <param name="context">请求上下文</param>
     /// <param name="exception">异常信息</param>
-    /// <param name="body">请求body</param>
     /// <returns></returns>
-    Task InvokeAsync(HttpContext context, Exception exception, string? body);
+    Task InvokeAsync(HttpContext context, Exception exception);
 }

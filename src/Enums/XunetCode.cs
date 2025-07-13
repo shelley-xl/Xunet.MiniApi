@@ -53,9 +53,9 @@ public enum XunetCode
     TooManyRequests = 6,
 
     /// <summary>
-    /// 无效的请求
+    /// 请求无效
     /// </summary>
-    [Description("无效的请求")]
+    [Description("请求无效")]
     BadRequest = 7,
 
     /// <summary>
@@ -83,8 +83,20 @@ public enum XunetCode
     MethodNotAllowed = 11,
 
     /// <summary>
+    /// 创建成功
+    /// </summary>
+    [Description("创建成功")]
+    Created = 12,
+
+    /// <summary>
+    /// 无内容
+    /// </summary>
+    [Description("无内容")]
+    NoContent = 13,
+
+    /// <summary>
     /// 请求错误
     /// </summary>
     [Description("请求错误")]
-    RequestError = 12,
+    RequestError = 999,
 }

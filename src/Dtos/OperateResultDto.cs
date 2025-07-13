@@ -20,7 +20,7 @@ public class OperateResultDto
         Message = "ok";
         Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         RequestId = context?.TraceIdentifier;
-        TraceId = context?.Features.Get<IHttpActivityFeature>()?.Activity.TraceId.ToHexString();
+        TraceId = context?.Features?.Get<IHttpActivityFeature>()?.Activity?.TraceId.ToHexString();
         Instance = context?.Request.Path;
         if (context?.Items["StartTime"] is Stopwatch stopwatch)
         {

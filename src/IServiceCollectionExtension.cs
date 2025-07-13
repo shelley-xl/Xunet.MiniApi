@@ -572,10 +572,10 @@ public static class IServiceCollectionExtension
 
     #endregion
 
-    #region 添加缓存（未配置RedisConnection节点时，默认内存缓存）
+    #region 添加缓存(未配置RedisConnection节点时,默认内存缓存)
 
     /// <summary>
-    /// 添加缓存（未配置RedisConnection节点时，默认内存缓存）
+    /// 添加缓存(未配置RedisConnection节点时,默认内存缓存)
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>

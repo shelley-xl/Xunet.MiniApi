@@ -20,6 +20,7 @@ public static class XunetHttpContext
     #endregion
 
     #region 客户端IP地址
+
     /// <summary>
     /// 客户端IP地址
     /// </summary>
@@ -43,9 +44,11 @@ public static class XunetHttpContext
             return requestIP;
         }
     }
+
     #endregion
 
     #region 请求Uri地址
+
     /// <summary>
     /// 请求Uri地址
     /// </summary>
@@ -58,9 +61,11 @@ public static class XunetHttpContext
             return $"{request.Scheme}://{request.Host}{request.PathBase}{request.Path}{request.QueryString}";
         }
     }
+
     #endregion
 
     #region 服务器IP地址
+
     /// <summary>
     /// 服务器IP地址
     /// </summary>
@@ -73,9 +78,86 @@ public static class XunetHttpContext
             return string.IsNullOrEmpty(requestIP) ? "127.0.0.1" : requestIP;
         }
     }
+
+    #endregion
+
+    #region QueryString
+
+    /// <summary>
+    /// QueryString 
+    /// </summary>
+    public static string? QueryString
+    {
+        get
+        {
+            return _accessor?.HttpContext?.Request.QueryString.HasValue == true ? _accessor?.HttpContext?.Request.QueryString.Value : null;
+        }
+    }
+
+    #endregion
+
+    #region 接口描述
+
+    /// <summary>
+    /// 接口描述 
+    /// </summary>
+    public static string? Description
+    {
+        get
+        {
+            return _accessor?.HttpContext?.GetEndpoint()?.Metadata.GetMetadata<EndpointSummaryAttribute>()?.Summary;
+        }
+    }
+
+    #endregion
+
+    #region 请求内容长度
+
+    /// <summary>
+    /// 请求内容长度
+    /// </summary>
+    public static long ContentLength
+    {
+        get
+        {
+            return _accessor?.HttpContext?.Request.ContentLength ?? 0;
+        }
+    }
+
+    #endregion
+
+    #region 请求Id
+
+    /// <summary>
+    /// 请求Id
+    /// </summary>
+    public static string RequestId
+    {
+        get
+        {
+            return _accessor?.HttpContext?.TraceIdentifier!;
+        }
+    }
+
+    #endregion
+
+    #region 跟踪Id
+
+    /// <summary>
+    /// 跟踪Id
+    /// </summary>
+    public static string? TraceId
+    {
+        get
+        {
+            return _accessor?.HttpContext?.Features?.Get<IHttpActivityFeature>()?.Activity?.TraceId.ToHexString();
+        }
+    }
+
     #endregion
 
     #region UserAgent
+
     /// <summary>
     /// UserAgent 
     /// </summary>
@@ -88,9 +170,11 @@ public static class XunetHttpContext
             return string.IsNullOrEmpty(userAgent) ? null : userAgent;
         }
     }
+
     #endregion
 
     #region Referer
+
     /// <summary>
     /// Referer
     /// </summary>
@@ -103,6 +187,7 @@ public static class XunetHttpContext
             return string.IsNullOrEmpty(referer) ? null : referer;
         }
     }
+
     #endregion
 
     #region 获取服务
@@ -134,6 +219,7 @@ public static class XunetHttpContext
     #endregion
 
     #region 配置HttpContextAccessor
+
     /// <summary>
     /// 配置HttpContextAccessor
     /// </summary>
@@ -144,5 +230,6 @@ public static class XunetHttpContext
     }
 
     static IHttpContextAccessor? _accessor;
+
     #endregion
 }

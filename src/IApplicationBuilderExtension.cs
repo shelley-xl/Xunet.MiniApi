@@ -154,24 +154,10 @@ public static class IApplicationBuilderExtension
     }
     #endregion
 
-    #region 使用自定义异常处理中间件
+    #region 使用自定义请求处理中间件(包含异常处理)
 
     /// <summary>
-    /// 使用自定义异常处理中间件
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    public static IApplicationBuilder UseXunetCustomException(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<CustomExceptionMiddleware>(); ;
-    }
-
-    #endregion
-
-    #region 使用自定义请求处理中间件
-
-    /// <summary>
-    /// 使用自定义请求处理中间件
+    /// 使用自定义请求处理中间件(包含异常处理)
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>

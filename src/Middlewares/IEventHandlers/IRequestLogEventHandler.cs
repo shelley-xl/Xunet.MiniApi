@@ -14,8 +14,8 @@ public interface IRequestLogEventHandler : IEventHandler
     /// 处理方法
     /// </summary>
     /// <param name="context">请求上下文</param>
-    /// <param name="body">请求body</param>
     /// <param name="duration">请求耗时</param>
+    /// <param name="body">请求Body</param>
     /// <returns></returns>
-    Task InvokeAsync(HttpContext context, string? body, long duration);
+    Task InvokeAsync(HttpContext context, long duration, string? body = null);
 }
