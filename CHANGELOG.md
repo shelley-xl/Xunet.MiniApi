@@ -1,3 +1,9 @@
+## [1.0.26](https://github.com/shelley-xl/Xunet.MiniApi/commit/47c165486e5a22fc065cd55a2dc67cb02673db11) (2025-07-13)
+
+### Features
+
+- 请求中间件优化
+
 ## [1.0.25](https://github.com/shelley-xl/Xunet.MiniApi/commit/564cedd1b94c03f7ba868b6409f93f076f70df98) (2025-07-12)
 
 ### Features
