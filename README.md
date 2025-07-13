@@ -7,20 +7,19 @@
 
 面向微服务的.NET 最小API支持，功能特性包括：
 
-- 自定义请求处理中间件，统一的数据格式返回
-- 自定义异常处理中间件，全局异常处理
-- 自定义参数签名中间件，支持参数签名
+- 自定义请求处理中间件，统一的数据格式返回，全局异常处理
+- 自定义参数签名中间件/过滤器，支持参数签名
 - 基于System.Text.Json的序列化和反序列化
-- 基于OpenIddict实现客户端向认证中心注册
+- 基于OpenIddict实现客户端管理功能
 - 内置健康检查、Swagger接口说明文档
-- 内置SqlSugar ORM框架，支持Sqlite、MySql、SqlServer快捷使用
-- 内置FluentValidation框架，实现请求参数验证器
-- 内置Redis缓存、MemoryCache缓存
+- 内置SqlSugar ORM框架，支持Sqlite、MySql、SqlServer等主流数据库
+- 内置FluentValidation框架，支持参数验证，支持自定义验证器
+- 内置Redis缓存、MemoryCache缓存，支持分布式缓存
 - 支持Jwt认证、自定义授权策略、跨域策略
 - 支持限流、事件、授权、映射器等扩展功能
 - 支持阿里云对象存储、阿里云短信服务
 - 支持腾讯云对象存储、腾讯云短信服务
-- 支持微信公众号开发，内置微信公众号相关接口
+- 支持微信公众号开发，内置微信公众号/小程序相关接口
 
 Support .NET 8.0+
 
@@ -40,6 +39,7 @@ PM> Install-Package Xunet.MiniApi
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 builder.Services.AddXunetCache();
 builder.Services.AddXunetJsonOptions();
 builder.Services.AddXunetFluentValidation();
@@ -57,7 +57,7 @@ builder.Services.AddXunetMapper();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseXunetCustomException();
+
 app.UseXunetRequestHandler();
 app.UseXunetHttpContextAccessor();
 app.UseXunetHealthChecks();
