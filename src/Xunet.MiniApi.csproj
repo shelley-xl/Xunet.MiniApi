@@ -47,9 +47,9 @@
 		<PackageReference Include="OpenIddict.AspNetCore" Version="6.4.0" />
 		<PackageReference Include="SkiaSharp" Version="3.119.0" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.0" />
-		<PackageReference Include="SqlSugarCore" Version="5.1.4.196" />
+		<PackageReference Include="SqlSugarCore" Version="5.1.4.198" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
-		<PackageReference Include="TencentCloudSDK" Version="3.0.1267" />
+		<PackageReference Include="TencentCloudSDK" Version="3.0.1278" />
 		<PackageReference Include="Tencent.QCloud.Cos.Sdk" Version="5.4.48" />
 	</ItemGroup>
 
