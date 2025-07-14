@@ -123,32 +123,6 @@ public class RequestHandlerMiddleware(RequestDelegate next)
                     Message = "方法不允许"
                 });
                 break;
-            case StatusCodes.Status200OK:
-                // 200 OK
-                break;
-            case StatusCodes.Status201Created:
-                // 201 创建成功
-                await context.Response.WriteAsJsonAsync(new OperateResultDto
-                {
-                    Code = XunetCode.Created,
-                    Message = "创建成功"
-                });
-                break;
-            case StatusCodes.Status204NoContent:
-                // 204 无内容
-                await context.Response.WriteAsJsonAsync(new OperateResultDto
-                {
-                    Code = XunetCode.NoContent,
-                    Message = "无内容"
-                });
-                break;
-            default:
-                await context.Response.WriteAsJsonAsync(new OperateResultDto
-                {
-                    Code = XunetCode.RequestError,
-                    Message = "请求错误"
-                });
-                break;
         }
     }
 
