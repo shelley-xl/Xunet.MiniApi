@@ -1,3 +1,9 @@
+## [1.0.28](https://github.com/shelley-xl/Xunet.MiniApi/commit/18bd3428ef33df8fbfc714ffbd718cfefb8112a1) (2025-07-20)
+
+### Features
+
+- 新增Json扩展
+
 ## [1.0.27](https://github.com/shelley-xl/Xunet.MiniApi/commit/9fa547ad5c22a1154891fe71be598dd927ac9e17) (2025-07-14)
 
 ### Bug Fixes
