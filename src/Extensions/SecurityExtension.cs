@@ -5,9 +5,9 @@
 
 namespace Xunet.MiniApi.Extensions;
 
-#region 加解密扩展类
+#region 加解密扩展
 /// <summary>
-/// 加解密扩展类
+/// 加解密扩展
 /// </summary>
 public static class SecurityExtension
 {

@@ -5,8 +5,9 @@
 
 namespace Xunet.MiniApi.Extensions;
 
+#region 认证中心客户端扩展
 /// <summary>
-/// 认证中心客户端扩展类
+/// 认证中心客户端扩展
 /// </summary>
 public static class OpenIddictClientServiceExtension
 {
@@ -236,3 +237,4 @@ public static class OpenIddictClientServiceExtension
         return result;
     }
 }
+#endregion
