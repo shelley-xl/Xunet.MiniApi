@@ -1,3 +1,9 @@
+## [1.0.29](https://github.com/shelley-xl/Xunet.MiniApi/commit/00bc0f62b8b52a6113a170f1a17cb17d2639e121) (2025-07-20)
+
+### Features
+
+- 新增RabbitMQ客户端
+
 ## [1.0.28](https://github.com/shelley-xl/Xunet.MiniApi/commit/18bd3428ef33df8fbfc714ffbd718cfefb8112a1) (2025-07-20)
 
 ### Features
