@@ -755,4 +755,40 @@ public static class IServiceCollectionExtension
     }
 
     #endregion
+
+    #region 添加RabbitMQ客户端
+
+    /// <summary>
+    /// 添加RabbitMQ客户端
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetRabbitMQClient(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetRabbitMQClient))) return services;
+
+        services.AddSingleton<IConnectionFactory>(provider =>
+        {
+            var section = provider.GetRequiredService<IConfiguration>().GetSection("RabbitMQ") ?? throw new ConfigurationException("Missing RabbitMQ configuration section");
+
+            return new ConnectionFactory
+            {
+                HostName = section.GetValue<string>("HostName") ?? throw new ConfigurationException("Missing RabbitMQ HostName configuration"),
+                Port = section.GetValue<int?>("Port") ?? throw new ConfigurationException("Missing RabbitMQ Port configuration"),
+                UserName = section.GetValue<string>("UserName") ?? throw new ConfigurationException("Missing RabbitMQ UserName configuration"),
+                Password = section.GetValue<string>("Password") ?? throw new ConfigurationException("Missing RabbitMQ Password configuration"),
+            };
+        });
+
+        services.AddSingleton(provider =>
+        {
+            var factory = provider.GetRequiredService<IConnectionFactory>();
+
+            return factory.CreateConnectionAsync().GetAwaiter().GetResult();
+        });
+
+        return services;
+    }
+
+    #endregion
 }

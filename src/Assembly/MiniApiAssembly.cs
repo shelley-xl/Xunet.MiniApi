@@ -46,6 +46,7 @@ global using SkiaSharp;
 global using Microsoft.IdentityModel.Tokens;
 global using OpenIddict.Client;
 global using OpenIddict.Validation.AspNetCore;
+global using RabbitMQ.Client;
 global using Xunet.MiniApi.Aliyun;
 global using Xunet.MiniApi.Aliyun.Oss;
 global using Xunet.MiniApi.Aliyun.Sms;
