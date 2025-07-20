@@ -3,6 +3,9 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
+// 别名: 与RabbitMQ冲突
+using ConnectionConfig = SqlSugar.ConnectionConfig;
+
 namespace Xunet.MiniApi.SqlSugar;
 
 /// <summary>
