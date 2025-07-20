@@ -9,7 +9,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>latest</LangVersion>
 		<!-- version numbers will be updated by build -->
-		<Version>1.0.28</Version>
+		<Version>1.0.29</Version>
 		<TotalDays>$([System.DateTime]::Now.Date.Subtract($([System.DateTime]::Parse($([System.String]::Format("{0}-4-13",2025))))).TotalDays)</TotalDays>
 		<AssemblyVersion>$(Version).$(TotalDays)</AssemblyVersion>
 		<FileVersion>$(Version).$(TotalDays)</FileVersion>
@@ -51,6 +51,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
 		<PackageReference Include="TencentCloudSDK" Version="3.0.1278" />
 		<PackageReference Include="Tencent.QCloud.Cos.Sdk" Version="5.4.48" />
+		<PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
