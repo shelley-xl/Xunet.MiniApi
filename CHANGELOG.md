@@ -1,3 +1,14 @@
+## [1.0.30](https://github.com/shelley-xl/Xunet.MiniApi/commit/1e989adfdfe9d193a270c5b6b05923e22d9cbf87) (2025-07-24)
+
+### Features
+
+- 新增仓储基础类、数据库DbContext，支持多租户和多数据库
+- 新增控制器基类、服务基类，封装通用返回和对象，支持控制器
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.29](https://github.com/shelley-xl/Xunet.MiniApi/commit/00bc0f62b8b52a6113a170f1a17cb17d2639e121) (2025-07-20)
 
 ### Features
