@@ -17,11 +17,13 @@ global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Caching.Redis;
 global using Microsoft.Extensions.Configuration;
+global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
 global using Swashbuckle.AspNetCore.SwaggerGen;
 global using System.Collections.Concurrent;
 global using System.Diagnostics;
 global using System.Globalization;
+global using System.Linq.Expressions;
 global using System.Threading.RateLimiting;
 global using System.Reflection;
 global using System.ComponentModel;
@@ -43,7 +45,6 @@ global using FluentScheduler;
 global using FluentValidation;
 global using SqlSugar;
 global using SkiaSharp;
-global using Microsoft.IdentityModel.Tokens;
 global using OpenIddict.Client;
 global using OpenIddict.Validation.AspNetCore;
 global using RabbitMQ.Client;
@@ -100,4 +101,25 @@ public class MiniApiAssembly
     /// 程序集名称（入口程序集）
     /// </summary>
     public static readonly string EntryAssemblyName = EntryAssembly.GetName().Name ?? "Xunet.MiniApi";
+
+    /// <summary>
+    /// 获取所有直接引用或间接引用的程序集
+    /// </summary>
+    /// <param name="predicate"></param>
+    /// <returns></returns>
+    internal static Type[] GetAllReferencedAssemblies(Func<Type, bool> predicate)
+    {
+        // 获取入口程序集
+        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+
+        var allTypes = entryAssembly.GetTypes().Where(predicate).ToArray();
+
+        foreach (var refassembly in entryAssembly.GetReferencedAssemblies())
+        {
+            var types = Assembly.Load(refassembly).GetTypes().Where(predicate).ToArray();
+            allTypes = [.. allTypes, .. types];
+        }
+
+        return allTypes;
+    }
 }

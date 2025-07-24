@@ -544,27 +544,19 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetEventHandler))) return services;
 
-        // 从程序集获取所有继承IEventHandler的实体类型
-        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        var implementationTypes = entryAssembly.GetTypes().Where(where).ToArray();
-        foreach (var assembly in entryAssembly.GetReferencedAssemblies())
+        // 获取所有继承自IEventHandler的类
+        var types = MiniApiAssembly.GetAllReferencedAssemblies(x => 
         {
-            var types = Assembly.Load(assembly).GetTypes().Where(where).ToArray();
-            implementationTypes = [.. implementationTypes, .. types];
-        }
+            return x.GetInterfaces().Contains(typeof(IEventHandler)) && x.IsClass;
+        });
 
-        foreach (var implementationType in implementationTypes)
+        foreach (var implementationType in types)
         {
             var serviceTypes = implementationType.GetInterfaces().Except([typeof(IEventHandler)]).ToArray();
             foreach (var serviceType in serviceTypes)
             {
                 services.AddSingleton(serviceType, implementationType);
             }
-        }
-
-        static bool where(Type x)
-        {
-            return x.GetInterfaces().Contains(typeof(IEventHandler)) && x.IsClass;
         }
 
         return services;

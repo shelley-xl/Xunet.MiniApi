@@ -67,11 +67,23 @@ public static class SugarExtension
 
     internal static IServiceCollection AddSqlSugarClient(this IServiceCollection services, StorageOptions[]? options = null, DbType dbType = DbType.MySql, bool useCacheService = false)
     {
-        if (useCacheService) services.AddSingleton<ICacheService, SugarCacheService>();
+        var provider = services.BuildServiceProvider();
 
-        services.AddSingleton<ISqlSugarClient>(provider =>
+        if (options == null || options.Length == 0)
         {
-            if (options == null || options.Length == 0)
+            if (dbType == DbType.Sqlite)
+            {
+                var dbVersion = "1.2.1.8";
+                var baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MiniApiAssembly.AssemblyName, dbVersion);
+                var dataDir = Path.Combine(baseDir, "data");
+                var connectionString = $"Data Source={dataDir}\\{MiniApiAssembly.EntryAssemblyName}.db;";
+                options = [new()
+                {
+                    ConfigId = dbType.ToString(),
+                    ConnectionString = connectionString,
+                }];
+            }
+            else
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 options = config.GetSection("StorageOptions").Get<StorageOptions[]?>()?
@@ -89,47 +101,54 @@ public static class SugarExtension
                 .ToArray();
                 if (options == null || options.Length == 0)
                 {
-                    var connectionString = string.Empty;
-                    if (dbType == DbType.Sqlite)
+                    var connectionString = config.GetConnectionString("DefaultConnection");
+                    if (string.IsNullOrEmpty(connectionString)) throw new ConfigurationException("未配置默认连接字符串");
+                    options = [new()
                     {
-                        var dbVersion = "1.2.1.8";
-                        var baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MiniApiAssembly.AssemblyName, dbVersion);
-                        var dataDir = Path.Combine(baseDir, "data");
-                        connectionString = $"Data Source={dataDir}\\{MiniApiAssembly.EntryAssemblyName}.db;";
-                    }
-                    else
-                    {
-                        connectionString = config.GetConnectionString("DefaultConnection");
-                        if (string.IsNullOrEmpty(connectionString)) throw new ConfigurationException("未配置默认连接字符串");
-                    }
-                    options =
-                    [
-                        new()
-                        {
-                            ConfigId = (int)dbType,
-                            ConnectionString = connectionString,
-                        }
-                    ];
+                        ConfigId = dbType.ToString(),
+                        ConnectionString = connectionString,
+                    }];
                 }
             }
+        }
 
-            var configs = new List<ConnectionConfig>();
+        var configs = new List<ConnectionConfig>();
 
-            foreach (var item in options)
+        foreach (var item in options)
+        {
+            configs.Add(new ConnectionConfig
             {
-                configs.Add(new ConnectionConfig
-                {
-                    ConfigId = item.ConfigId,
-                    DbType = dbType,
-                    InitKeyType = InitKeyType.Attribute,
-                    IsAutoCloseConnection = true,
-                    ConnectionString = item.ConnectionString,
-                    SlaveConnectionConfigs = item.SlaveConnectionString,
-                });
-            }
+                ConfigId = item.ConfigId,
+                DbType = dbType,
+                InitKeyType = InitKeyType.Attribute,
+                IsAutoCloseConnection = true,
+                ConnectionString = item.ConnectionString,
+                SlaveConnectionConfigs = item.SlaveConnectionString,
+            });
+        }
 
-            var eventHandler = provider.GetService<ISqlLogEventHandler>();
+        var current = provider.GetService<ISqlSugarClient>();
+        if (current != null)
+        {
+            var tenant = current.AsTenant();
+            var tenantConfigs = tenant.GetCurrentConfigIds().Select(x => tenant.GetConnection(x).CurrentConnectionConfig);
+            configs.InsertRange(0, tenantConfigs);
+
+            // 移除当前ISqlSugarClient
+            services.Remove(services.First(x => x.ServiceType == typeof(ISqlSugarClient)));
+        }
+        else
+        {
+            if (useCacheService) services.AddSingleton<ICacheService, SugarCacheService>();
+
+            services.AddSugarDbContext();
+        }
+
+        // 添加ISqlSugarClient
+        services.AddSingleton<ISqlSugarClient>(provider =>
+        {
             var watch = new Stopwatch();
+            var eventHandler = provider.GetService<ISqlLogEventHandler>();
             var paras = new List<KeyValuePair<string, object>>();
 
             return new SqlSugarScope(configs, db =>
@@ -191,6 +210,22 @@ public static class SugarExtension
                 };
             });
         });
+
+        return services;
+    }
+
+    internal static IServiceCollection AddSugarDbContext(this IServiceCollection services)
+    {
+        // 获取所有继承自SugarDbContext的类
+        var types = MiniApiAssembly.GetAllReferencedAssemblies(x =>
+        {
+            return x.BaseType != null && x.BaseType.IsGenericType && x.BaseType.GetGenericTypeDefinition() == typeof(SugarDbContext<>) && x != typeof(BaseRepository<>);
+        });
+
+        foreach (var type in types)
+        {
+            services.AddScoped(type);
+        }
 
         return services;
     }

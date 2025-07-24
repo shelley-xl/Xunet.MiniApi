@@ -114,25 +114,16 @@ public static class IApplicationBuilderExtension
     {
         var db = app.Services.GetService<ISqlSugarClient>() ?? throw new InvalidOperationException("Unable to find the required services. Please add all the required services by calling 'IServiceCollection.AddXunet(xxx)Storage' in the application startup code.");
 
-        // 从程序集获取所有继承SugarEntity的实体类型
-        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        var entityTypes = entryAssembly.GetTypes().Where(where).ToArray();
-        foreach (var assembly in entryAssembly.GetReferencedAssemblies())
-        {
-            var types = Assembly.Load(assembly).GetTypes().Where(where).ToArray();
-            entityTypes = [.. entityTypes, .. types];
-        }
-
-        if (entityTypes.Length != 0)
-        {
-            db.DbMaintenance.CreateDatabase();
-            db.CodeFirst.InitTables(entityTypes);
-        }
-
-        static bool where(Type x)
+        // 获取所有继承自SugarEntity的类
+        var types = MiniApiAssembly.GetAllReferencedAssemblies(x =>
         {
             return x.BaseType == typeof(SugarEntity) && x.GetCustomAttribute<IgnoreSugarEntity>() == null;
-        }
+        });
+
+        if (types.Length == 0) return app;
+
+        db.DbMaintenance.CreateDatabase();
+        db.CodeFirst.InitTables(types);
 
         return app;
     }
