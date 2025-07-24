@@ -18,16 +18,10 @@ public class ExceptionLogEventHandler : IExceptionLogEventHandler
     /// <returns></returns>
     public async Task InvokeAsync(HttpContext context, Exception exception)
     {
-        // 忽略健康检查请求
-        if (context.Request.Path == "/health/check") return;
-        // 登录注册请求清空body
-        // ...
+        // 过滤掉非Api请求
+        if (context.GetEndpoint() == null) return;
 
         // TODO: 记录日志
-        // 请求Id
-        // var requestId = XunetHttpContext.RequestId;
-        // 跟踪Id
-        // var traceId = XunetHttpContext.TraceId;
 
         await Task.CompletedTask;
     }

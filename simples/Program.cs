@@ -6,6 +6,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 builder.Services.AddXunetCache();
 builder.Services.AddXunetJsonOptions();
 builder.Services.AddXunetFluentValidation();
@@ -20,9 +21,13 @@ builder.Services.AddXunetEventHandler();
 builder.Services.AddXunetAuthorizationHandler();
 builder.Services.AddXunetMapper();
 
+builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddSingleton<IAccountsService, AccountsService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 app.UseXunetRequestHandler();
 app.UseXunetHttpContextAccessor();
 app.UseXunetHealthChecks();
@@ -33,8 +38,9 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configure the MiniApi request pipeline.
-app.UseAuthMiniApi();
-app.UseUserMiniApi();
+// Map endpoints.
+
+app.MapAuthEndpoint();
+app.MapAccountsEndpoint();
 
 app.Run();

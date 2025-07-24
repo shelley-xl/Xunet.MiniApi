@@ -11,15 +11,11 @@ namespace Xunet.MiniApi.Simples.Entities.Dtos.Requests.Validators;
 /// <param name="db"></param>
 public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 {
-    readonly ISqlSugarClient _db;
-
     /// <summary>
     /// 构造函数
     /// </summary>
-    public RegisterRequestValidator(ISqlSugarClient db)
+    public RegisterRequestValidator(AppDbContext context)
     {
-        _db = db;
-
         RuleFor(x => x.UserName)
             .NotEmpty().WithMessage("用户名不能为空");
 
@@ -29,10 +25,9 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
         RuleFor(x => x)
             .MustAsync(async (x, token) =>
             {
-                var entity = await _db.Queryable<Accounts>().FirstAsync(a => a.UserName == x.UserName, token);
-                if (entity != null) return false;
+                var entity = await context.Db.Queryable<Accounts>().FirstAsync(a => a.UserName == x.UserName, token);
 
-                return true;
+                return entity == null;
             })
             .WithMessage("用户名被占用，请更换");
     }

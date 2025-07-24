@@ -8,18 +8,13 @@ namespace Xunet.MiniApi.Simples.Entities.Dtos.Requests.Validators;
 /// <summary>
 /// 登录请求验证器
 /// </summary>
-/// <param name="db"></param>
 public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
-    readonly ISqlSugarClient _db;
-
     /// <summary>
     /// 构造函数
     /// </summary>
-    public LoginRequestValidator(ISqlSugarClient db)
+    public LoginRequestValidator(AppDbContext context)
     {
-        _db = db;
-
         RuleFor(x => x.UserName)
             .NotEmpty().WithMessage("用户名不能为空");
 
@@ -29,11 +24,9 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
         RuleFor(x => x)
             .MustAsync(async (x, token) =>
             {
-                var entity = await _db.Queryable<Accounts>().FirstAsync(a => a.UserName == x.UserName, token);
-                if (entity == null) return false;
-                if (entity.Password != x.Password?.ToMD5Encrypt()) return false;
+                var entity = await context.Db.Queryable<Accounts>().FirstAsync(a => a.UserName == x.UserName, token);
 
-                return true;
+                return entity != null && entity.Password == x.Password?.ToMD5Encrypt();
             })
             .WithMessage("账号或密码错误");
     }

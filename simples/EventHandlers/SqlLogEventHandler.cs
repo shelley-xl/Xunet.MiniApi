@@ -21,6 +21,10 @@ public class SqlLogEventHandler : ISqlLogEventHandler
     /// <returns></returns>
     public async Task InvokeAsync(string sql, List<KeyValuePair<string, object>> paras, long duration, bool? fail = false, string? error = null)
     {
+        // 过滤掉非Api请求
+        using var scope = XunetHttpContext.Current?.RequestServices.CreateAsyncScope();
+        if (scope == null) return;
+
         // TODO: 记录日志
 
         await Task.CompletedTask;
