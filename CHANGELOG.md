@@ -1,3 +1,14 @@
+## [1.0.31](https://github.com/shelley-xl/Xunet.MiniApi/commit/ed5b71150a3675fdbc432cfe587141285d551d8c) (2025-07-26)
+
+### Features
+
+- 新增RabbitMQ日志生产者，优化日志事件监听，自动发布消息到RabbitMQ
+- 新增SqlCommand拦截器，支持EFCore日志记录SQL，自动发布消息到RabbitMQ
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.30](https://github.com/shelley-xl/Xunet.MiniApi/commit/1e989adfdfe9d193a270c5b6b05923e22d9cbf87) (2025-07-24)
 
 ### Features
