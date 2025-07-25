@@ -1,9 +1,8 @@
-## [1.0.32](https://github.com/shelley-xl/Xunet.MiniApi/commit/97cf1e0c41c018efb68f6db69b1233f5cede053c) (2025-07-26)
+## [1.0.32](https://github.com/shelley-xl/Xunet.MiniApi/commit/41e599af0ff063dc1c678bd14ab908f4c37032ec) (2025-07-26)
 
 ### Features
 
-- 新增.NET 10.0 支持
-- 新增EFCore 支持
+- 新增 EFCore 支持
 
 ## [1.0.31](https://github.com/shelley-xl/Xunet.MiniApi/commit/ed5b71150a3675fdbc432cfe587141285d551d8c) (2025-07-26)
 
