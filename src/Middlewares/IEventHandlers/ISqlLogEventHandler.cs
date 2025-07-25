@@ -14,10 +14,9 @@ public interface ISqlLogEventHandler : IEventHandler
     /// 处理方法
     /// </summary>
     /// <param name="sql">sql</param>
-    /// <param name="paras">参数</param>
     /// <param name="duration">执行耗时</param>
     /// <param name="fail">是否执行失败</param>
     /// <param name="error">错误消息</param>
     /// <returns></returns>
-    Task InvokeAsync(string sql, List<KeyValuePair<string, object>> paras, long duration, bool? fail = false, string? error = null);
+    Task InvokeAsync(string sql, long duration, bool? fail = false, string? error = null);
 }

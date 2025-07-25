@@ -61,6 +61,7 @@ global using Xunet.MiniApi.Dtos;
 global using Xunet.MiniApi.Dtos.Requests;
 global using Xunet.MiniApi.Enums;
 global using Xunet.MiniApi.Exceptions;
+global using Xunet.MiniApi.Extensions;
 global using Xunet.MiniApi.Http;
 global using Xunet.MiniApi.Http.Json;
 global using Xunet.MiniApi.Middlewares;

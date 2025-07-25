@@ -148,8 +148,6 @@ public static class SugarExtension
         services.AddSingleton<ISqlSugarClient>(provider =>
         {
             var watch = new Stopwatch();
-            var eventHandler = provider.GetService<ISqlLogEventHandler>();
-            var paras = new List<KeyValuePair<string, object>>();
 
             return new SqlSugarScope(configs, db =>
             {
@@ -159,41 +157,108 @@ public static class SugarExtension
                 db.Aop.OnLogExecuting = (sql, pars) =>
                 {
                     // SQL执行之前事件
-                    foreach (var item in pars)
-                    {
-                        paras.Add(new KeyValuePair<string, object>(item.ParameterName, item.Value));
-                    }
-
                     watch.Start();
                 };
-                db.Aop.OnLogExecuted = (sql, pars) =>
+                db.Aop.OnLogExecuted = async (sql, pars) =>
                 {
                     // SQL执行完成事件
                     watch.Stop();
 
                     try
                     {
-                        eventHandler?.InvokeAsync(sql, paras, watch.ElapsedMilliseconds);
+                        await using var scope = XunetHttpContext.Current?.RequestServices.CreateAsyncScope();
+                        if (scope == null) return;
+
+                        foreach (var par in pars)
+                        {
+                            sql = sql.Replace(par.ParameterName, $"'{par.Value}'");
+                        }
+
+                        var eventHandler = scope.Value.ServiceProvider.GetService<ISqlLogEventHandler>();
+                        if (eventHandler != null)
+                        {
+                            await eventHandler.InvokeAsync(sql, watch.ElapsedMilliseconds);
+                        }
+
+                        var connection = scope.Value.ServiceProvider.GetService<IConnection>();
+                        if (connection == null) return;
+
+                        // 发送到RabbitMQ消息队列
+                        var queueName = "logs_sqls";
+                        using var channel = await connection.CreateChannelAsync();
+                        await channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false);
+                        var pairs = new Dictionary<string, object?>
+                        {
+                            { "Id", Guid.NewGuid().ToString() },
+                            { "RequestId", XunetHttpContext.RequestId },
+                            { "TraceId", XunetHttpContext.TraceId },
+                            { "CommandText", sql },
+                            { "Duration", watch.ElapsedMilliseconds },
+                            { "IsFailed", 0 },
+                            { "Message", "" },
+                            { "Subject", (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Name },
+                            { "CreateId", XunetHttpContext.Current?.User.FindFirstValue(OpenIddict.Abstractions.OpenIddictConstants.Claims.Subject)},
+                            { "CreateTime", DateTime.Now },
+                        };
+                        var message = pairs.SerializerObject();
+                        await channel.BasicPublishAsync(exchange: "", routingKey: queueName, body: Encoding.UTF8.GetBytes(message));
                     }
                     finally
                     {
                         watch.Reset();
-                        paras.Clear();
                     }
                 };
-                db.Aop.OnError = (exp) =>
+                db.Aop.OnError = async (exp) =>
                 {
                     // 执行SQL错误事件
                     watch.Stop();
 
                     try
                     {
-                        eventHandler?.InvokeAsync(exp.Sql, paras, watch.ElapsedMilliseconds, true, exp.Message);
+                        await using var scope = XunetHttpContext.Current?.RequestServices.CreateAsyncScope();
+                        if (scope == null) return;
+
+                        var sql = exp.Sql;
+                        if (exp.Parametres is SugarParameter[] pars)
+                        {
+                            foreach (var par in pars)
+                            {
+                                sql = sql.Replace(par.ParameterName, $"'{par.Value}'");
+                            }
+                        }
+
+                        var eventHandler = scope.Value.ServiceProvider.GetService<ISqlLogEventHandler>();
+                        if (eventHandler != null)
+                        {
+                            await eventHandler.InvokeAsync(sql, watch.ElapsedMilliseconds, true, exp.Message);
+                        }
+
+                        var connection = scope.Value.ServiceProvider.GetService<IConnection>();
+                        if (connection == null) return;
+
+                        // 发送到RabbitMQ消息队列
+                        var queueName = "logs_sqls";
+                        using var channel = await connection.CreateChannelAsync();
+                        await channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false);
+                        var pairs = new Dictionary<string, object?>
+                        {
+                            { "Id", Guid.NewGuid().ToString() },
+                            { "RequestId", XunetHttpContext.RequestId },
+                            { "TraceId", XunetHttpContext.TraceId },
+                            { "CommandText", sql },
+                            { "Duration", watch.ElapsedMilliseconds },
+                            { "IsFailed", 1 },
+                            { "Message", exp.Message },
+                            { "Subject", (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Name },
+                            { "CreateId", XunetHttpContext.Current?.User.FindFirstValue(OpenIddict.Abstractions.OpenIddictConstants.Claims.Subject)},
+                            { "CreateTime", DateTime.Now },
+                        };
+                        var message = pairs.SerializerObject();
+                        await channel.BasicPublishAsync(exchange: "", routingKey: queueName, body: Encoding.UTF8.GetBytes(message));
                     }
                     finally
                     {
                         watch.Reset();
-                        paras.Clear();
                     }
                 };
                 db.Aop.DataExecuting = (oldValue, entityInfo) =>

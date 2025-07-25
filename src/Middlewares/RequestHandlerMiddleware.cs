@@ -18,14 +18,13 @@ public class RequestHandlerMiddleware(RequestDelegate next)
     /// <returns></returns>
     public async Task InvokeAsync(HttpContext context)
     {
-        var requestEventHandler = context.RequestServices.GetService<IRequestLogEventHandler>();
-        var exceptionEventHandler = context.RequestServices.GetService<IExceptionLogEventHandler>();
-        var body = string.Empty;
+        // 定义body
+        string? body = null;
 
         try
         {
             // 预处理，并返回body
-            body = await PrepareHandlerAsync(requestEventHandler, context);
+            body = await PrepareHandlerAsync(context);
 
             // 执行下一个中间件
             await next(context);
@@ -36,17 +35,20 @@ public class RequestHandlerMiddleware(RequestDelegate next)
         catch (Exception ex)
         {
             // 异常处理
-            await ExceptionHandlerAsync(exceptionEventHandler, context, ex);
+            await ExceptionHandlerAsync(context, ex);
         }
         finally
         {
             // 请求处理
-            await RequestHandlerAsync(requestEventHandler, exceptionEventHandler, context, body);
+            await RequestHandlerAsync(context, body);
         }
     }
 
-    static async Task<string?> PrepareHandlerAsync(IRequestLogEventHandler? requestEventHandler, HttpContext context)
+    // 预处理
+    static async Task<string?> PrepareHandlerAsync(HttpContext context)
     {
+        var requestEventHandler = context.RequestServices.GetService<IRequestLogEventHandler>();
+
         // 记录请求开始时间
         context.Items["StartTime"] = Stopwatch.StartNew();
         // 设置响应头
@@ -71,12 +73,23 @@ public class RequestHandlerMiddleware(RequestDelegate next)
             body = string.IsNullOrWhiteSpace(body) ? null : body;
             context.Request.Body.Position = 0;
 
+            // 检测敏感词
+            var sensitiveKeywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "password", "pwd", "passwd", "pass", "token", "secret", "sign", "signature", "client_id", "client_secret",
+            };
+            if (body != null && sensitiveKeywords.Any(x => body.Contains(x, StringComparison.OrdinalIgnoreCase)))
+            {
+                body = null;
+            }
+
             return body;
         }
 
         return null;
     }
 
+    // 处理状态码
     static async Task StatusCodeHandlerAsync(HttpContext context)
     {
         if (context.Response.HasStarted) return;
@@ -126,11 +139,17 @@ public class RequestHandlerMiddleware(RequestDelegate next)
         }
     }
 
-    static async Task RequestHandlerAsync(IRequestLogEventHandler? requestEventHandler, IExceptionLogEventHandler? exceptionEventHandler, HttpContext context, string? body = null)
+    // 处理请求
+    static async Task RequestHandlerAsync(HttpContext context, string? body = null)
     {
-        if (requestEventHandler == null) return;
+        // 过滤掉未找到端点的请求
+        if (context.GetEndpoint() == null) return;
+        // 过滤掉OPTIONS检查请求
+        if (context.Request.Method == "OPTIONS") return;
+        // 过滤掉健康检查请求
+        if (context.Request.Path == "/health/check") return;
 
-        // 记录请求日志
+        // 获取请求耗时
         var duration = 0L;
         if (context.Items.TryGetValue("Duration", out var durationObj) && long.TryParse(durationObj?.ToString(), out duration))
         {
@@ -140,19 +159,88 @@ public class RequestHandlerMiddleware(RequestDelegate next)
 
         try
         {
-            await requestEventHandler.InvokeAsync(context, duration, body);
+            var requestEventHandler = context.RequestServices.GetService<IRequestLogEventHandler>();
+
+            if (requestEventHandler != null)
+            {
+                await requestEventHandler.InvokeAsync(context, duration, body);
+            }
+
+            var connection = context.RequestServices.GetService<IConnection>();
+
+            if (connection != null)
+            {
+                // 发送到RabbitMQ消息队列
+                var queueName = "logs_requests";
+                using var channel = await connection.CreateChannelAsync();
+                await channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false);
+                var pars = new Dictionary<string, object?>
+                {
+                    { "Id", Guid.NewGuid().ToString() },
+                    { "RequestId", XunetHttpContext.RequestId },
+                    { "TraceId", XunetHttpContext.TraceId },
+                    { "StatusCode", context.Response.StatusCode },
+                    { "ServerIP", XunetHttpContext.ServerIPAddress },
+                    { "ClientIP", XunetHttpContext.ClientIPAddress },
+                    { "Path", context.Request.Path.Value },
+                    { "Method", context.Request.Method },
+                    { "ContentLength", XunetHttpContext.ContentLength },
+                    { "Duration", duration },
+                    { "RequestQuery", XunetHttpContext.QueryString },
+                    { "RequestBody", body },
+                    { "Referrer", XunetHttpContext.Referer },
+                    { "UserAgent", XunetHttpContext.UserAgent },
+                    { "Description", XunetHttpContext.Description },
+                    { "Subject", (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Name },
+                    { "CreateId", XunetHttpContext.Current?.User.FindFirstValue(OpenIddict.Abstractions.OpenIddictConstants.Claims.Subject)},
+                    { "CreateTime", DateTime.Now },
+                };
+                var message = pars.SerializerObject();
+                await channel.BasicPublishAsync(exchange: "", routingKey: queueName, body: Encoding.UTF8.GetBytes(message));
+            }
         }
         catch (Exception ex)
         {
-            await ExceptionHandlerAsync(exceptionEventHandler, context, ex);
+            await ExceptionHandlerAsync(context, ex);
         }
     }
 
-    static async Task ExceptionHandlerAsync(IExceptionLogEventHandler? exceptionEventHandler, HttpContext context, Exception ex)
+    // 处理异常
+    static async Task ExceptionHandlerAsync(HttpContext context, Exception ex)
     {
+        // 过滤掉未找到端点的请求
+        if (context.GetEndpoint() == null) return;
+
+        var exceptionEventHandler = context.RequestServices.GetService<IExceptionLogEventHandler>();
+
         if (exceptionEventHandler != null)
         {
             await exceptionEventHandler.InvokeAsync(context, ex);
+        }
+
+        var connection = context.RequestServices.GetService<IConnection>();
+
+        if (connection != null)
+        {
+            // 发送到RabbitMQ消息队列
+            var queueName = "logs_exceptions";
+            using var channel = await connection.CreateChannelAsync();
+            await channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false);
+            var pars = new Dictionary<string, object?>
+            {
+                { "Id", Guid.NewGuid().ToString() },
+                { "RequestId", XunetHttpContext.RequestId },
+                { "TraceId", XunetHttpContext.TraceId },
+                { "Message", ex.Message },
+                { "StackTrace", ex.StackTrace },
+                { "InnerException", ex.InnerException },
+                { "ExceptionType", ex.GetType().FullName },
+                { "Subject", (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Name },
+                { "CreateId", XunetHttpContext.Current?.User.FindFirstValue(OpenIddict.Abstractions.OpenIddictConstants.Claims.Subject)},
+                { "CreateTime", DateTime.Now },
+            };
+            var message = pars.SerializerObject();
+            await channel.BasicPublishAsync(exchange: "", routingKey: queueName, body: Encoding.UTF8.GetBytes(message));
         }
 
         if (context.Response.HasStarted) return;
@@ -177,6 +265,5 @@ public class RequestHandlerMiddleware(RequestDelegate next)
                 Message = "系统异常，请联系管理员！",
             });
         }
-
     }
 }

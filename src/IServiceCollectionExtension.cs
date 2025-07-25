@@ -545,7 +545,7 @@ public static class IServiceCollectionExtension
         if (services.HasRegistered(nameof(AddXunetEventHandler))) return services;
 
         // 获取所有继承自IEventHandler的类
-        var types = MiniApiAssembly.GetAllReferencedAssemblies(x => 
+        var types = MiniApiAssembly.GetAllReferencedAssemblies(x =>
         {
             return x.GetInterfaces().Contains(typeof(IEventHandler)) && x.IsClass;
         });
@@ -759,25 +759,22 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetRabbitMQClient))) return services;
 
-        services.AddSingleton<IConnectionFactory>(provider =>
+        var provider = services.BuildServiceProvider();
+
+        var section = provider.GetRequiredService<IConfiguration>().GetSection("RabbitMQ");
+        if (!section.GetChildren().Any()) throw new ConfigurationException("Missing RabbitMQ configuration section");
+
+        var factory = new ConnectionFactory
         {
-            var section = provider.GetRequiredService<IConfiguration>().GetSection("RabbitMQ") ?? throw new ConfigurationException("Missing RabbitMQ configuration section");
+            HostName = section.GetValue<string>("HostName") ?? throw new ConfigurationException("Missing RabbitMQ HostName configuration"),
+            Port = section.GetValue<int?>("Port") ?? throw new ConfigurationException("Missing RabbitMQ Port configuration"),
+            UserName = section.GetValue<string>("UserName") ?? throw new ConfigurationException("Missing RabbitMQ UserName configuration"),
+            Password = section.GetValue<string>("Password") ?? throw new ConfigurationException("Missing RabbitMQ Password configuration"),
+        };
 
-            return new ConnectionFactory
-            {
-                HostName = section.GetValue<string>("HostName") ?? throw new ConfigurationException("Missing RabbitMQ HostName configuration"),
-                Port = section.GetValue<int?>("Port") ?? throw new ConfigurationException("Missing RabbitMQ Port configuration"),
-                UserName = section.GetValue<string>("UserName") ?? throw new ConfigurationException("Missing RabbitMQ UserName configuration"),
-                Password = section.GetValue<string>("Password") ?? throw new ConfigurationException("Missing RabbitMQ Password configuration"),
-            };
-        });
+        var connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
 
-        services.AddSingleton(provider =>
-        {
-            var factory = provider.GetRequiredService<IConnectionFactory>();
-
-            return factory.CreateConnectionAsync().GetAwaiter().GetResult();
-        });
+        services.AddSingleton(connection);
 
         return services;
     }
