@@ -19,13 +19,6 @@ public class RequestLogEventHandler : IRequestLogEventHandler
     /// <returns></returns>
     public async Task InvokeAsync(HttpContext context, long duration, string? body = null)
     {
-        // 过滤掉非Api请求和OPTIONS检查
-        if (context.GetEndpoint() == null || context.Request.Method == "OPTIONS") return;
-        // 过滤掉健康检查请求
-        if (context.Request.Path == "/health/check") return;
-        // 登录或注册请求清空body
-        // ...
-
         // TODO: 记录日志
 
         await Task.CompletedTask;

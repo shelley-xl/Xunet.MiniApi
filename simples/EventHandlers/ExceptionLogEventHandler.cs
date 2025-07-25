@@ -18,9 +18,6 @@ public class ExceptionLogEventHandler : IExceptionLogEventHandler
     /// <returns></returns>
     public async Task InvokeAsync(HttpContext context, Exception exception)
     {
-        // 过滤掉非Api请求
-        if (context.GetEndpoint() == null) return;
-
         // TODO: 记录日志
 
         await Task.CompletedTask;
