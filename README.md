@@ -31,7 +31,7 @@ Xunet.MiniApi 以 NuGet 包的形式提供。您可以使用 NuGet 包控制台�
 PM> Install-Package Xunet.MiniApi
 ```
 
-## 使用
+## 快速开始
 
 **Program.cs**
 
@@ -53,6 +53,7 @@ builder.Services.AddXunetRateLimiter();
 builder.Services.AddXunetEventHandler();
 builder.Services.AddXunetAuthorizationHandler();
 builder.Services.AddXunetMapper();
+builder.Services.AddXunetMiniService();
 
 var app = builder.Build();
 
@@ -68,82 +69,53 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configure the MiniApi request pipeline.
+// Map endpoints.
+
+app.MapHelloEndpoint();
 
 app.Run();
 ```
 
-**PermissionHandler.cs**
+**AppDbContext.cs**
 
 ```c#
-public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
+public class AppDbContext : SugarDbContext<AppDbContext>
 {
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
-    {
-        if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
-        {
-            // 已认证，鉴权
-            await Task.CompletedTask;
-            context.Succeed(requirement);
-        }
-        else
-        {
-            context.Fail();
-        }
-    }
+
 }
 ```
 
-**appsettings.Development.json**
+**IHelloService.cs**
 
-```json
+```c#
+internal interface IHelloService
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  },
-  "Kestrel": {
-    "EndPoints": {
-      "Http": {
-        "Url": "http://0.0.0.0:8000"
-      },
-      "Http2": {
-        "Url": "http://0.0.0.0:8080",
-        "Protocols": "Http2"
-      }
-    }
-  },
-  "CorsHosts": [],
-  "ConnectionStrings": {
-    "DefaultConnection": "server=127.0.0.1;uid=root;pwd=root;database=miniapi;max pool size=8000;Charset=utf8;SslMode=none;Allow User Variables=True;",
-    "RedisConnection": "127.0.0.1:6379"
-  },
-  "JwtConfig": {
-    "ValidateIssuer": true,
-    "ValidIssuer": "miniapi",
-    "ValidateIssuerSigningKey": true,
-    "SymmetricSecurityKey": "294c66d31f8c4ec0b243bb7479cc38e0",
-    "ValidateAudience": true,
-    "ValidAudience": "manager",
-    "ValidateLifetime": true,
-    "RequireExpirationTime": true,
-    "ClockSkew": 1,
-    "RefreshTokenAudience": "manager",
-    "Expire": 2592000,
-    "RefreshTokenExpire": 10080
-  },
-  "SwaggerOptions": {
-    "DocumentTitle": "测试接口服务",
-    "Endpoints": [
-      {
-        "EndpointName": "测试接口",
-        "Title": "测试标题",
-        "Description": "测试描述",
-        "Name": "test"
-      }
-    ]
+  Task<IResult> SayHelloAsync();
+}
+```
+
+**HelloService.cs**
+
+```c#
+internal class HelloService : MiniService<AppDbContext>, IHelloService
+{
+  public Task<IResult> SayHelloAsync()
+  {
+    return XunetResults.Ok("Hello,world!");
+  }
+}
+```
+
+**HelloEndpoint.cs**
+
+```c#
+internal static class HelloEndpoint
+{
+  internal static void MapHelloEndpoint(this WebApplication app)
+  {
+    app.MapGet("/api/hello", (IHelloService helloService) => helloService.SayHelloAsync());
+
+    return app;
   }
 }
 ```
