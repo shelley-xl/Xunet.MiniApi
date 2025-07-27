@@ -31,7 +31,7 @@ Xunet.MiniApi 以 NuGet 包的形式提供。您可以使用 NuGet 包控制台�
 PM> Install-Package Xunet.MiniApi
 ```
 
-## 快速开始
+## 使用
 
 **Program.cs**
 
@@ -90,7 +90,7 @@ public class AppDbContext : SugarDbContext<AppDbContext>
 ```c#
 internal interface IHelloService
 {
-  Task<IResult> SayHelloAsync();
+    Task<IResult> SayHelloAsync();
 }
 ```
 
@@ -99,10 +99,10 @@ internal interface IHelloService
 ```c#
 internal class HelloService : MiniService<AppDbContext>, IHelloService
 {
-  public Task<IResult> SayHelloAsync()
-  {
-    return XunetResults.Ok("Hello,world!");
-  }
+    public Task<IResult> SayHelloAsync()
+    {
+        return XunetResults.Ok("Hello,world!");
+    }
 }
 ```
 
@@ -111,12 +111,13 @@ internal class HelloService : MiniService<AppDbContext>, IHelloService
 ```c#
 internal static class HelloEndpoint
 {
-  internal static void MapHelloEndpoint(this WebApplication app)
-  {
-    app.MapGet("/api/hello", (IHelloService helloService) => helloService.SayHelloAsync());
+    internal static void MapHelloEndpoint(this WebApplication app)
+    {
+        app.MapGet("/api/hello", (IHelloService helloService) 
+            => helloService.SayHelloAsync());
 
-    return app;
-  }
+        return app;
+    }
 }
 ```
 
