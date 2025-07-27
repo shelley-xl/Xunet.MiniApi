@@ -24,8 +24,8 @@ global using Xunet.MiniApi.Simples.Entities;
 global using Xunet.MiniApi.Simples.Entities.Dtos;
 global using Xunet.MiniApi.Simples.Entities.Dtos.Requests;
 global using Xunet.MiniApi.Simples.Endpoints;
+global using Xunet.MiniApi.Simples.Interfaces;
 global using Xunet.MiniApi.Simples.Services;
-global using Xunet.MiniApi.Simples.Services.Interfaces;
 
 namespace Xunet.MiniApi.Simples;
 

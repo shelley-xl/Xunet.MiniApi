@@ -8,7 +8,7 @@ namespace Xunet.MiniApi.Simples.Services;
 /// <summary>
 /// 账户服务类
 /// </summary>
-public class AccountsService : BaseRepository<AppDbContext>, IAccountsService
+public class AccountsService : MiniService<AppDbContext>, IAccountsService
 {
     /// <summary>
     /// 获取账户分页列表

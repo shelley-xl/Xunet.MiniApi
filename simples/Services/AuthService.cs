@@ -10,10 +10,8 @@ namespace Xunet.MiniApi.Simples.Services;
 /// </summary>
 /// <param name="provider"></param>
 /// <param name="jwtConfig"></param>
-public class AuthService(IOptions<JwtConfig> jwtConfig) : BaseRepository<AppDbContext>, IAuthService
+public class AuthService(IOptions<JwtConfig> jwtConfig) : MiniService<AppDbContext>, IAuthService
 {
-    static IObjectMapper Mapper => XunetHttpContext.GetRequiredService<IObjectMapper>();
-
     /// <summary>
     /// 登录
     /// </summary>

@@ -20,9 +20,7 @@ builder.Services.AddXunetRateLimiter();
 builder.Services.AddXunetEventHandler();
 builder.Services.AddXunetAuthorizationHandler();
 builder.Services.AddXunetMapper();
-
-builder.Services.AddSingleton<IAuthService, AuthService>();
-builder.Services.AddSingleton<IAccountsService, AccountsService>();
+builder.Services.AddXunetMiniService();
 
 var app = builder.Build();
 

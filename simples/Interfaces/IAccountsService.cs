@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Simples.Services.Interfaces;
+namespace Xunet.MiniApi.Simples.Interfaces;
 
 /// <summary>
 /// 账户服务接口
