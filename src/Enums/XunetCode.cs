@@ -29,9 +29,9 @@ public enum XunetCode
     Error = 2,
 
     /// <summary>
-    /// 无效的参数
+    /// 参数无效
     /// </summary>
-    [Description("无效的参数")]
+    [Description("参数无效")]
     InvalidParameter = 3,
 
     /// <summary>
@@ -81,22 +81,4 @@ public enum XunetCode
     /// </summary>
     [Description("方法不允许")]
     MethodNotAllowed = 11,
-
-    /// <summary>
-    /// 创建成功
-    /// </summary>
-    [Description("创建成功")]
-    Created = 12,
-
-    /// <summary>
-    /// 无内容
-    /// </summary>
-    [Description("无内容")]
-    NoContent = 13,
-
-    /// <summary>
-    /// 请求错误
-    /// </summary>
-    [Description("请求错误")]
-    RequestError = 999,
 }

@@ -10,6 +10,9 @@ using AlibabaCloud.TeaUtil.Models;
 
 namespace Xunet.MiniApi.Aliyun.Sms;
 
+using Sms.Dtos;
+using Sms.Dtos.Requests;
+
 /// <summary>
 /// 阿里云短信服务
 /// </summary>

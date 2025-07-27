@@ -114,7 +114,7 @@ public static class IApplicationBuilderExtension
     {
         var db = app.Services.GetService<ISqlSugarClient>() ?? throw new InvalidOperationException("Unable to find the required services. Please add all the required services by calling 'IServiceCollection.AddXunet(xxx)Storage' in the application startup code.");
 
-        // 获取所有继承自SugarEntity的类
+        // 获取所有继承自 SugarEntity 的类
         var types = MiniApiAssembly.GetAllReferencedAssemblies(x =>
         {
             return x.BaseType == typeof(SugarEntity) && x.GetCustomAttribute<IgnoreSugarEntity>() == null;

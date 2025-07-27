@@ -8,6 +8,8 @@ using Aliyun.OSS.Common;
 
 namespace Xunet.MiniApi.Aliyun.Oss;
 
+using Oss.Dtos;
+
 /// <summary>
 /// 阿里云对象存储服务
 /// </summary>
@@ -110,7 +112,7 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
     public string PutObject(Stream? content, string key, string bucket, string region)
     {
         var request = new PutObjectRequest(bucket, key, content);
-        
+
         var endpoint = $"oss-cn-{region}.aliyuncs.com";
         var client = new OssClient(endpoint, AccessKeyId, AccessKeySecret);
 
@@ -138,7 +140,7 @@ internal class AliyunOssService(IConfiguration config) : IAliyunOssService
 
         var endpoint = $"oss-cn-{region}.aliyuncs.com";
         var client = new OssClient(endpoint, AccessKeyId, AccessKeySecret);
-        
+
         var result = client.DeleteObjects(request);
 
         if (result.HttpStatusCode != HttpStatusCode.OK)

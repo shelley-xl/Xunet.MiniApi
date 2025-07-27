@@ -5,6 +5,8 @@
 
 namespace Xunet.MiniApi.Aliyun;
 
+using Oss.Dtos;
+
 /// <summary>
 /// 阿里云对象存储服务
 /// </summary>

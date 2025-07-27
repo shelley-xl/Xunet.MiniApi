@@ -5,6 +5,8 @@
 
 namespace Xunet.MiniApi.Tencent;
 
+using Tencent.Cos.Dtos;
+
 /// <summary>
 /// 腾讯云对象存储服务
 /// </summary>

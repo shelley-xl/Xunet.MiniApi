@@ -281,7 +281,7 @@ public static class SugarExtension
 
     internal static IServiceCollection AddSugarDbContext(this IServiceCollection services)
     {
-        // 获取所有继承自SugarDbContext的类
+        // 获取所有继承自 SugarDbContext 的类
         var types = MiniApiAssembly.GetAllReferencedAssemblies(x =>
         {
             return x.BaseType != null && x.BaseType.IsGenericType && x.BaseType.GetGenericTypeDefinition() == typeof(SugarDbContext<>) && x != typeof(BaseRepository<>);

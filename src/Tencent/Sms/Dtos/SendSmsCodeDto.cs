@@ -3,7 +3,7 @@
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Dtos;
+namespace Xunet.MiniApi.Tencent.Sms.Dtos;
 
 /// <summary>
 /// 发送短信验证码返回

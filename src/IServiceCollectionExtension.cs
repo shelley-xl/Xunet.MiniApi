@@ -322,10 +322,16 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetAuthorizationHandler))) return services;
 
-        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        var handler = entryAssembly.GetTypes().Where(x => x.BaseType == typeof(AuthorizationHandler<PermissionRequirement>)).FirstOrDefault() ?? throw new InvalidOperationException("未找到AuthorizationHandler");
+        // 获取所有继承自 AuthorizationHandler<PermissionRequirement> 的类
+        var types = MiniApiAssembly.GetAllReferencedAssemblies(x =>
+        {
+            return x.BaseType == typeof(AuthorizationHandler<PermissionRequirement>);
+        });
 
-        services.AddScoped(typeof(IAuthorizationHandler), handler);
+        foreach (var handler in types)
+        {
+            services.AddScoped(typeof(IAuthorizationHandler), handler);
+        }
 
         services.AddAuthorizationBuilder().AddPolicy(AuthorizePolicy.Default, policy =>
         {
@@ -544,7 +550,7 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetEventHandler))) return services;
 
-        // 获取所有继承自IEventHandler的类
+        // 获取所有继承自 IEventHandler 的类
         var types = MiniApiAssembly.GetAllReferencedAssemblies(x =>
         {
             return x.GetInterfaces().Contains(typeof(IEventHandler)) && x.IsClass;
@@ -553,6 +559,37 @@ public static class IServiceCollectionExtension
         foreach (var implementationType in types)
         {
             var serviceTypes = implementationType.GetInterfaces().Except([typeof(IEventHandler)]).ToArray();
+            foreach (var serviceType in serviceTypes)
+            {
+                services.AddSingleton(serviceType, implementationType);
+            }
+        }
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加迷你服务
+
+    /// <summary>
+    /// 添加迷你服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetMiniService(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetMiniService))) return services;
+
+        // 获取所有继承自 MiniService 的类
+        var types = MiniApiAssembly.GetAllReferencedAssemblies(x =>
+        {
+            return x.BaseType != null && x.BaseType.IsGenericType && x.BaseType.GetGenericTypeDefinition() == typeof(MiniService<>);
+        });
+
+        foreach (var implementationType in types)
+        {
+            var serviceTypes = implementationType.GetInterfaces().Except([typeof(IBaseRepository)]).ToArray();
             foreach (var serviceType in serviceTypes)
             {
                 services.AddSingleton(serviceType, implementationType);

@@ -11,6 +11,8 @@ using COSXML.Model.Object;
 
 namespace Xunet.MiniApi.Tencent.Cos;
 
+using Cos.Dtos;
+
 /// <summary>
 /// 腾讯云对象存储服务
 /// </summary>

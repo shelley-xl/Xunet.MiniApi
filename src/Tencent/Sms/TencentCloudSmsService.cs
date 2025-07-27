@@ -10,6 +10,9 @@ using TencentCloud.Sms.V20210111.Models;
 
 namespace Xunet.MiniApi.Tencent.Sms;
 
+using Sms.Dtos;
+using Sms.Dtos.Requests;
+
 /// <summary>
 /// 腾讯云短信服务
 /// </summary>

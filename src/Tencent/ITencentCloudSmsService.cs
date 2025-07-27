@@ -5,6 +5,9 @@
 
 namespace Xunet.MiniApi.Tencent;
 
+using Sms.Dtos;
+using Sms.Dtos.Requests;
+
 /// <summary>
 /// 腾讯云短信服务
 /// </summary>

@@ -19,8 +19,8 @@ public class OperateResultDto
         Code = XunetCode.Success;
         Message = "ok";
         Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        RequestId = context?.TraceIdentifier;
-        TraceId = context?.Features?.Get<IHttpActivityFeature>()?.Activity?.TraceId.ToHexString();
+        RequestId = XunetHttpContext.RequestId;
+        TraceId = XunetHttpContext.TraceId;
         Instance = context?.Request.Path;
         if (context?.Items["StartTime"] is Stopwatch stopwatch)
         {
