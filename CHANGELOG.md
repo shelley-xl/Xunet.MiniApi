@@ -1,3 +1,10 @@
+## [1.0.33](https://github.com/shelley-xl/Xunet.MiniApi/commit/846a844b84f62f3e1b47058b91de77ee3716febc) (2025-07-27)
+
+### Features
+
+- 新增迷你服务，自动注册到 DI 容器，集成DbContext，继承即可使用
+- 相关代码优化
+
 ## [1.0.32](https://github.com/shelley-xl/Xunet.MiniApi/commit/41e599af0ff063dc1c678bd14ab908f4c37032ec) (2025-07-26)
 
 ### Features
