@@ -1,3 +1,9 @@
+## [1.0.35](https://github.com/shelley-xl/Xunet.MiniApi/commit/71d0bc780b417e3b4432ca20a4020be97890bad5) (2025-07-28)
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.34](https://github.com/shelley-xl/Xunet.MiniApi/commit/0b5ae9c4629cb52bae96bc65ea6b259679085c1d) (2025-07-28)
 
 ### Bug Fixes
