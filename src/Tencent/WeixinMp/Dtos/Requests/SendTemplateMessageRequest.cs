@@ -14,13 +14,13 @@ public class SendTemplateMessageRequest
     /// 接收者openid
     /// </summary>
     [JsonPropertyName("touser")]
-    public required string ToUser { get; set; }
+    public string? ToUser { get; set; }
 
     /// <summary>
     /// 模板ID
     /// </summary>
     [JsonPropertyName("template_id")]
-    public required string TemplateId { get; set; }
+    public string? TemplateId { get; set; }
 
     /// <summary>
     /// 模板跳转链接（海外帐号没有跳转能力）
@@ -38,7 +38,7 @@ public class SendTemplateMessageRequest
     /// 模板数据
     /// </summary>
     [JsonPropertyName("data")]
-    public required object Data { get; set; }
+    public object? Data { get; set; }
 
     /// <summary>
     /// 防重入id。对于同一个openid + client_msg_id, 只发送一条消息,10分钟有效,超过10分钟不保证效果。若无防重入需求，可不填
@@ -50,5 +50,5 @@ public class SendTemplateMessageRequest
     /// 接口调用凭证
     /// </summary>
     [JsonIgnore]
-    public required string AccessToken { get; set; }
+    public string? AccessToken { get; set; }
 }
