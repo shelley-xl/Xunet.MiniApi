@@ -1,3 +1,10 @@
+## [1.0.36](https://github.com/shelley-xl/Xunet.MiniApi/commit/56e5696e42a9c2b13389e67dd050c064a9885db1) (2025-07-31)
+
+### Features
+
+- 新增图形验证码中间件
+- 相关代码优化
+
 ## [1.0.35](https://github.com/shelley-xl/Xunet.MiniApi/commit/71d0bc780b417e3b4432ca20a4020be97890bad5) (2025-07-28)
 
 ### Bug Fixes
