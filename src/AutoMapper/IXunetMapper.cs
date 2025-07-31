@@ -8,7 +8,7 @@ namespace Xunet.MiniApi.AutoMapper;
 /// <summary>
 /// 对象映射器
 /// </summary>
-public interface IObjectMapper
+public interface IXunetMapper
 {
     /// <summary>
     /// 对象映射

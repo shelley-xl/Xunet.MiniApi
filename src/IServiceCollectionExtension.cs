@@ -203,14 +203,14 @@ public static class IServiceCollectionExtension
         {
             #region 自定义限流策略 => 图形验证码限流器
             // 自定义限流策略 => 图形验证码限流器
-            // 同一个IP限制10个请求每分钟
+            // 同一个IP限制20个请求每分钟
             limiterOptions.AddPolicy(policyName: RateLimiterPolicy.VeryCode, context =>
             {
                 var partitionKey = XunetHttpContext.ClientIPAddress;
 
                 return RateLimitPartition.GetFixedWindowLimiter(partitionKey: partitionKey, _ => new FixedWindowRateLimiterOptions
                 {
-                    PermitLimit = 10,
+                    PermitLimit = 20,
                     Window = TimeSpan.FromSeconds(60),
                     QueueLimit = 0
                 });
@@ -527,12 +527,12 @@ public static class IServiceCollectionExtension
         ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
 
         // 注册到所有引用的程序集
-        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        services.AddValidatorsFromAssembly(entryAssembly);
-        foreach (var assembly in entryAssembly.GetReferencedAssemblies())
+        var assemblies = MiniApiAssembly.GetAllReferencedAssembly(x =>
         {
-            services.AddValidatorsFromAssembly(Assembly.Load(assembly));
-        }
+            return x.BaseType != null && x.BaseType.IsGenericType && x.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>) && x.Assembly != typeof(AbstractValidator<>).Assembly;
+        });
+
+        services.AddValidatorsFromAssemblies(assemblies);
 
         return services;
     }
@@ -601,7 +601,7 @@ public static class IServiceCollectionExtension
 
     #endregion
 
-    #region 添加缓存(未配置RedisConnection节点时,默认内存缓存)
+    #region 添加缓存
 
     /// <summary>
     /// 添加缓存(未配置RedisConnection节点时,默认内存缓存)
@@ -612,8 +612,7 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetCache))) return services;
 
-        services.AddMemoryCache();
-
+        // 从配置文件读取Redis连接字符串
         var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
         var redisConnectionString = config.GetConnectionString("RedisConnection");
         if (!string.IsNullOrEmpty(redisConnectionString))
@@ -630,21 +629,24 @@ public static class IServiceCollectionExtension
                 // 集群模式
                 redisClient = new CSRedisClient(null, redisConnectionStringArray);
             }
+            // 移除无效节点
+            var invalidKeys = redisClient.Nodes.Where(x => !x.Value.IsAvailable).Select(x => x.Key).ToArray();
+            foreach (var key in invalidKeys)
+            {
+                if (redisClient.Nodes.Remove(key, out RedisClientPool? pool))
+                {
+                    pool?.Dispose();
+                }
+            }
             // 检查是否包含可用节点
             if (redisClient.Nodes.Any(x => x.Value.IsAvailable == true))
             {
                 services.AddSingleton<IDistributedCache>(new CSRedisCache(redisClient));
             }
-            else
-            {
-                services.AddDistributedMemoryCache();
-            }
-        }
-        else
-        {
-            services.AddDistributedMemoryCache();
         }
 
+        services.AddMemoryCache();
+        services.AddDistributedMemoryCache();
         services.AddSingleton<IXunetCache, XunetCache>();
 
         return services;
@@ -664,13 +666,13 @@ public static class IServiceCollectionExtension
         if (services.HasRegistered(nameof(AddXunetMapper))) return services;
 
         // 注册到所有引用的程序集
-        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        services.AddAutoMapper(entryAssembly);
-        foreach (var assembly in entryAssembly.GetReferencedAssemblies())
+        var assemblies = MiniApiAssembly.GetAllReferencedAssembly(x =>
         {
-            services.AddAutoMapper(Assembly.Load(assembly));
-        }
-        services.AddScoped<IObjectMapper, ObjectMapper>();
+            return x.BaseType == typeof(Profile) && x.Assembly != typeof(Profile).Assembly;
+        });
+
+        services.AddAutoMapper(assemblies);
+        services.AddScoped<IXunetMapper, XunetMapper>();
 
         return services;
     }
@@ -760,6 +762,7 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetWeixinMpService))) return services;
 
+        services.AddXunetCache();
         services.AddHttpClient<IWeixinMpService, WeixinMpService>();
 
         return services;
@@ -778,6 +781,7 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetMiniProgramService))) return services;
 
+        services.AddXunetCache();
         services.AddHttpClient<IMiniProgramService, MiniProgramService>();
 
         return services;
@@ -812,6 +816,25 @@ public static class IServiceCollectionExtension
         var connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
 
         services.AddSingleton(connection);
+
+        return services;
+    }
+
+    #endregion
+
+    #region 添加图形验证码
+
+    /// <summary>
+    /// 添加图形验证码
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetCaptcha(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetCaptcha))) return services;
+
+        services.AddXunetCache();
+        services.AddSingleton<IXunetCaptcha, XunetCaptcha>();
 
         return services;
     }

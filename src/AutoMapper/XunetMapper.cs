@@ -9,7 +9,7 @@ namespace Xunet.MiniApi.AutoMapper;
 /// 对象映射器
 /// </summary>
 /// <param name="mapper"></param>
-public class ObjectMapper(IMapper mapper) : IObjectMapper
+public class XunetMapper(IMapper mapper) : IXunetMapper
 {
     /// <summary>
     /// 对象映射

@@ -1,18 +1,18 @@
-// THIS FILE IS PART OF Xunet.MiniApi PROJECT
+﻿// THIS FILE IS PART OF Xunet.MiniApi PROJECT
 // THE Xunet.MiniApi PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
 // COPYRIGHTS (C) 徐来 ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/shelley-xl/Xunet.MiniApi
 
-namespace Xunet.MiniApi.Helpers;
+namespace Xunet.MiniApi.SkiaSharp.Captcha;
 
 /// <summary>
-/// 图形验证码
+/// 图形验证码辅助类
 /// </summary>
-public class VerifyCodeHelper
+internal class CaptchaHelper
 {
-    private readonly Random objRandom = new();
-
     #region 设置
+
+    readonly Random objRandom = new();
 
     /// <summary>
     /// //验证码长度
@@ -98,7 +98,7 @@ public class VerifyCodeHelper
     /// </summary>
     /// <param name="length"></param>
     /// <param name="isOperation"></param>
-    public VerifyCodeHelper(int length = 4, bool isOperation = false)
+    internal CaptchaHelper(int length = 4, bool isOperation = false)
     {
         if (isOperation)
         {
@@ -120,93 +120,14 @@ public class VerifyCodeHelper
 
     #endregion
 
-    #region Private Method
-    /// <summary>
-    /// 得到验证码字符串
-    /// </summary>
-    private void GetVerifyCodeText()
-    {
-        //没有外部输入验证码时随机生成
-        if (string.IsNullOrEmpty(SetVerifyCodeText))
-        {
-            StringBuilder objStringBuilder = new();
-
-            //加入数字1-9
-            for (int i = 1; i <= 9; i++)
-            {
-                objStringBuilder.Append(i);
-            }
-
-            //加入大写字母A-Z，不包括O
-            if (SetAddUpperLetter)
-            {
-                for (int i = 0; i < 26; i++)
-                {
-                    char temp = Convert.ToChar(i + 65);
-
-                    //如果生成的字母不是'O'
-                    if (!temp.Equals('O'))
-                    {
-                        objStringBuilder.Append(temp);
-                    }
-                }
-            }
-
-            //加入小写字母a-z，不包括o
-            if (SetAddLowerLetter)
-            {
-                for (int i = 0; i < 26; i++)
-                {
-                    char temp = Convert.ToChar(i + 97);
-
-                    //如果生成的字母不是'o'
-                    if (!temp.Equals('o'))
-                    {
-                        objStringBuilder.Append(temp);
-                    }
-                }
-            }
-
-            //生成验证码字符串
-            {
-                for (int i = 0; i < SetLength; i++)
-                {
-                    int index = objRandom.Next(0, objStringBuilder.Length);
-                    SetVerifyCodeText += objStringBuilder[index];
-
-                    objStringBuilder.Remove(index, 1);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// 获取随机颜色
-    /// </summary>
-    /// <returns></returns>
-    private static SKColor GetRandomColor()
-    {
-        Random RandomNum_First = new((int)DateTime.Now.Ticks);
-        // 对于C#的随机数，没什么好说的
-        Thread.Sleep(RandomNum_First.Next(50));
-        Random RandomNum_Sencond = new((int)DateTime.Now.Ticks);
-        // 为了在白色背景上显示，尽量生成深色
-        int int_Red = RandomNum_First.Next(256);
-        int int_Green = RandomNum_Sencond.Next(256);
-        int int_Blue = (int_Red + int_Green > 400) ? 0 : 400 - int_Red - int_Green;
-        int_Blue = (int_Blue > 255) ? 255 : int_Blue;
-        return SKColor.FromHsv(int_Red, int_Green, int_Blue);
-    }
-    #endregion
-
-    #region Public Method
+    #region 获取问题
 
     /// <summary>
     /// 获取问题
     /// </summary>
     /// <param name="questionList">默认数字加减验证</param>
     /// <returns></returns>
-    public KeyValuePair<string, string> GetQuestion(Dictionary<string, string>? questionList = null)
+    internal KeyValuePair<string, string> GetQuestion(Dictionary<string, string>? questionList = null)
     {
         if (questionList == null)
         {
@@ -248,7 +169,7 @@ public class VerifyCodeHelper
 
     #endregion
 
-    #region Generate Code
+    #region 获取验证码
 
     /// <summary>
     /// 获取验证码
@@ -256,7 +177,7 @@ public class VerifyCodeHelper
     /// <param name="lineNum">干扰线数量</param>
     /// <param name="lineStrookeWidth">干扰线宽度</param>
     /// <returns></returns>
-    public byte[] GetVerifyCodeImage(int lineNum = 1, int lineStrookeWidth = 1)
+    internal byte[] GetVerifyCodeImage(int lineNum = 1, int lineStrookeWidth = 1)
     {
         //创建bitmap位图
         using SKBitmap image2d = new(SetWith, SetHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
@@ -331,6 +252,95 @@ public class VerifyCodeHelper
 
         return p.ToArray();
     }
+
+    #endregion
+
+    #region 得到验证码字符串
+
+    /// <summary>
+    /// 得到验证码字符串
+    /// </summary>
+    void GetVerifyCodeText()
+    {
+        //没有外部输入验证码时随机生成
+        if (string.IsNullOrEmpty(SetVerifyCodeText))
+        {
+            StringBuilder objStringBuilder = new();
+
+            //加入数字1-9
+            for (int i = 1; i <= 9; i++)
+            {
+                objStringBuilder.Append(i);
+            }
+
+            //加入大写字母A-Z，不包括O
+            if (SetAddUpperLetter)
+            {
+                for (int i = 0; i < 26; i++)
+                {
+                    char temp = Convert.ToChar(i + 65);
+
+                    //如果生成的字母不是'O'
+                    if (!temp.Equals('O'))
+                    {
+                        objStringBuilder.Append(temp);
+                    }
+                }
+            }
+
+            //加入小写字母a-z，不包括o
+            if (SetAddLowerLetter)
+            {
+                for (int i = 0; i < 26; i++)
+                {
+                    char temp = Convert.ToChar(i + 97);
+
+                    //如果生成的字母不是'o'
+                    if (!temp.Equals('o'))
+                    {
+                        objStringBuilder.Append(temp);
+                    }
+                }
+            }
+
+            //生成验证码字符串
+            {
+                for (int i = 0; i < SetLength; i++)
+                {
+                    int index = objRandom.Next(0, objStringBuilder.Length);
+                    SetVerifyCodeText += objStringBuilder[index];
+
+                    objStringBuilder.Remove(index, 1);
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #region 获取随机颜色
+
+    /// <summary>
+    /// 获取随机颜色
+    /// </summary>
+    /// <returns></returns>
+    static SKColor GetRandomColor()
+    {
+        Random RandomNum_First = new((int)DateTime.Now.Ticks);
+        // 对于C#的随机数，没什么好说的
+        Thread.Sleep(RandomNum_First.Next(50));
+        Random RandomNum_Sencond = new((int)DateTime.Now.Ticks);
+        // 为了在白色背景上显示，尽量生成深色
+        int int_Red = RandomNum_First.Next(256);
+        int int_Green = RandomNum_Sencond.Next(256);
+        int int_Blue = (int_Red + int_Green > 400) ? 0 : 400 - int_Red - int_Green;
+        int_Blue = (int_Blue > 255) ? 255 : int_Blue;
+        return SKColor.FromHsv(int_Red, int_Green, int_Blue);
+    }
+
+    #endregion
+
+    #region 初始化颜色
 
     /// <summary>
     /// 干扰线的颜色集合
@@ -488,6 +498,10 @@ public class VerifyCodeHelper
         ];
     }
 
+    #endregion
+
+    #region 创建画笔
+
     /// <summary>
     /// 创建画笔
     /// </summary>
@@ -504,6 +518,10 @@ public class VerifyCodeHelper
         return paint;
     }
 
+    #endregion
+
+    #region 添加干扰
+
     /// <summary>
     /// 添加干扰
     /// </summary>
@@ -515,6 +533,10 @@ public class VerifyCodeHelper
             objBitmap.SetPixel(objRandom.Next(objBitmap.Width), objRandom.Next(objBitmap.Height), SetFontColor);
         }
     }
+
+    #endregion
+
+    #region 添加干扰背景
 
     /// <summary>
     /// 添加干扰背景

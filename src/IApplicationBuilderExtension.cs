@@ -145,7 +145,7 @@ public static class IApplicationBuilderExtension
     }
     #endregion
 
-    #region 使用自定义请求处理中间件(包含异常处理)
+    #region 使用自定义请求处理中间件
 
     /// <summary>
     /// 使用自定义请求处理中间件(包含异常处理)

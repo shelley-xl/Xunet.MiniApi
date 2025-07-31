@@ -35,11 +35,11 @@ public class XunetService
     /// <summary>
     /// 实体映射对象
     /// </summary>
-    protected virtual IObjectMapper Mapper
+    protected virtual IXunetMapper Mapper
     {
         get
         {
-            return XunetHttpContext.GetRequiredService<IObjectMapper>();
+            return XunetHttpContext.GetRequiredService<IXunetMapper>();
         }
     }
 
@@ -117,6 +117,17 @@ public class XunetService
         get
         {
             return XunetHttpContext.GetRequiredService<IAliyunSmsService>();
+        }
+    }
+
+    /// <summary>
+    /// 图形验证码
+    /// </summary>
+    protected virtual IXunetCaptcha Captcha
+    {
+        get
+        {
+            return XunetHttpContext.GetRequiredService<IXunetCaptcha>();
         }
     }
 

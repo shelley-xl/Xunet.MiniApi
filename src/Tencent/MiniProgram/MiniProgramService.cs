@@ -20,16 +20,19 @@ internal class MiniProgramService : IMiniProgramService
 
     readonly HttpClient _client;
     readonly IConfiguration _config;
+    readonly IXunetCache _cache;
 
     /// <summary>
     /// 构造函数
     /// </summary>
     /// <param name="client"></param>
     /// <param name="config"></param>
-    public MiniProgramService(HttpClient client, IConfiguration config)
+    /// <param name="cache"></param>
+    public MiniProgramService(HttpClient client, IConfiguration config, IXunetCache cache)
     {
         _client = client;
         _config = config;
+        _cache = cache;
 
         _client.BaseAddress = new Uri("https://api.weixin.qq.com");
 
@@ -48,30 +51,25 @@ internal class MiniProgramService : IMiniProgramService
     /// <returns></returns>
     public async Task<GetAccessTokenDto> GetAccessTokenAsync(GetAccessTokenRequest? request = null)
     {
-        GetAccessTokenDto? result;
-
         if (request != null)
         {
             AppId = request.AppId;
             AppSecret = request.AppSecret;
         }
 
-        // 查找缓存服务，缓存存在，直接返回
-        var cache = XunetHttpContext.GetService<IXunetCache>();
-        if (cache != null)
-        {
-            result = await cache.GetCacheAsync<GetAccessTokenDto>($"{AppId}_access_token");
-            if (result != null) return result;
-        }
+        // 缓存存在，直接返回
+        var result = await _cache.GetCacheAsync<GetAccessTokenDto>($"{AppId}_access_token");
+
+        if (result != null) return result;
 
         var response = await _client.GetAsync($"/cgi-bin/token?grant_type=client_credential&appid={AppId}&secret={AppSecret}");
 
         result = await response.Content.ReadFromJsonAsync<GetAccessTokenDto>() ?? default!;
 
-        // 如果使用缓存，缓存access_token
-        if (cache != null && result.ExpiresIn.HasValue)
+        // 缓存access_token
+        if (result.ErrCode == 0 && result.ExpiresIn.HasValue)
         {
-            await cache.SetCacheAsync($"{AppId}_access_token", result, TimeSpan.FromSeconds(result.ExpiresIn.Value - 300));
+            await _cache.SetCacheAsync($"{AppId}_access_token", result, TimeSpan.FromSeconds(result.ExpiresIn.Value - 300));
         }
 
         return result;

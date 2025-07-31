@@ -48,6 +48,7 @@ global using SkiaSharp;
 global using OpenIddict.Client;
 global using OpenIddict.Validation.AspNetCore;
 global using RabbitMQ.Client;
+global using Xunet.MiniApi.Assemblies;
 global using Xunet.MiniApi.Aliyun;
 global using Xunet.MiniApi.Aliyun.Oss;
 global using Xunet.MiniApi.Aliyun.Sms;
@@ -68,15 +69,16 @@ global using Xunet.MiniApi.Middlewares;
 global using Xunet.MiniApi.Middlewares.IEventHandlers;
 global using Xunet.MiniApi.SqlSugar;
 global using Xunet.MiniApi.Swagger;
+global using Xunet.MiniApi.SkiaSharp;
+global using Xunet.MiniApi.SkiaSharp.Captcha;
+global using Xunet.MiniApi.SkiaSharp.Captcha.Dto;
 global using Xunet.MiniApi.Tencent;
 global using Xunet.MiniApi.Tencent.Cos;
 global using Xunet.MiniApi.Tencent.Sms;
 global using Xunet.MiniApi.Tencent.WeixinMp;
 global using Xunet.MiniApi.Tencent.MiniProgram;
 
-#pragma warning disable IDE0130 
-
-namespace Xunet.MiniApi;
+namespace Xunet.MiniApi.Assemblies;
 
 /// <summary>
 /// MiniApi程序集
@@ -122,5 +124,34 @@ public class MiniApiAssembly
         }
 
         return allTypes;
+    }
+
+    /// <summary>
+    /// 获取所有直接引用或间接引用的程序集
+    /// </summary>
+    /// <param name="predicate"></param>
+    /// <returns></returns>
+    internal static Assembly[] GetAllReferencedAssembly(Func<Type, bool> predicate)
+    {
+        Assembly[] assemblies = [];
+
+        // 获取入口程序集
+        var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+
+        if (entryAssembly.GetTypes().Where(predicate).Any())
+        {
+            assemblies = [entryAssembly];
+        }
+
+        foreach (var refassembly in entryAssembly.GetReferencedAssemblies())
+        {
+            var assembly = Assembly.Load(refassembly);
+            if (assembly.GetTypes().Where(predicate).Any())
+            {
+                assemblies = [.. assemblies, assembly];
+            }
+        }
+
+        return assemblies;
     }
 }
