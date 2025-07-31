@@ -11,17 +11,17 @@ EXPOSE 8000
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["tests/Xunet.MiniApi.Tests.csproj", "tests/"]
+COPY ["simples/Xunet.MiniApi.Simples.csproj", "simples/"]
 COPY ["src/Xunet.MiniApi.csproj", "src/"]
-RUN dotnet restore "./tests/Xunet.MiniApi.Tests.csproj"
+RUN dotnet restore "./simples/Xunet.MiniApi.Simples.csproj"
 COPY . .
-WORKDIR "/src/tests"
-RUN dotnet build "./Xunet.MiniApi.Tests.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/simples"
+RUN dotnet build "./Xunet.MiniApi.Simples.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # 此阶段用于发布要复制到最终阶段的服务项目
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Xunet.MiniApi.Tests.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Xunet.MiniApi.Simples.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # 此阶段在生产中使用，或在常规模式下从 VS 运行时使用(在不使用调试配置时为默认值)
 FROM base AS final
@@ -32,4 +32,4 @@ COPY --from=publish /app/publish .
 ENV ASPNETCORE_ENVIRONMENT=Test
 ENV TZ=Asia/Shanghai
 
-ENTRYPOINT ["dotnet", "Xunet.MiniApi.Tests.dll"]
+ENTRYPOINT ["dotnet", "Xunet.MiniApi.Simples.dll"]
