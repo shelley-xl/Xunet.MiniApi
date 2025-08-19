@@ -1,3 +1,14 @@
+## [1.0.37](https://github.com/shelley-xl/Xunet.MiniApi/commit/92538a2bd165fd065a65fe5f08cc6deec5bf0a72) (2025-08-19)
+
+### Features
+
+- 新增钉钉小程序服务
+- nuget包升级
+
+### Bug Fixes
+
+- 修复已知问题
+
 ## [1.0.36](https://github.com/shelley-xl/Xunet.MiniApi/commit/56e5696e42a9c2b13389e67dd050c064a9885db1) (2025-07-31)
 
 ### Features
