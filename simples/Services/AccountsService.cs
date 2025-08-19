@@ -24,6 +24,7 @@ public class AccountsService : MiniService<AppDbContext>, IAccountsService
 
         var list = await Db
             .Queryable<Accounts>()
+            .OrderByDescending(x => x.CreateTime)
             .Select<AccountsDto>()
             .ToPageListAsync(page, size, totalNumber);
 

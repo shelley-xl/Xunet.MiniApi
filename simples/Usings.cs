@@ -13,7 +13,6 @@ global using Xunet.MiniApi;
 global using Xunet.MiniApi.Filters;
 global using Xunet.MiniApi.Authentication;
 global using Xunet.MiniApi.Authorization;
-global using Xunet.MiniApi.AutoMapper;
 global using Xunet.MiniApi.Dtos.Requests;
 global using Xunet.MiniApi.Extensions;
 global using Xunet.MiniApi.Middlewares.IEventHandlers;
@@ -25,7 +24,6 @@ global using Xunet.MiniApi.Simples.Entities.Dtos;
 global using Xunet.MiniApi.Simples.Entities.Dtos.Requests;
 global using Xunet.MiniApi.Simples.Endpoints;
 global using Xunet.MiniApi.Simples.Interfaces;
-global using Xunet.MiniApi.Simples.Services;
 
 namespace Xunet.MiniApi.Simples;
 
