@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
@@ -6,6 +5,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xunet.MiniApi", "src\Xunet.MiniApi.csproj", "{C6F458B5-986F-4B99-8330-D4DB8ACFEC41}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xunet.MiniApi.Simples", "simples\Xunet.MiniApi.Simples.csproj", "{4651181D-764D-46BD-8B72-AD256BE8EC96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xunet.MiniApi.Tests", "tests\Xunet.MiniApi.Tests.csproj", "{A98BC1CF-BDDF-47D3-BE05-BE63BC32F94C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D661C15E-B241-437A-96BC-79EB89B2B45E}"
 	ProjectSection(SolutionItems) = preProject
@@ -29,6 +30,10 @@ Global
 		{4651181D-764D-46BD-8B72-AD256BE8EC96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4651181D-764D-46BD-8B72-AD256BE8EC96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4651181D-764D-46BD-8B72-AD256BE8EC96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A98BC1CF-BDDF-47D3-BE05-BE63BC32F94C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A98BC1CF-BDDF-47D3-BE05-BE63BC32F94C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A98BC1CF-BDDF-47D3-BE05-BE63BC32F94C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A98BC1CF-BDDF-47D3-BE05-BE63BC32F94C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
