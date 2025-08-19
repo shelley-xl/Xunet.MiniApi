@@ -50,6 +50,7 @@ global using OpenIddict.Validation.AspNetCore;
 global using RabbitMQ.Client;
 global using Xunet.MiniApi.Assemblies;
 global using Xunet.MiniApi.Aliyun;
+global using Xunet.MiniApi.Aliyun.DingTalk;
 global using Xunet.MiniApi.Aliyun.Oss;
 global using Xunet.MiniApi.Aliyun.Sms;
 global using Xunet.MiniApi.Attributes;

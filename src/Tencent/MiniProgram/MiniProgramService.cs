@@ -86,6 +86,12 @@ internal class MiniProgramService : IMiniProgramService
     /// <returns></returns>
     public async Task<WeixinLoginDto> WeixinLoginAsync(WeixinLoginRequest request)
     {
+        if (!string.IsNullOrEmpty(request.AppId) && !string.IsNullOrEmpty(request.AppSecret))
+        {
+            AppId = request.AppId;
+            AppSecret = request.AppSecret;
+        }
+
         var response = await _client.GetAsync($"/sns/jscode2session?appid={AppId}&secret={AppSecret}&js_code={request.Code}&grant_type=authorization_code");
 
         return await response.Content.ReadFromJsonAsync<WeixinLoginDto>() ?? default!;

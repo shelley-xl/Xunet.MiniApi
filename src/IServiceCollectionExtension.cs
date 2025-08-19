@@ -770,19 +770,31 @@ public static class IServiceCollectionExtension
 
     #endregion
 
-    #region 添加微信小程序服务
+    #region 添加小程序服务
 
     /// <summary>
-    /// 添加微信小程序服务
+    /// 添加小程序服务(微信/钉钉)
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="provider"></param>
     /// <returns></returns>
-    public static IServiceCollection AddXunetMiniProgramService(this IServiceCollection services)
+    public static IServiceCollection AddXunetMiniProgramService(this IServiceCollection services, MiniProgramProvider provider = MiniProgramProvider.WeChat)
     {
         if (services.HasRegistered(nameof(AddXunetMiniProgramService))) return services;
 
         services.AddXunetCache();
-        services.AddHttpClient<IMiniProgramService, MiniProgramService>();
+
+        switch (provider)
+        {
+            case MiniProgramProvider.WeChat:
+                services.AddHttpClient<IMiniProgramService, MiniProgramService>();
+                break;
+            case MiniProgramProvider.DingTalk:
+                services.AddHttpClient<IDingTalkService, DingTalkService>();
+                break;
+            default:
+                throw new NotSupportedException($"参数'{nameof(provider)}'不支持'{provider}'");
+        }
 
         return services;
     }
