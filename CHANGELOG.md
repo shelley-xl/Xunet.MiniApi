@@ -1,3 +1,9 @@
+## [1.0.39](https://github.com/shelley-xl/Xunet.MiniApi/commit/bd089e30a935309bde831a07e5934a616a9aa940) (2025-09-10)
+
+### Bug Fixes
+
+- 优化Sqlite连接字符串
+
 ## [1.0.38](https://github.com/shelley-xl/Xunet.MiniApi/commit/22edb64455ef9c01c938226a95caa85f24331c87) (2025-09-10)
 
 ### Features
