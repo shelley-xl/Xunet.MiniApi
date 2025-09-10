@@ -74,26 +74,20 @@ public static class SugarExtension
             if (dbType == DbType.Sqlite)
             {
                 var SQLITE_CONNECTIONSTRING = Environment.GetEnvironmentVariable("SQLITE_CONNECTIONSTRING");
-                if (!string.IsNullOrEmpty(SQLITE_CONNECTIONSTRING))
+                var SQLITE_DATA_PATH = Environment.GetEnvironmentVariable("SQLITE_DATA_PATH");
+                if (string.IsNullOrEmpty(SQLITE_CONNECTIONSTRING) && string.IsNullOrEmpty(SQLITE_DATA_PATH))
                 {
-                    options = [new()
-                    {
-                        ConfigId = dbType.ToString(),
-                        ConnectionString = SQLITE_CONNECTIONSTRING,
-                    }];
+                    SQLITE_CONNECTIONSTRING = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MiniApiAssembly.AssemblyName, "1.2.1.8", "data", $"{MiniApiAssembly.EntryAssemblyName}.db;");
                 }
-                else
+                else if (string.IsNullOrEmpty(SQLITE_CONNECTIONSTRING) && !string.IsNullOrEmpty(SQLITE_DATA_PATH))
                 {
-                    var dbVersion = "1.2.1.8";
-                    var baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MiniApiAssembly.AssemblyName, dbVersion);
-                    var dataDir = Path.Combine(baseDir, "data");
-                    var connectionString = $"Data Source={dataDir}\\{MiniApiAssembly.EntryAssemblyName}.db;";
-                    options = [new()
-                    {
-                        ConfigId = dbType.ToString(),
-                        ConnectionString = connectionString,
-                    }];
+                    SQLITE_CONNECTIONSTRING = Path.Combine(SQLITE_DATA_PATH, $"{MiniApiAssembly.EntryAssemblyName}.db;");
                 }
+                options = [new()
+                {
+                    ConfigId = dbType.ToString(),
+                    ConnectionString = $"Data Source={SQLITE_CONNECTIONSTRING}",
+                }];
             }
             else
             {
