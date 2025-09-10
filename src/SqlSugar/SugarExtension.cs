@@ -73,27 +73,15 @@ public static class SugarExtension
         {
             if (dbType == DbType.Sqlite)
             {
-                var SQLITE_CONNECTIONSTRING = Environment.GetEnvironmentVariable("SQLITE_CONNECTIONSTRING");
-                if (!string.IsNullOrEmpty(SQLITE_CONNECTIONSTRING))
+                var dbVersion = "1.2.1.8";
+                var baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MiniApiAssembly.AssemblyName, dbVersion);
+                var dataDir = Path.Combine(baseDir, "data");
+                var connectionString = $"Data Source={dataDir}\\{MiniApiAssembly.EntryAssemblyName}.db;";
+                options = [new()
                 {
-                    options = [new()
-                    {
-                        ConfigId = dbType.ToString(),
-                        ConnectionString = SQLITE_CONNECTIONSTRING,
-                    }];
-                }
-                else
-                {
-                    var dbVersion = "1.2.1.8";
-                    var baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MiniApiAssembly.AssemblyName, dbVersion);
-                    var dataDir = Path.Combine(baseDir, "data");
-                    var connectionString = $"Data Source={dataDir}\\{MiniApiAssembly.EntryAssemblyName}.db;";
-                    options = [new()
-                    {
-                        ConfigId = dbType.ToString(),
-                        ConnectionString = connectionString,
-                    }];
-                }
+                    ConfigId = dbType.ToString(),
+                    ConnectionString = connectionString,
+                }];
             }
             else
             {

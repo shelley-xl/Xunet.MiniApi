@@ -1,9 +1,3 @@
-## [1.0.38](https://github.com/shelley-xl/Xunet.MiniApi/commit/92538a2bd165fd065a65fe5f08cc6deec5bf0a72) (2025-09-10)
-
-### Features
-
-- Sqlite连接字符串支持环境变量
-
 ## [1.0.37](https://github.com/shelley-xl/Xunet.MiniApi/commit/92538a2bd165fd065a65fe5f08cc6deec5bf0a72) (2025-08-19)
 
 ### Features
