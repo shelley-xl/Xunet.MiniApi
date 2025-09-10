@@ -73,20 +73,27 @@ public static class SugarExtension
         {
             if (dbType == DbType.Sqlite)
             {
+                string connectionString;
                 var SQLITE_CONNECTIONSTRING = Environment.GetEnvironmentVariable("SQLITE_CONNECTIONSTRING");
-                var SQLITE_DATA_PATH = Environment.GetEnvironmentVariable("SQLITE_DATA_PATH");
-                if (string.IsNullOrEmpty(SQLITE_CONNECTIONSTRING) && string.IsNullOrEmpty(SQLITE_DATA_PATH))
+                var SQLITE_DATAPATH = Environment.GetEnvironmentVariable("SQLITE_DATAPATH");
+                if (!string.IsNullOrEmpty(SQLITE_CONNECTIONSTRING))
+                {
+                    connectionString = SQLITE_CONNECTIONSTRING;
+                }
+                else if (!string.IsNullOrEmpty(SQLITE_DATAPATH))
+                {
+                    SQLITE_CONNECTIONSTRING = Path.Combine(SQLITE_DATAPATH, $"{MiniApiAssembly.EntryAssemblyName}.db;");
+                    connectionString = $"Data Source={SQLITE_CONNECTIONSTRING}";
+                }
+                else
                 {
                     SQLITE_CONNECTIONSTRING = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), MiniApiAssembly.AssemblyName, "1.2.1.8", "data", $"{MiniApiAssembly.EntryAssemblyName}.db;");
-                }
-                else if (string.IsNullOrEmpty(SQLITE_CONNECTIONSTRING) && !string.IsNullOrEmpty(SQLITE_DATA_PATH))
-                {
-                    SQLITE_CONNECTIONSTRING = Path.Combine(SQLITE_DATA_PATH, $"{MiniApiAssembly.EntryAssemblyName}.db;");
+                    connectionString = $"Data Source={SQLITE_CONNECTIONSTRING}";
                 }
                 options = [new()
                 {
                     ConfigId = dbType.ToString(),
-                    ConnectionString = $"Data Source={SQLITE_CONNECTIONSTRING}",
+                    ConnectionString = connectionString,
                 }];
             }
             else
