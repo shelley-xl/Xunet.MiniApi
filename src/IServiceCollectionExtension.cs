@@ -616,6 +616,7 @@ public static class IServiceCollectionExtension
         services.AddDistributedMemoryCache();
 
         var provider = services.BuildServiceProvider();
+        var logger = provider.GetRequiredService<ILogger<IDistributedCache>>();
 
         // 从配置文件读取Redis连接字符串
         var config = provider.GetRequiredService<IConfiguration>();
@@ -641,6 +642,7 @@ public static class IServiceCollectionExtension
                 if (redisClient.Nodes.Remove(key, out RedisClientPool? pool))
                 {
                     pool?.Dispose();
+                    logger.LogError("Redis节点不可用，已自动移除: {Key}", key);
                 }
             }
             // 检查是否包含可用节点
@@ -648,7 +650,6 @@ public static class IServiceCollectionExtension
             {
                 RedisHelper.Initialization(redisClient);
                 services.AddSingleton<IDistributedCache>(new CSRedisCache(redisClient));
-                var logger = provider.GetRequiredService<ILogger<IDistributedCache>>();
                 foreach (var node in redisClient.Nodes)
                 {
                     logger.LogInformation("Redis缓存服务已启动: {Key}", node.Key);
