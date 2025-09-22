@@ -604,7 +604,7 @@ public static class IServiceCollectionExtension
     #region 添加缓存
 
     /// <summary>
-    /// 添加缓存(未配置RedisConnection节点时,默认内存缓存)
+    /// 添加缓存(未配置RedisConnection节点时,默认将使用内存缓存)
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
@@ -643,7 +643,7 @@ public static class IServiceCollectionExtension
                 if (redisClient.Nodes.Remove(key, out RedisClientPool? pool))
                 {
                     pool?.Dispose();
-                    logger.LogError("Redis节点不可用，已自动移除: {Key}", key);
+                    logger.LogError("Redis缓存节点不可用：{Key}", key);
                 }
             }
             // 检查是否包含可用节点
@@ -653,9 +653,18 @@ public static class IServiceCollectionExtension
                 services.AddSingleton<IDistributedCache>(new CSRedisCache(redisClient));
                 foreach (var node in redisClient.Nodes)
                 {
-                    logger.LogInformation("Redis缓存服务已启动: {Key}", node.Key);
+                    logger.LogInformation("Redis缓存服务已启动：{Key}", node.Key);
                 }
             }
+            else
+            {
+                logger.LogWarning("Redis缓存节点不可用：默认将使用内存缓存");
+            }
+        }
+        else
+        {
+            logger.LogWarning("Redis连接字符串未配置：默认将使用内存缓存");
+            logger.LogWarning("请在ConnectionStrings中新增节点：RedisConnection");
         }
 
         services.AddSingleton<IXunetCache, XunetCache>();
