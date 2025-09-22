@@ -1,3 +1,9 @@
+## [1.0.41](https://github.com/shelley-xl/Xunet.MiniApi/commit/35a0af02e0b7dba580765cac1ccdf297dc852243) (2025-09-22)
+
+### Bug Fixes
+
+- 优化Redis缓存服务
+
 ## [1.0.40](https://github.com/shelley-xl/Xunet.MiniApi/commit/759b687e1a3c9313ecd3b411d9d0cc53b35e8774) (2025-09-10)
 
 ### Bug Fixes
