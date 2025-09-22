@@ -614,6 +614,7 @@ public static class IServiceCollectionExtension
 
         services.AddMemoryCache();
         services.AddDistributedMemoryCache();
+        services.AddLogging();
 
         var provider = services.BuildServiceProvider();
         var logger = provider.GetRequiredService<ILogger<IDistributedCache>>();
