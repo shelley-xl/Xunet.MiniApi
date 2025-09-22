@@ -17,6 +17,7 @@ global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Caching.Redis;
 global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Logging;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
 global using Swashbuckle.AspNetCore.SwaggerGen;

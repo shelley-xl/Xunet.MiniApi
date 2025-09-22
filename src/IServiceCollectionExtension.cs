@@ -612,8 +612,13 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetCache))) return services;
 
+        services.AddMemoryCache();
+        services.AddDistributedMemoryCache();
+
+        var provider = services.BuildServiceProvider();
+
         // 从配置文件读取Redis连接字符串
-        var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+        var config = provider.GetRequiredService<IConfiguration>();
         var redisConnectionString = config.GetConnectionString("RedisConnection");
         if (!string.IsNullOrEmpty(redisConnectionString))
         {
@@ -641,12 +646,16 @@ public static class IServiceCollectionExtension
             // 检查是否包含可用节点
             if (redisClient.Nodes.Any(x => x.Value.IsAvailable == true))
             {
+                RedisHelper.Initialization(redisClient);
                 services.AddSingleton<IDistributedCache>(new CSRedisCache(redisClient));
+                var logger = provider.GetRequiredService<ILogger<IDistributedCache>>();
+                foreach (var node in redisClient.Nodes)
+                {
+                    logger.LogInformation("Redis缓存服务已启动: {Key}", node.Key);
+                }
             }
         }
 
-        services.AddMemoryCache();
-        services.AddDistributedMemoryCache();
         services.AddSingleton<IXunetCache, XunetCache>();
 
         return services;
