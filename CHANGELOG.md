@@ -1,3 +1,13 @@
+## [1.0.44](https://github.com/shelley-xl/Xunet.MiniApi/commit/f17413a0ba2a705d88278873688bb92fa854de48) (2025-09-26)
+
+### Features
+
+- 新增IEndpointRouteBuilder扩展
+
+### Bug Fixes
+
+- 优化调整
+
 ## [1.0.43](https://github.com/shelley-xl/Xunet.MiniApi/commit/d6baf7d27322a1470e436a900aee0487bea9ef77) (2025-09-22)
 
 ### Bug Fixes
