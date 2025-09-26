@@ -47,9 +47,9 @@
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
 		<PackageReference Include="SkiaSharp" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.1" />
-		<PackageReference Include="SqlSugarCore" Version="5.1.4.203" />
+		<PackageReference Include="SqlSugarCore" Version="5.1.4.205" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
-		<PackageReference Include="TencentCloudSDK" Version="3.0.1324" />
+		<PackageReference Include="TencentCloudSDK" Version="3.0.1325" />
 		<PackageReference Include="Tencent.QCloud.Cos.Sdk" Version="5.4.49" />
 		<PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
 	</ItemGroup>
