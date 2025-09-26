@@ -40,34 +40,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddXunetCache();
-builder.Services.AddXunetJsonOptions();
-builder.Services.AddXunetFluentValidation();
-builder.Services.AddXunetHttpContextAccessor();
-builder.Services.AddXunetHealthChecks();
-builder.Services.AddXunetSwagger();
-builder.Services.AddXunetSqliteStorage();
-builder.Services.AddXunetJwtBearer();
-builder.Services.AddXunetCors();
-builder.Services.AddXunetRateLimiter();
-builder.Services.AddXunetEventHandler();
-builder.Services.AddXunetAuthorizationHandler();
-builder.Services.AddXunetMapper();
-builder.Services.AddXunetMiniService();
+builder.Services.AddXunetCore();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseXunetRequestHandler();
-app.UseXunetHttpContextAccessor();
-app.UseXunetHealthChecks();
-app.UseXunetSwagger();
-app.UseXunetStorage();
-app.UseXunetCors();
-app.UseRateLimiter();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseXunetCore();
 
 // Map endpoints.
 
@@ -81,7 +60,17 @@ app.Run();
 ```c#
 public class AppDbContext : SugarDbContext<AppDbContext>
 {
+    
+}
+```
 
+**HelloRequest.cs**
+
+```c#
+internal class HelloRequest
+{
+    [FromParameter("name", "姓名")]
+    public string? Name { get; set; }
 }
 ```
 
@@ -90,7 +79,7 @@ public class AppDbContext : SugarDbContext<AppDbContext>
 ```c#
 internal interface IHelloService
 {
-    Task<IResult> SayHelloAsync();
+    Task<IResult> SayHelloAsync(HelloRequest request);
 }
 ```
 
@@ -99,9 +88,11 @@ internal interface IHelloService
 ```c#
 internal class HelloService : MiniService<AppDbContext>, IHelloService
 {
-    public Task<IResult> SayHelloAsync()
+    public async Task<IResult> SayHelloAsync(HelloRequest request)
     {
-        return XunetResults.Ok("Hello,world!");
+        await Task.CompletedTask;
+
+        return XunetResults.Ok($"Hello,{request.Name ?? "world"}!");
     }
 }
 ```
@@ -113,10 +104,12 @@ internal static class HelloEndpoint
 {
     internal static void MapHelloEndpoint(this WebApplication app)
     {
-        app.MapGet("/api/hello", (IHelloService helloService) 
-            => helloService.SayHelloAsync());
+        var group = app.MapGroup("/api/v1", "test", "你好").AllowAnonymous();
 
-        return app;
+        group.MapGet<IHelloService, HelloRequest>("/hello", "你好", (service, [AsParameters] request) =>
+        {
+            return service.SayHelloAsync(request);
+        });
     }
 }
 ```
