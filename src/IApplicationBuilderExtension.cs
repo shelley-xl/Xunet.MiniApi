@@ -28,6 +28,28 @@ public static class IApplicationBuilderExtension
 
     #endregion
 
+    #region 使用核心服务
+
+    /// <summary>
+    /// 使用核心服务
+    /// </summary>
+    /// <param name="app"></param>
+    /// <returns></returns>
+    public static WebApplication UseXunetCore(this WebApplication app)
+    {
+        app.UseXunetRequestHandler();
+        app.UseXunetHttpContextAccessor();
+        app.UseXunetSwagger();
+        app.UseXunetCors();
+        app.UseRateLimiter();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        return app;
+    }
+
+    #endregion
+
     #region 使用健康检查
 
     /// <summary>

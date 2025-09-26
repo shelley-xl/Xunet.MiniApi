@@ -25,6 +25,35 @@ public static class IServiceCollectionExtension
 
     #endregion
 
+    #region 添加核心服务
+
+    /// <summary>
+    /// 添加核心服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddXunetCore(this IServiceCollection services)
+    {
+        if (services.HasRegistered(nameof(AddXunetCore))) return services;
+
+        services.AddLogging();
+        services.AddXunetCache();
+        services.AddXunetJsonOptions();
+        services.AddXunetFluentValidation();
+        services.AddXunetHttpContextAccessor();
+        services.AddXunetSwagger();
+        services.AddXunetCors();
+        services.AddXunetRateLimiter();
+        services.AddXunetEventHandler();
+        services.AddXunetAuthorizationHandler();
+        services.AddXunetMapper();
+        services.AddXunetMiniService();
+
+        return services;
+    }
+
+    #endregion
+
     #region 添加HttpContext访问对象
 
     /// <summary>
@@ -614,7 +643,6 @@ public static class IServiceCollectionExtension
 
         services.AddMemoryCache();
         services.AddDistributedMemoryCache();
-        services.AddLogging();
 
         var provider = services.BuildServiceProvider();
         var logger = provider.GetRequiredService<ILogger<IDistributedCache>>();
@@ -691,7 +719,11 @@ public static class IServiceCollectionExtension
             return x.BaseType == typeof(Profile) && x.Assembly != typeof(Profile).Assembly;
         });
 
-        services.AddAutoMapper(assemblies);
+        services.AddAutoMapper(config =>
+        {
+            config.AddMaps(assemblies);
+        });
+
         services.AddScoped<IXunetMapper, XunetMapper>();
 
         return services;
