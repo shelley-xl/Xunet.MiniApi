@@ -10,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddXunetCore();
 builder.Services.AddXunetHealthChecks();
 builder.Services.AddXunetSqliteStorage();
-builder.Services.AddXunetJwtBearer();
 builder.Services.AddXunetCaptcha();
 
 var app = builder.Build();
