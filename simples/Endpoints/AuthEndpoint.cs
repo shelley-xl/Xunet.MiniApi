@@ -12,10 +12,21 @@ internal static class AuthEndpoint
 {
     internal static void MapAuthEndpoint(this WebApplication app)
     {
-        var group = app.MapGroup("/api/auth").WithGroupName("test").WithTags("认证中心").AddEndpointFilter<AutoValidationFilter>();
+        var group = app.MapGroup("/api/auth", "test", "认证中心").AllowAnonymous();
 
-        group.MapPost("/login", async (LoginRequest request, IAuthService service) => await service.LoginAsync(request)).WithSummary("登录");
+        group.MapGet<IAuthService>("/code", "获取图形验证码", (service) =>
+        {
+            return service.GetVeryCodeAsync();
+        });
 
-        group.MapPost("/register", async (RegisterRequest request, IAuthService service) => await service.RegisterAsync(request)).WithSummary("注册");
+        group.MapPost<IAuthService, LoginRequest>("/login", "登录", (service, request) =>
+        {
+            return service.LoginAsync(request);
+        });
+
+        group.MapPost<IAuthService, RegisterRequest>("/register", "注册", (service, request) =>
+        {
+            return service.RegisterAsync(request);
+        });
     }
 }

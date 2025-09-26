@@ -13,10 +13,24 @@ public class LoginRequest
     /// <summary>
     /// 用户名
     /// </summary>
+    [Description("用户名")]
     public string? UserName { get; set; }
 
     /// <summary>
     /// 密码
     /// </summary>
+    [Description("密码")]
     public string? Password { get; set; }
+
+    /// <summary>
+    /// 图形验证码唯一标识
+    /// </summary>
+    [Description("图形验证码唯一标识")]
+    public string? VeryUuid { get; set; }
+
+    /// <summary>
+    /// 图形验证码
+    /// </summary>
+    [Description("图形验证码")]
+    public string? VeryCode { get; set; }
 }

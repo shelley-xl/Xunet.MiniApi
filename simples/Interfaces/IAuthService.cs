@@ -11,6 +11,12 @@ namespace Xunet.MiniApi.Simples.Interfaces;
 public interface IAuthService
 {
     /// <summary>
+    /// 获取图形验证码
+    /// </summary>
+    /// <returns></returns>
+    Task<IResult> GetVeryCodeAsync();
+
+    /// <summary>
     /// 登录
     /// </summary>
     /// <param name="request">登录请求</param>

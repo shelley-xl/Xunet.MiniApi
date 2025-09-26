@@ -5,18 +5,19 @@
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.Extensions.Options;
+global using System.ComponentModel;
 global using System.Security.Claims;
 global using AutoMapper;
 global using FluentValidation;
 global using SqlSugar;
 global using Xunet.MiniApi;
-global using Xunet.MiniApi.Filters;
 global using Xunet.MiniApi.Authentication;
 global using Xunet.MiniApi.Authorization;
 global using Xunet.MiniApi.Dtos.Requests;
 global using Xunet.MiniApi.Extensions;
 global using Xunet.MiniApi.Middlewares.IEventHandlers;
 global using Xunet.MiniApi.SqlSugar;
+global using Xunet.MiniApi.SkiaSharp;
 global using Xunet.MiniApi.Http;
 global using Xunet.MiniApi.Simples.DbContexts;
 global using Xunet.MiniApi.Simples.Entities;

@@ -13,13 +13,29 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
     /// <summary>
     /// 构造函数
     /// </summary>
-    public LoginRequestValidator(AppDbContext context)
+    public LoginRequestValidator(AppDbContext context, IXunetCaptcha captcha)
     {
         RuleFor(x => x.UserName)
             .NotEmpty().WithMessage("用户名不能为空");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("密码不能为空");
+
+        RuleFor(x => x.VeryUuid)
+            .NotEmpty().WithMessage("图形验证码唯一标识不能为空");
+
+        RuleFor(x => x.VeryCode)
+            .NotEmpty().WithMessage("图形验证码不能为空");
+
+        RuleFor(x => x)
+            .CustomAsync(async (x, y, token) =>
+            {
+                var ok = await captcha.ValidateAsync(x.VeryUuid, x.VeryCode);
+
+                if (!ok.HasValue) y.AddFailure("图形验证码已过期");
+
+                else if (!ok.Value) y.AddFailure("图形验证码错误");
+            });
 
         RuleFor(x => x)
             .MustAsync(async (x, token) =>

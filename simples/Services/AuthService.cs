@@ -13,6 +13,15 @@ namespace Xunet.MiniApi.Simples.Services;
 public class AuthService(IOptions<JwtConfig> jwtConfig) : MiniService<AppDbContext>, IAuthService
 {
     /// <summary>
+    /// 获取图形验证码
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IResult> GetVeryCodeAsync()
+    {
+        return XunetResults.Ok(await Captcha.GenerateAsync());
+    }
+
+    /// <summary>
     /// 登录
     /// </summary>
     /// <param name="request">登录请求</param>
