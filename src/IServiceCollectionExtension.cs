@@ -45,9 +45,10 @@ public static class IServiceCollectionExtension
         services.AddXunetCors();
         services.AddXunetRateLimiter();
         services.AddXunetEventHandler();
-        services.AddXunetAuthorizationHandler();
         services.AddXunetMapper();
         services.AddXunetMiniService();
+        services.AddXunetJwtBearer();
+        services.AddXunetAuthorizationHandler();
 
         return services;
     }
