@@ -36,7 +36,6 @@ public static class IServiceCollectionExtension
     {
         if (services.HasRegistered(nameof(AddXunetCore))) return services;
 
-        services.AddLogging();
         services.AddXunetCache();
         services.AddXunetJsonOptions();
         services.AddXunetFluentValidation();
