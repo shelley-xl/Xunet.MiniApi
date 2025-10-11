@@ -12,7 +12,7 @@ internal static class AccountsEndpoint
 {
     internal static void MapAccountsEndpoint(this WebApplication app)
     {
-        var group = app.MapGroup("/api/accounts", "test", "账户管理");
+        var group = app.MapGroup("/api/accounts", "test", true, "账户管理");
 
         group.MapGet<IAccountsService, PageRequest>("/page", "获取账户分页列表", (service, [AsParameters] request) =>
         {

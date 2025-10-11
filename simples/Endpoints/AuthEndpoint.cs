@@ -12,7 +12,7 @@ internal static class AuthEndpoint
 {
     internal static void MapAuthEndpoint(this WebApplication app)
     {
-        var group = app.MapGroup("/api/auth", "test", "认证中心").AllowAnonymous();
+        var group = app.MapGroup("/api/auth", "test", false, "认证中心");
 
         group.MapGet<IAuthService>("/code", "获取图形验证码", (service) =>
         {

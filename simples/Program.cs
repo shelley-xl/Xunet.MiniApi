@@ -11,6 +11,8 @@ builder.Services.AddXunetCore();
 builder.Services.AddXunetHealthChecks();
 builder.Services.AddXunetSqliteStorage();
 builder.Services.AddXunetCaptcha();
+builder.Services.AddXunetJwtBearer();
+builder.Services.AddXunetAuthorizationHandler();
 
 var app = builder.Build();
 
@@ -19,6 +21,8 @@ var app = builder.Build();
 app.UseXunetCore();
 app.UseXunetHealthChecks();
 app.UseXunetStorage();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Map endpoints.
 
