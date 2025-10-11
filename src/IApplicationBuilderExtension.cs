@@ -42,8 +42,6 @@ public static class IApplicationBuilderExtension
         app.UseXunetSwagger();
         app.UseXunetCors();
         app.UseRateLimiter();
-        app.UseAuthentication();
-        app.UseAuthorization();
 
         return app;
     }

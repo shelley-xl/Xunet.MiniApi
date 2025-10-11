@@ -198,7 +198,7 @@ public class GetUserInfoDto : ErrorDto
             /// 部门排序
             /// </summary>
             [JsonPropertyName("order")]
-            public int? Order { get; set; }
+            public long? Order { get; set; }
         }
 
         /// <summary>

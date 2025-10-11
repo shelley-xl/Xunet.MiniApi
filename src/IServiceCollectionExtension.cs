@@ -46,8 +46,6 @@ public static class IServiceCollectionExtension
         services.AddXunetEventHandler();
         services.AddXunetMapper();
         services.AddXunetMiniService();
-        services.AddXunetJwtBearer();
-        services.AddXunetAuthorizationHandler();
 
         return services;
     }
@@ -671,7 +669,7 @@ public static class IServiceCollectionExtension
                 if (redisClient.Nodes.Remove(key, out RedisClientPool? pool))
                 {
                     pool?.Dispose();
-                    logger.LogError("Redis缓存节点不可用：{Key}", key);
+                    logger.LogWarning("Redis缓存服务不可用：{Key}", key);
                 }
             }
             // 检查是否包含可用节点
@@ -684,15 +682,6 @@ public static class IServiceCollectionExtension
                     logger.LogInformation("Redis缓存服务已启动：{Key}", node.Key);
                 }
             }
-            else
-            {
-                logger.LogWarning("Redis缓存节点不可用：默认将使用内存缓存");
-            }
-        }
-        else
-        {
-            logger.LogWarning("Redis连接字符串未配置：默认将使用内存缓存");
-            logger.LogWarning("请在ConnectionStrings中新增节点：RedisConnection");
         }
 
         services.AddSingleton<IXunetCache, XunetCache>();

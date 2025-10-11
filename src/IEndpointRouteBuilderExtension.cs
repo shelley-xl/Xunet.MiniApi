@@ -16,16 +16,20 @@ public static class IEndpointRouteBuilderExtension
     /// <param name="endpoints"></param>
     /// <param name="prefix"></param>
     /// <param name="name"></param>
+    /// <param name="auth"></param>
     /// <param name="tags"></param>
     /// <returns></returns>
-    public static RouteGroupBuilder MapGroup(this IEndpointRouteBuilder endpoints, string prefix, string name, params string[] tags)
+    public static RouteGroupBuilder MapGroup(this IEndpointRouteBuilder endpoints, string prefix, string name, bool auth, params string[] tags)
     {
-        return endpoints
+        var group = endpoints
             .MapGroup(prefix)
             .WithGroupName(name)
             .WithTags(tags)
-            .AddEndpointFilter<AutoValidationFilter>()
-            .RequireAuthorization(AuthorizePolicy.Default);
+            .AddEndpointFilter<AutoValidationFilter>();
+
+        if (auth) group.RequireAuthorization(AuthorizePolicy.Default);
+
+        return group;
     }
 
     /// <summary>
