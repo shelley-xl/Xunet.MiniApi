@@ -3,7 +3,6 @@
 [![Nuget](https://img.shields.io/nuget/v/Xunet.MiniApi.svg?style=flat-square)](https://www.nuget.org/packages/Xunet.MiniApi)
 [![Downloads](https://img.shields.io/nuget/dt/Xunet.MiniApi.svg?style=flat-square)](https://www.nuget.org/stats/packages/Xunet.MiniApi?groupby=Version)
 [![License](https://img.shields.io/github/license/shelley-xl/Xunet.MiniApi.svg)](https://github.com/shelley-xl/Xunet.MiniApi/blob/master/LICENSE)
-![Vistors](https://visitor-badge.laobi.icu/badge?page_id=https://github.com/shelley-xl/Xunet.MiniApi)
 
 面向微服务的.NET 最小API支持，功能特性包括：
 
@@ -104,7 +103,7 @@ internal static class HelloEndpoint
 {
     internal static void MapHelloEndpoint(this WebApplication app)
     {
-        var group = app.MapGroup("/api/v1", "test", "你好").AllowAnonymous();
+        var group = app.MapGroup("/api/v1", "test", false, "你好");
 
         group.MapGet<IHelloService, HelloRequest>("/hello", "你好", (service, [AsParameters] request) =>
         {
